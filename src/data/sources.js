@@ -329,10 +329,10 @@ export const sources = [
   },
   {
     id: 'source-dunnell-rise-chinggis-2023', title: 'The Rise of Chinggis Khan and the United Empire, 1206–1260', author: 'Ruth W. Dunnell',
-    institution: 'Cambridge University Press', publication: 'The Cambridge History of the Mongol Empire, vol. I, ed. Michal Biran and Hodong Kim; print 2023, online 2024', year: 2023,
+    institution: 'Cambridge University Press', publication: 'The Cambridge History of the Mongol Empire, vol. I, pp. 19–106, ed. Michal Biran and Hodong Kim; print 2023, online 2024', year: 2023,
     category: 'MODERN SCHOLARSHIP', eraId: 'before-chinggis', status: 'verified',
     relatedEntityIds: ['person-temujin-chinggis-khan', 'polity-kereit', 'polity-emerging-mongol-order', 'event-new-mongol-order-1206'],
-    citation: 'Ruth W. Dunnell, “The Rise of Chinggis Khan and the United Empire, 1206–1260,” in The Cambridge History of the Mongol Empire, vol. I, ed. Michal Biran and Hodong Kim, Cambridge University Press, print 2023; online 2024.', url: null,
+    citation: 'Ruth W. Dunnell, “The Rise of Chinggis Khan and the United Empire, 1206–1260,” in The Cambridge History of the Mongol Empire, vol. I, pp. 19–106, ed. Michal Biran and Hodong Kim, Cambridge University Press, print 2023; online 2024.', doi: '10.1017/9781316337424.002', url: null,
   },
   {
     id: 'source-munkh-erdene-chinggisid-dynasty-2018', title: 'The Rise of the Chinggisid Dynasty: Pre-Modern Eurasian Political Order and Culture at a Glance', author: 'Lhamsuren Munkh-Erdene',
@@ -354,5 +354,29 @@ export const sources = [
     category: 'HERITAGE / INSTITUTIONAL SOURCE', eraId: 'before-chinggis', status: 'verified',
     relatedEntityIds: ['place-burkhan-khaldun', 'person-temujin-chinggis-khan'],
     citation: 'UNESCO World Heritage Centre — Great Burkhan Khaldun Mountain and its surrounding sacred landscape.', url: null,
+  },
+  {
+    id: 'source-juvaini-world-conqueror', title: 'Tarikh-i Jahan-gusha / The History of the World-Conqueror', author: 'Ata-Malik Juvayni',
+    institution: null, publication: null, year: null, category: 'PERSIAN HISTORIOGRAPHY', eraId: 'rise-empire', status: 'verified',
+    perspective: 'Mongol-era Persian administrator and historian', compositionContext: 'Persian historiography produced within the Mongol imperial world', temporalRelationship: 'Contemporary / near-contemporary to parts of Era III',
+    relatedEntityIds: ['polity-yeke-mongol-ulus','polity-khwarazmian-empire','event-otrar-crisis-1218','event-khwarazm-invasion-1219','event-baghdad-captured-1258'], citation: 'Ata-Malik Juvayni, Tarikh-i Jahan-gusha / The History of the World-Conqueror.', url: null,
+  },
+  {
+    id: 'source-boyle-world-conqueror-1958', title: 'The History of the World-Conqueror', author: 'J. A. Boyle, translator',
+    institution: 'Manchester University Press', publication: 'English translation of Ata-Malik Juvayni', year: 1958, category: 'MODERN SCHOLARLY TRANSLATION / COMMENTARY', eraId: 'rise-empire', status: 'verified',
+    perspective: 'Modern English translation of medieval Persian historiography', temporalRelationship: 'Modern scholarly translation',
+    relatedEntityIds: ['polity-yeke-mongol-ulus','polity-khwarazmian-empire','event-otrar-crisis-1218','event-khwarazm-invasion-1219'], citation: 'Ata-Malik Juvayni, The History of the World-Conqueror, trans. J. A. Boyle, Manchester University Press, 1958.', url: null,
+  },
+  {
+    id: 'source-rashid-al-din-compendium', title: 'Jami al-Tawarikh / Compendium of Chronicles', author: 'Rashid al-Din',
+    institution: null, publication: null, year: null, category: 'PERSIAN HISTORIOGRAPHY', eraId: 'rise-empire', status: 'verified',
+    perspective: 'Later Ilkhanid historian and compiler', compositionContext: 'Ilkhanid court historiography', temporalRelationship: 'Later Ilkhanid compilation, not an eyewitness account of 1206',
+    relatedEntityIds: ['polity-yeke-mongol-ulus'], citation: 'Rashid al-Din, Jami al-Tawarikh / Compendium of Chronicles.', url: null,
+  },
+  {
+    id: 'source-bemmann-mapping-karakorum-2022', title: 'Mapping Karakorum, the capital of the Mongol Empire', author: 'Jan Bemmann; Sven Linzen; Susanne Reichert; Lkh. Munkhbayar',
+    institution: 'Antiquity', publication: 'Volume 96, issue 385 (2022), pp. 159–178; published online 4 November 2021', year: 2022, category: 'ARCHAEOLOGICAL RESEARCH', eraId: 'rise-empire', status: 'verified',
+    perspective: 'Modern archaeological investigation', temporalRelationship: 'Modern archaeological investigation', relatedEntityIds: ['polity-yeke-mongol-ulus','place-orkhon-valley'],
+    citation: 'Jan Bemmann, Sven Linzen, Susanne Reichert and Lkh. Munkhbayar, “Mapping Karakorum, the capital of the Mongol Empire,” Antiquity 96.385 (2022), pp. 159–178.', doi: '10.15184/aqy.2021.153', url: null,
   },
 ]
