@@ -56,7 +56,7 @@ function App() {
     }
 
     const slug = route.split('/').filter(Boolean).at(-1)
-    return eras.find((item) => item.id === slug) ?? null
+    return eras.find((item) => item.id === slug || item.slug === slug) ?? null
   }, [route])
 
   const chapter = useMemo(() => {
@@ -66,8 +66,9 @@ function App() {
     }
 
     const [, eraId, chapterSlug] = match
+    const matchedEra = eras.find((item) => item.id === eraId || item.slug === eraId)
     return chapters.find(
-      (item) => item.eraId === eraId
+      (item) => item.eraId === matchedEra?.id
         && (item.slug ?? item.id.replace('chapter-', '')) === chapterSlug,
     ) ?? null
   }, [route])

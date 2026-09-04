@@ -1,3 +1,5 @@
+import { eras } from './eras'
+
 export function getPersonSlug(person) {
   return person.slug ?? person.id.replace('person-', '')
 }
@@ -8,7 +10,8 @@ export function getPersonHref(person) {
 
 export function getChapterHref(chapter) {
   const slug = chapter.slug ?? chapter.id.replace('chapter-', '')
-  return `/eras/${chapter.eraId}/chapters/${slug}`
+  const era = eras.find((item) => item.id === chapter.eraId)
+  return `/eras/${era?.slug ?? chapter.eraId}/chapters/${slug}`
 }
 
 export function getEntityHref(record) {

@@ -3,6 +3,7 @@ import ArchaeologyMap from './ArchaeologyMap'
 import EvidenceExplorer from './EvidenceExplorer'
 import PoliticalRelations from './PoliticalRelations'
 import EducationalVisual from './EducationalVisual'
+import EvidenceNote from './EvidenceNote'
 
 function ChapterSection({ section, selectedSiteId, onSiteSelect }) {
   if (section.questions?.length) {
@@ -48,6 +49,7 @@ function ChapterSection({ section, selectedSiteId, onSiteSelect }) {
         ) : null}
         {section.relationsVisual ? <PoliticalRelations {...section.relationsVisual} /> : null}
         {section.educationalVisual ? <EducationalVisual {...section.educationalVisual} /> : null}
+        {section.evidenceNote ? <EvidenceNote {...section.evidenceNote} /> : null}
         {section.callouts?.map((callout) => (
           <aside key={callout.label} className="chapter-callout">
             <p className="chapter-callout-label">{callout.label}</p>

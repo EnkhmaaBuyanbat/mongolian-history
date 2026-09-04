@@ -62,7 +62,7 @@ function PersonDetailPage({ person }) {
     <article className="person-profile-page">
       <header className="entity-header person-profile-header">
         <div className="section-inner entity-header-inner">
-          <p className="section-label">{person.profileType === 'biography' ? 'Historical Biography' : 'Reference Profile'}</p>
+          <p className="section-label">{person.profileType === 'story' ? 'Story' : person.profileType === 'biography' ? 'Historical Biography' : 'Reference Profile'}</p>
           <h1>{person.title}</h1>
           {person.alternativeNames?.length ? <p className="person-profile-aliases">Also known as {person.alternativeNames.join(', ')}</p> : null}
           {person.role ? <p className="entity-period">{person.role}</p> : null}

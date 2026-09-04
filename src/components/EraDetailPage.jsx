@@ -61,6 +61,7 @@ function EraDetailPage({ era }) {
           <p className="section-label">ERA {era.number}</p>
           <h1>{era.title}</h1>
           <p className="era-detail-period">{era.period}</p>
+          {era.subtitle ? <p className="chapter-subtitle">{era.subtitle}</p> : null}
           <MeanderLine className="entity-meander" />
           <p className="era-detail-description">{era.description}</p>
         </div>
@@ -78,7 +79,7 @@ function EraDetailPage({ era }) {
                 chapter.status === 'in-progress' ? (
                     <a
                       key={chapter.id}
-                      href={`/eras/${era.id}/chapters/${chapter.slug ?? chapter.id.replace('chapter-', '')}`}
+                      href={`/eras/${era.slug ?? era.id}/chapters/${chapter.slug ?? chapter.id.replace('chapter-', '')}`}
                       className="era-chapter-card era-chapter-link"
                     >
                       <span className="era-chapter-number">{chapter.number}</span>

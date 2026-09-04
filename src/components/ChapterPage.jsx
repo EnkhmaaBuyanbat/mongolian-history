@@ -68,7 +68,7 @@ function ChapterPage({ chapter }) {
       <header className="chapter-header">
         <div className="section-inner chapter-header-inner">
           <p className="chapter-context">
-            <a href={`/eras/${chapter.eraId}`}>{era?.title ?? chapter.eraId}</a>
+            <a href={`/eras/${era?.slug ?? chapter.eraId}`}>{era?.title ?? chapter.eraId}</a>
             <span aria-hidden="true"> / </span>
             Chapter {chapter.number}
           </p>

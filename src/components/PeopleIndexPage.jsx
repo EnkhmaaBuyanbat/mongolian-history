@@ -27,7 +27,7 @@ function PeopleIndexPage() {
                   <strong>{person.title}</strong>
                   <span>{polity?.title ?? 'Historical figure'}</span>
                   {person.periodDisplay || person.period ? <small>{person.periodDisplay ?? person.period}</small> : null}
-                  <em>{person.storyId ? 'View Story' : person.profileType === 'biography' ? 'View Biography' : 'View Profile'}</em>
+                  <em>{person.storyId || person.profileType === 'story' ? 'View Story' : person.profileType === 'biography' ? 'View Biography' : 'View Profile'}</em>
                 </a>
               )
             })}
