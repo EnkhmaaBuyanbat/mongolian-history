@@ -6,7 +6,7 @@ import { people } from '../data/people'
 import { events } from '../data/events'
 import { sources } from '../data/sources'
 import { MeanderLine } from './Ornament'
-import { getPersonHref } from '../data/entityRoutes'
+import { getEntityHref, getPersonHref } from '../data/entityRoutes'
 
 const placeholderCards = [
   'Timeline',
@@ -224,10 +224,10 @@ function HistoricalEntityPage({ entity }) {
             <ul className="related-list">
               {relatedSites.map((item) => (
                 <li key={item.id} className="timeline-record">
-                  <div>
+                  <a href={getEntityHref(sites.find((site) => site.id === item.id))} className="entity-person-link">
                     <strong>{item.label}</strong>
                     <p>{item.type}</p>
-                  </div>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -244,10 +244,10 @@ function HistoricalEntityPage({ entity }) {
             <ul className="related-list">
               {relatedPlaces.map((item) => (
                 <li key={item.id} className="timeline-record">
-                  <div>
+                  <a href={getEntityHref(places.find((place) => place.id === item.id))} className="entity-person-link">
                     <strong>{item.label}</strong>
                     <p>{item.type}</p>
-                  </div>
+                  </a>
                 </li>
               ))}
             </ul>

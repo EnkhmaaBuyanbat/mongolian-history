@@ -11,7 +11,7 @@ import { sortChronologically } from '../data/chronology'
 import ChapterNav from './ChapterNav'
 import ChapterSection from './ChapterSection'
 import { MeanderLine } from './Ornament'
-import { getPersonHref } from '../data/entityRoutes'
+import { getEntityHref } from '../data/entityRoutes'
 
 const sectionLabels = {
   'origins-and-context': 'Origins and Context',
@@ -116,7 +116,7 @@ function ChapterPage({ chapter }) {
                     <h3>{group.label}</h3>
                     <div className="chapter-record-grid">
                       {groupRecords.map((record) => {
-                        const href = group.key === 'people' ? getPersonHref(record) : null
+                        const href = getEntityHref(record)
                         const card = (
                           <article className="chapter-record-card">
                           <strong>{record.title}</strong>

@@ -12,10 +12,14 @@ import ChapterPage from './components/ChapterPage'
 import PeopleIndexPage from './components/PeopleIndexPage'
 import PeopleStoryPage from './components/PeopleStoryPage'
 import PersonDetailPage from './components/PersonDetailPage'
+import EntityExplorerPage from './components/EntityExplorerPage'
 import { eras } from './data/eras'
 import { chapters } from './data/chapters'
 import { people } from './data/people'
 import { polities } from './data/polities'
+import { places } from './data/places'
+import { sites } from './data/sites'
+import { objects } from './data/objects'
 import './App.css'
 
 function getCurrentPath() {
@@ -78,6 +82,16 @@ function App() {
     return people.find((item) => (item.slug ?? item.id.replace('person-', '')) === slug) ?? null
   }, [route])
 
+  const explorerEntity = useMemo(() => {
+    const match = route.match(/^\/(places|sites|objects)\/([^/]+)$/)
+    if (!match) return undefined
+
+    const [, type, slug] = match
+    const collections = { places, sites, objects }
+    const prefixes = { places: 'place-', sites: 'site-', objects: 'object-' }
+    return collections[type].find((item) => item.id === `${prefixes[type]}${slug}`) ?? null
+  }, [route])
+
   const showEntityPage = Boolean(entity)
   const showEraPage = Boolean(era)
   const showChapterPage = Boolean(chapter)
@@ -85,6 +99,7 @@ function App() {
   const showPeopleIndexPage = route === '/people'
   const showPeopleStoryPage = Boolean(person?.storyId)
   const showPersonDetailPage = /^\/people\/[^/]+$/.test(route) && !showPeopleStoryPage
+  const showExplorerPage = explorerEntity !== undefined
 
   return (
     <>
@@ -96,6 +111,8 @@ function App() {
           <ChapterPage chapter={chapter} />
         ) : showEraPage ? (
           <EraDetailPage era={era} />
+        ) : showExplorerPage ? (
+          <EntityExplorerPage entity={explorerEntity} />
         ) : showTimelinePage ? (
           <GlobalTimelinePage />
         ) : showPeopleStoryPage ? (

@@ -28,8 +28,11 @@ export const objects = [
     id: 'object-kul-tegin-inscription',
     title: 'Kül Tegin inscription',
     type: 'monument / inscription',
+    period: 'memorial established 732 CE',
     eraId: 'ancient-steppe',
     status: 'verified',
+    summary:
+      'The Kül Tegin inscription belongs to a memorial complex in the Orkhon Valley and preserves political and commemorative representation from the restored Türk political world.',
     relatedEntityIds: [
       'polity-turk-political-world',
       'place-orkhon-valley',
@@ -48,8 +51,11 @@ export const objects = [
     id: 'object-bilge-khagan-inscription',
     title: 'Bilge Khagan inscription',
     type: 'monument / inscription',
+    period: 'memorial established 735 CE',
     eraId: 'ancient-steppe',
     status: 'verified',
+    summary:
+      'The inscription associated with Bilge Khagan preserves political and commemorative texts connected with the Türk ruling tradition in the Orkhon Valley.',
     relatedEntityIds: [
       'polity-turk-political-world',
       'place-orkhon-valley',

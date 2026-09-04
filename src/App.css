@@ -2810,6 +2810,81 @@
   color: var(--gold);
 }
 
+/* Place, site and object explorer */
+.explorer-page {
+  min-height: 70vh;
+  padding-bottom: 4rem;
+  background: linear-gradient(180deg, #0d0b0a 0%, #110d0c 55%, #090706 100%);
+}
+
+.explorer-header h1,
+.explorer-empty h1 {
+  color: var(--parchment);
+}
+
+.explorer-inner {
+  max-width: 60rem;
+}
+
+.explorer-link-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.explorer-link-grid a {
+  display: grid;
+  gap: 0.45rem;
+  min-height: 7rem;
+  padding: 1rem;
+  border: 1px solid rgba(183, 138, 58, 0.2);
+  color: inherit;
+  text-decoration: none;
+}
+
+.explorer-link-grid a:hover,
+.explorer-link-grid a:focus-visible {
+  border-color: var(--gold);
+}
+
+.explorer-link-grid span {
+  color: var(--gold);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.explorer-link-grid strong {
+  color: var(--parchment);
+  font-family: var(--serif);
+}
+
+.explorer-related-group + .explorer-related-group {
+  margin-top: 2rem;
+}
+
+.explorer-related-group h3 {
+  margin-bottom: 0.8rem;
+  color: var(--gold);
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.explorer-empty {
+  padding-block: 5rem;
+}
+
+.explorer-empty h1,
+.explorer-empty a {
+  margin-top: 1rem;
+}
+
+.explorer-empty a {
+  display: inline-block;
+  color: var(--gold);
+}
+
 .chapter-source-list {
   display: grid;
   gap: 0.8rem;
@@ -2842,6 +2917,10 @@
   }
 
   .person-profile-links {
+    grid-template-columns: 1fr;
+  }
+
+  .explorer-link-grid {
     grid-template-columns: 1fr;
   }
 }

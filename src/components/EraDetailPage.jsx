@@ -8,7 +8,7 @@ import { sites } from '../data/sites'
 import { chapters } from '../data/chapters'
 import { sortChronologically } from '../data/chronology'
 import { MeanderLine } from './Ornament'
-import { getPersonHref } from '../data/entityRoutes'
+import { getEntityHref } from '../data/entityRoutes'
 
 const entityGroups = [
   { key: 'polities', label: 'Political Worlds', records: polities },
@@ -25,18 +25,6 @@ function belongsToEra(record, eraId) {
 
 function isResearched(record) {
   return record.status === 'researched' || record.status === 'verified'
-}
-
-function getEntityHref(record) {
-  if (record.id.startsWith('person-')) {
-    return getPersonHref(record)
-  }
-
-  if (record.id.startsWith('polity-')) {
-    return `/polities/${record.id.replace('polity-', '')}`
-  }
-
-  return null
 }
 
 function EraDetailPage({ era }) {

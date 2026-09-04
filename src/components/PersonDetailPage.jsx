@@ -6,7 +6,7 @@ import { places } from '../data/places'
 import { polities } from '../data/polities'
 import { sites } from '../data/sites'
 import { sources } from '../data/sources'
-import { getChapterHref } from '../data/entityRoutes'
+import { getChapterHref, getEntityHref } from '../data/entityRoutes'
 import { sortChronologically } from '../data/chronology'
 import { MeanderLine } from './Ornament'
 import ConfidenceBadge from './ConfidenceBadge'
@@ -129,7 +129,11 @@ function PersonDetailPage({ person }) {
           <div className="section-inner person-profile-inner">
             <div className="entity-section-heading"><p className="section-label">Connected History</p><h2>Reference records</h2></div>
             <div className="chapter-record-grid">
-              {referenceRecords.map((record) => <article key={record.id} className="chapter-record-card"><small>{record.kind} · Reference only</small><strong>{record.title}</strong></article>)}
+              {referenceRecords.map((record) => {
+                const href = getEntityHref(record)
+                const card = <article className="chapter-record-card"><small>{record.kind}</small><strong>{record.title}</strong></article>
+                return href ? <a key={record.id} href={href} className="chapter-record-link">{card}</a> : <div key={record.id}>{card}</div>
+              })}
             </div>
           </div>
         </section>

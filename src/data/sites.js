@@ -113,8 +113,11 @@ export const sites = [
     id: 'site-orkhon-turk-memorial-landscape',
     title: 'Orkhon Türk Memorial Landscape',
     type: 'archaeological / memorial landscape',
+    period: 'early 8th century CE',
     eraId: 'ancient-steppe',
     status: 'verified',
+    summary:
+      'The Orkhon Türk Memorial Landscape includes the commemorative settings associated with Kül Tegin and Bilge Khagan. Its inscriptions are major political and commemorative sources for the restored Türk political world.',
     relatedEntityIds: ['place-orkhon-valley', 'polity-turk-political-world'],
     sourceRefs: ['source-unesco-orkhon-valley'],
     mapAvailable: false,
