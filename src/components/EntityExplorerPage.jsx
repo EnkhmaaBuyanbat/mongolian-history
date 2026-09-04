@@ -1,4 +1,6 @@
 import { chapters } from '../data/chapters'
+import { campaigns } from '../data/campaigns'
+import { claims } from '../data/claims'
 import { eras } from '../data/eras'
 import { events } from '../data/events'
 import { objects } from '../data/objects'
@@ -9,6 +11,8 @@ import { sites } from '../data/sites'
 import { sources } from '../data/sources'
 import { getChapterHref, getEntityHref } from '../data/entityRoutes'
 import { MeanderLine } from './Ornament'
+import CompareSources from './CompareSources'
+import SourcePerspective from './SourcePerspective'
 
 const entityCollections = [
   { label: 'People', records: people },
@@ -87,6 +91,15 @@ function EntityExplorerPage({ entity }) {
     ...evidenceCases.flatMap((item) => item.sourceIds ?? []),
   ])
   const entitySources = sources.filter((source) => sourceIds.has(source.id))
+  const entityCampaigns = campaigns.filter((campaign) =>
+    entity.campaignIds?.includes(campaign.id)
+      || campaign.places?.includes(entity.id)
+      || campaign.politicalActors?.includes(entity.id),
+  )
+  const entityClaims = claims.filter((claim) =>
+    entity.claimIds?.includes(claim.id)
+      || claim.relatedPlaces?.includes(entity.id),
+  )
   const era = eras.find((item) => item.id === entity.eraId || entity.eraIds?.includes(item.id))
   const isPlace = entity.id.startsWith('place-')
   const isSite = entity.id.startsWith('site-')
@@ -123,6 +136,30 @@ function EntityExplorerPage({ entity }) {
           </div>
         </section>
       ) : null}
+
+      {entity.evidenceSections?.map((section) => (
+        <section key={section.id} className="entity-section">
+          <div className="section-inner explorer-inner">
+            <div className="entity-section-heading"><p className="section-label">Evidence</p><h2>{section.title}</h2></div>
+            {section.paragraphs?.map((paragraph) => <p key={paragraph} className="entity-copy">{paragraph}</p>)}
+            {section.sourceReports ? <aside className="chapter-callout"><p className="chapter-callout-label">What the sources report</p><p className="chapter-callout-text">{section.sourceReports}</p></aside> : null}
+            {section.remainsInterpretive ? <aside className="chapter-callout"><p className="chapter-callout-label">What remains interpretive</p><p className="chapter-callout-text">{section.remainsInterpretive}</p></aside> : null}
+            {section.canTell ? <aside className="chapter-callout"><p className="chapter-callout-label">What this evidence can tell us</p><p className="chapter-callout-text">{section.canTell}</p></aside> : null}
+            {section.cannotProve ? <aside className="chapter-callout"><p className="chapter-callout-label">What this evidence does not prove</p><p className="chapter-callout-text">{section.cannotProve}</p></aside> : null}
+          </div>
+        </section>
+      ))}
+
+      {entityCampaigns.length ? (
+        <section className="entity-section entity-section-alt">
+          <div className="section-inner explorer-inner">
+            <div className="entity-section-heading"><p className="section-label">Campaign Context</p><h2>Connected campaigns</h2></div>
+            <div className="chapter-record-grid">{entityCampaigns.map((campaign) => <article key={campaign.id} className="chapter-record-card"><small>{campaign.dateDisplay} · {campaign.routeConfidence} ROUTE</small><strong>{campaign.title}</strong><p>{campaign.summary}</p>{campaign.stages?.length ? <ol>{campaign.stages.map((stage) => <li key={stage.title}><b>{stage.title}:</b> {stage.text}</li>)}</ol> : null}{campaign.caution ? <p>{campaign.caution}</p> : null}</article>)}</div>
+          </div>
+        </section>
+      ) : null}
+
+      {entityClaims.map((claim) => <CompareSources key={claim.id} claim={claim} />)}
 
       {hasContext ? (
         <section className="entity-section entity-section-alt">
@@ -201,6 +238,15 @@ function EntityExplorerPage({ entity }) {
           <div className="section-inner explorer-inner">
             <div className="entity-section-heading"><p className="section-label">Sources</p><h2>Further reading</h2></div>
             <ul className="chapter-source-list">{entitySources.map((source) => <li key={source.id}><strong>{source.title}</strong><span>{source.institution}</span></li>)}</ul>
+          </div>
+        </section>
+      ) : null}
+
+      {entitySources.some((source) => source.perspective || source.temporalRelationship) ? (
+        <section className="entity-section entity-section-alt">
+          <div className="section-inner explorer-inner">
+            <div className="entity-section-heading"><p className="section-label">Source Perspectives</p><h2>Who produced this evidence?</h2></div>
+            <div className="chapter-record-grid">{entitySources.filter((source) => source.perspective || source.temporalRelationship).map((source) => <SourcePerspective key={source.id} source={source} />)}</div>
           </div>
         </section>
       ) : null}

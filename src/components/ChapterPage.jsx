@@ -7,6 +7,7 @@ import { sites } from '../data/sites'
 import { objects } from '../data/objects'
 import { sources } from '../data/sources'
 import { eras } from '../data/eras'
+import { campaigns } from '../data/campaigns'
 import { sortChronologically } from '../data/chronology'
 import ChapterNav from './ChapterNav'
 import ChapterSection from './ChapterSection'
@@ -62,6 +63,7 @@ function ChapterPage({ chapter }) {
         paragraphs: [],
       }))
   const chapterSources = sources.filter((source) => chapter.sourceIds?.includes(source.id))
+  const chapterCampaigns = campaigns.filter((campaign) => chapter.campaignIds?.includes(campaign.id))
 
   return (
     <article className="chapter-page">
@@ -90,6 +92,15 @@ function ChapterPage({ chapter }) {
             </section>
 
             <ChapterNav sections={chapterSections} />
+
+            {chapterCampaigns.length ? (
+              <section className="chapter-related">
+                <div className="chapter-section-heading"><p className="section-label">Campaign Context</p><h2>Connected campaigns</h2></div>
+                <div className="chapter-record-grid">
+                  {chapterCampaigns.map((campaign) => <article key={campaign.id} className="chapter-record-card"><small>{campaign.dateDisplay} · {campaign.routeConfidence} ROUTE</small><strong>{campaign.title}</strong><p>{campaign.summary}</p>{campaign.stages?.length ? <ol>{campaign.stages.map((stage) => <li key={stage.title}><b>{stage.title}:</b> {stage.text}</li>)}</ol> : null}<p>{campaign.caution}</p></article>)}
+                </div>
+              </section>
+            ) : null}
 
             <div className="chapter-narrative">
               {chapterSections.map((section) => (

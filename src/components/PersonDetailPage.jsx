@@ -1,4 +1,5 @@
 import { chapters } from '../data/chapters'
+import { campaigns } from '../data/campaigns'
 import { eras } from '../data/eras'
 import { events } from '../data/events'
 import { objects } from '../data/objects'
@@ -63,6 +64,7 @@ function PersonDetailPage({ person }) {
     ]),
   ])
   const personSources = sources.filter((source) => sourceIds.has(source.id))
+  const personCampaigns = campaigns.filter((campaign) => campaign.commanders?.includes(person.id))
   const era = eras.find((item) => item.id === person.eraId)
   const referenceRecords = [
     ...personPlaces.map((record) => ({ ...record, kind: 'Place' })),
@@ -132,6 +134,15 @@ function PersonDetailPage({ person }) {
             <ol className="era-event-list">
               {personEvents.map((event) => <li key={event.id} className="era-event-record"><time>{event.dateDisplay}</time><div><strong>{event.title}</strong><p>{event.summary}</p></div></li>)}
             </ol>
+          </div>
+        </section>
+      ) : null}
+
+      {personCampaigns.length ? (
+        <section className="entity-section">
+          <div className="section-inner person-profile-inner">
+            <div className="entity-section-heading"><p className="section-label">Campaigns</p><h2>Connected campaign records</h2></div>
+            <div className="chapter-record-grid">{personCampaigns.map((campaign) => <article key={campaign.id} className="chapter-record-card"><small>{campaign.dateDisplay}</small><strong>{campaign.title}</strong><p>{campaign.summary}</p></article>)}</div>
           </div>
         </section>
       ) : null}
