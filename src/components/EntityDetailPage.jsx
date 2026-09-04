@@ -110,7 +110,7 @@ function HistoricalEntityPage({ entity }) {
           <h1>{entity.title}</h1>
           <p className="entity-period">{entity.period}</p>
           <div className="entity-status-row">
-            <span className="entity-status-badge">{entity.status}</span>
+            <span className="entity-status-badge">{entity.status === 'verified' ? 'source-backed' : entity.status}</span>
           </div>
           <MeanderLine className="entity-meander" />
           <p className="entity-summary">{entity.summary}</p>

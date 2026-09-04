@@ -101,7 +101,7 @@ function EntityExplorerPage({ entity }) {
           <h1>{entity.title}</h1>
           {entity.type ? <p className="entity-period">{entity.type}</p> : null}
           {entity.period ? <p className="entity-period">{entity.period}</p> : null}
-          <div className="entity-status-row"><span className="entity-status-badge">{entity.status}</span></div>
+          <div className="entity-status-row"><span className="entity-status-badge">{entity.status === 'verified' ? 'source-backed' : entity.status}</span></div>
           <MeanderLine className="entity-meander" />
         </div>
       </header>
@@ -111,6 +111,15 @@ function EntityExplorerPage({ entity }) {
           <div className="section-inner explorer-inner">
             <div className="entity-section-heading"><p className="section-label">01</p><h2>{isPlace ? 'Why this place matters' : isSite ? 'What is this site?' : 'What is it?'}</h2></div>
             <p className="entity-copy">{entity.summary}</p>
+          </div>
+        </section>
+      ) : null}
+
+      {entity.caution ? (
+        <section className="entity-section entity-section-alt">
+          <div className="section-inner explorer-inner">
+            <div className="entity-section-heading"><p className="section-label">Evidence Limit</p><h2>What this record does not establish</h2></div>
+            <p className="entity-copy">{entity.caution}</p>
           </div>
         </section>
       ) : null}

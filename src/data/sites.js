@@ -123,4 +123,11 @@ export const sites = [
     mapAvailable: false,
     experience3dAvailable: false,
   },
+  {
+    id: 'site-chintolgoi-balgas', title: 'Chintolgoi Balgas', type: 'archaeological site / fortified settlement',
+    period: '10th century CE', eraId: 'before-chinggis', status: 'verified',
+    summary: 'Survey and excavation at this fortified site, read alongside documentary evidence, contribute to research on the mass deportation of Bohai people into tenth-century Mongolia and the maintenance of Bohai cultural traditions.',
+    caution: 'This evidence supports population movement and cultural continuity at the site; it does not establish the ethnicity of every individual associated with its material remains.',
+    relatedEntityIds: ['polity-khitan-liao'], sourceRefs: ['source-kradin-ivliev-deported-nation'], mapAvailable: false, experience3dAvailable: false,
+  },
 ]

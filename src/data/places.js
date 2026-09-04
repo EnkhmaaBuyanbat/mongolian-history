@@ -39,4 +39,11 @@ export const places = [
     mapAvailable: true,
     experience3dAvailable: true,
   },
+  {
+    id: 'place-burkhan-khaldun', title: 'Great Burkhan Khaldun', type: 'place / sacred landscape',
+    period: 'Historically associated with Chinggis Khan; sacred traditions continue over time', eraId: 'before-chinggis', status: 'verified',
+    summary: 'Great Burkhan Khaldun and its surrounding sacred landscape lie in the central Khentii region and have strong cultural and historical associations with Chinggis Khan and traditions of mountain worship.',
+    caution: 'These are literary, cultural and heritage associations. They do not archaeologically prove a precise episode location or establish Chinggis Khan’s burial place.',
+    relatedEntityIds: ['person-temujin-chinggis-khan'], sourceRefs: ['source-unesco-burkhan-khaldun'], mapAvailable: false, experience3dAvailable: false,
+  },
 ]

@@ -3,6 +3,8 @@ import { eras } from '../data/eras'
 import { events } from '../data/events'
 import { objects } from '../data/objects'
 import { places } from '../data/places'
+import { personRelationships } from '../data/personRelationships'
+import { people } from '../data/people'
 import { polities } from '../data/polities'
 import { sites } from '../data/sites'
 import { sources } from '../data/sources'
@@ -46,9 +48,19 @@ function PersonDetailPage({ person }) {
   const personObjects = objects.filter(
     (object) => relatedIds.includes(object.id) || personEvents.some((event) => event.objects?.includes(object.id)),
   )
+  const relationships = personRelationships
+    .filter((relationship) => relationship.personId === person.id || relationship.relatedPersonId === person.id)
+    .map((relationship) => ({
+      ...relationship,
+      person: people.find((item) => item.id === (relationship.personId === person.id ? relationship.relatedPersonId : relationship.personId)),
+    }))
   const sourceIds = new Set([
     ...(person.sourceRefs ?? []),
     ...personEvents.flatMap((event) => event.sources ?? []),
+    ...relationships.flatMap((relationship) => [
+      ...(relationship.sourceIds ?? []),
+      ...(relationship.phases ?? []).flatMap((phase) => phase.sourceIds ?? []),
+    ]),
   ])
   const personSources = sources.filter((source) => sourceIds.has(source.id))
   const era = eras.find((item) => item.id === person.eraId)
@@ -68,7 +80,7 @@ function PersonDetailPage({ person }) {
           {person.role ? <p className="entity-period">{person.role}</p> : null}
           {person.periodDisplay || person.period ? <p className="entity-period">{person.periodDisplay ?? person.period}</p> : null}
           {personPolities.length ? <p className="person-profile-affiliation">{personPolities.map((polity) => polity.title).join(' / ')}</p> : null}
-          <div className="entity-status-row"><span className="entity-status-badge">{person.status}</span></div>
+          <div className="entity-status-row"><span className="entity-status-badge">{person.status === 'verified' ? 'source-backed' : person.status}</span></div>
           <MeanderLine className="entity-meander" />
         </div>
       </header>
@@ -120,6 +132,22 @@ function PersonDetailPage({ person }) {
             <ol className="era-event-list">
               {personEvents.map((event) => <li key={event.id} className="era-event-record"><time>{event.dateDisplay}</time><div><strong>{event.title}</strong><p>{event.summary}</p></div></li>)}
             </ol>
+          </div>
+        </section>
+      ) : null}
+
+      {relationships.length ? (
+        <section className="entity-section entity-section-alt">
+          <div className="section-inner person-profile-inner">
+            <div className="entity-section-heading"><p className="section-label">Connected People</p><h2>Family and changing relationships</h2></div>
+            <div className="person-profile-links">
+              {relationships.map((relationship) => relationship.person ? (
+                <a key={`${relationship.personId}-${relationship.relatedPersonId}`} href={getEntityHref(relationship.person)}>
+                  <span>{relationship.label}</span><strong>{relationship.person.title}</strong>
+                  {relationship.phases?.map((phase) => <small key={`${phase.type}-${phase.period}`}>{phase.period}: {phase.type}</small>)}
+                </a>
+              ) : null)}
+            </div>
           </div>
         </section>
       ) : null}
