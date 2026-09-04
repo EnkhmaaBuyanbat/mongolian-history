@@ -1,0 +1,99 @@
+:root {
+  --bg-deep: #080706;
+  --bg-brown: #17100c;
+  --parchment: #e4d4b7;
+  --gold: #b78a3a;
+  --bronze: #7a5529;
+  --deep-red: #651d19;
+  --bg: var(--bg-deep);
+  --bg-raised: #1c1410;
+  --ink: var(--parchment);
+  --muted: #c3b39a;
+  --gold-dim: rgba(183, 138, 58, 0.38);
+  --line: rgba(228, 212, 183, 0.14);
+  --serif: 'Cormorant Garamond', 'Palatino Linotype', Palatino, Georgia, serif;
+  --sans: 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  font-family: var(--sans);
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--muted);
+  background: var(--bg-deep);
+}
+
+#root {
+  min-height: 100svh;
+}
+
+img,
+svg {
+  max-width: 100%;
+  display: block;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--serif);
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 1px solid var(--gold);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
