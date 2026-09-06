@@ -806,23 +806,13 @@
 .map-legend p { display: inline-flex; align-items: center; gap: .35rem; margin: .35rem 1rem .35rem 0; font-size: .72rem; }
 .geo-confidence { display: inline-block; padding: .2rem .4rem; border: 1px solid var(--bronze); color: var(--bronze); font-size: .62rem; letter-spacing: .08em; }
 .historical-map-layout { display: grid; grid-template-columns: minmax(0,2fr) minmax(18rem,1fr); min-height: clamp(38.75rem, 70vh, 45rem); border: 1px solid var(--line); }
-.historical-map-shell { min-width: 0; background: #171611; }
-.map-camera-test { display: grid; grid-template-columns: auto auto 1fr; gap: .75rem 1rem; align-items: center; padding: .65rem .8rem; border-bottom: 1px solid var(--bronze); background: #211914; color: var(--parchment); }
-.map-camera-test strong { color: var(--bronze); font-size: .72rem; letter-spacing: .1em; }
-.map-camera-test div { display: flex; gap: .4rem; }
-.map-camera-test button { padding: .4rem .55rem; border: 1px solid var(--bronze); background: #12100e; color: var(--parchment); font-size: .65rem; cursor: pointer; }
-.map-camera-test button:disabled { opacity: .55; cursor: wait; }
-.map-camera-test small { font-size: .64rem; line-height: 1.45; }
-.map-overlay-test { display: grid; grid-template-columns: auto minmax(0,1fr) auto minmax(0,1fr); gap: .45rem 1rem; align-items: start; max-height: 15rem; overflow: auto; padding: .55rem .8rem; border-bottom: 1px solid var(--line); background: #17130f; color: var(--parchment); }
-.map-overlay-test strong { color: var(--bronze); font-size: .72rem; letter-spacing: .1em; }
-.map-overlay-test small { min-width: 0; font-size: .58rem; line-height: 1.35; overflow-wrap: anywhere; }
 .historical-map-stage { position: relative; min-height: clamp(38.75rem, 70vh, 45rem); background: #171611; }
 .historical-map-stage > .historical-map-canvas { position: absolute; inset: 0; width: 100%; height: 100%; min-height: inherit; }
-.historical-map-canvas .maplibregl-marker.historical-map-marker { z-index: 4; display: block; visibility: visible; width: 1.25rem; min-width: 1.25rem; height: 1.25rem; min-height: 1.25rem; padding: 0; border: 3px solid #f0d596; border-radius: 50%; opacity: 1; background: #8e3b2d; box-shadow: 0 0 0 .25rem rgba(53,31,22,.82), 0 0 0 .48rem rgba(227,194,122,.48); cursor: pointer; }
-.historical-map-canvas .maplibregl-marker.historical-map-marker-site { width: 1.3rem; min-width: 1.3rem; height: 1.3rem; min-height: 1.3rem; border-radius: 2px; background: #b98a3a; }
-.historical-map-canvas .maplibregl-marker.historical-map-marker.is-selected { background: #f0d596; border-color: #8e3b2d; box-shadow: 0 0 0 .28rem rgba(53,31,22,.88), 0 0 0 .62rem rgba(227,194,122,.6); }
-.historical-map-marker:focus-visible { outline: 3px solid white; outline-offset: 4px; }
-.map-campaign-selector { position: absolute; left: .8rem; bottom: .8rem; display: flex; flex-wrap: wrap; gap: .4rem; max-width: calc(100% - 1.6rem); }
+.historical-map-canvas.leaflet-container { background: #d8d2bd; font-family: var(--sans); }
+.historical-map-canvas .leaflet-control-zoom a { border-color: var(--line); background: rgba(18,16,14,.92); color: var(--parchment); }
+.historical-map-canvas .leaflet-control-zoom a:hover { background: #2a2119; color: var(--bronze); }
+.historical-map-canvas .leaflet-control-attribution { background: rgba(245,240,224,.88); color: #3a342d; font-size: .62rem; }
+.map-campaign-selector { position: absolute; z-index: 600; left: .8rem; bottom: .8rem; display: flex; flex-wrap: wrap; gap: .4rem; max-width: calc(100% - 1.6rem); }
 .map-campaign-selector button { padding: .55rem .7rem; border: 1px solid var(--bronze); background: rgba(15,13,11,.9); color: var(--parchment); cursor: pointer; }
 .map-info-panel { padding: 1.4rem; background: #12100e; border-left: 1px solid var(--line); overflow-y: auto; }
 .map-info-panel h2 { color: var(--parchment); font-family: var(--serif); font-size: 1.8rem; }
@@ -833,12 +823,10 @@
   .map-snapshot-intro,.historical-map-controls,.historical-map-layout { grid-template-columns: 1fr; }
   .historical-map-stage { min-height: 55svh; }
   .map-info-panel { min-height: 16rem; border-left: 0; border-top: 1px solid var(--line); }
-  .map-camera-test { grid-template-columns: 1fr; }
-  .map-overlay-test { grid-template-columns: 1fr; }
   .map-layer-control label { margin-bottom: .5rem; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .historical-map-marker,.map-time-control button { transition: none; }
+  .map-time-control button { transition: none; }
 }
 
 @keyframes rise {
