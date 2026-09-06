@@ -55,8 +55,18 @@ function PersonDetailPage({ person }) {
       ...relationship,
       person: people.find((item) => item.id === (relationship.personId === person.id ? relationship.relatedPersonId : relationship.personId)),
     }))
+  const familyRelationships = relationships.filter((relationship) => relationship.type.includes('parent') || relationship.type === 'spouse')
+  const isParentOfPerson = (relationship) => relationship.relatedPersonId === person.id
+    || (relationship.personId === person.id && ['Father', 'Mother'].includes(relationship.label))
+  const familyGroups = [
+    ['Parents', familyRelationships.filter((relationship) => relationship.type.includes('parent') && isParentOfPerson(relationship))],
+    ['Spouse', familyRelationships.filter((relationship) => relationship.type === 'spouse')],
+    ['Children', familyRelationships.filter((relationship) => relationship.type.includes('parent') && !isParentOfPerson(relationship))],
+  ].filter(([, records]) => records.length)
   const sourceIds = new Set([
     ...(person.sourceRefs ?? []),
+    ...(person.characterAndReputation?.traits ?? []).flatMap((trait) => trait.sourceIds ?? []),
+    ...(person.portrait?.sourceIds ?? []),
     ...personEvents.flatMap((event) => event.sources ?? []),
     ...relationships.flatMap((relationship) => [
       ...(relationship.sourceIds ?? []),
@@ -87,8 +97,17 @@ function PersonDetailPage({ person }) {
         </div>
       </header>
 
-      {person.summary ? (
+      {person.shortBio ? (
         <section className="entity-section">
+          <div className="section-inner person-profile-inner">
+            <div className="entity-section-heading"><p className="section-label">Short History</p><h2>Life and historical role</h2></div>
+            <p className="entity-copy">{person.shortBio}</p>
+          </div>
+        </section>
+      ) : null}
+
+      {person.summary ? (
+        <section className={`entity-section${person.shortBio ? ' entity-section-alt' : ''}`}>
           <div className="section-inner person-profile-inner">
             <div className="entity-section-heading"><p className="section-label">01</p><h2>Who was this person?</h2></div>
             <p className="entity-copy">{person.summary}</p>
@@ -113,6 +132,37 @@ function PersonDetailPage({ person }) {
           </div>
         </section>
       ))}
+
+      {familyGroups.length ? (
+        <section className="entity-section entity-section-alt">
+          <div className="section-inner person-profile-inner">
+            <div className="entity-section-heading"><p className="section-label">Family</p><h2>Dynastic relationships</h2></div>
+            <div className="person-profile-links">
+              {familyGroups.flatMap(([label, records]) => records.map((relationship) => relationship.person ? (
+                <a key={`${label}-${relationship.person.id}`} href={getEntityHref(relationship.person)}>
+                  <span>{label === 'Spouse' ? 'Spouse' : label.slice(0, -1)}</span><strong>{relationship.person.title}</strong>
+                </a>
+              ) : null))}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {person.characterAndReputation ? (
+        <section className="entity-section">
+          <div className="section-inner person-profile-inner">
+            <div className="entity-section-heading"><p className="section-label">Character &amp; Reputation</p><h2>Source reputation and historical interpretation</h2></div>
+            <p className="entity-copy">{person.characterAndReputation.overview}</p>
+            <div className="chapter-record-grid">
+              {person.characterAndReputation.traits.map((trait) => {
+                const traitSources = sources.filter((source) => trait.sourceIds.includes(source.id))
+                return <article key={trait.label} className="chapter-record-card"><ConfidenceBadge label={trait.treatment} /><strong>{trait.label}</strong><p>{trait.summary}</p><small>{traitSources.map((source) => source.title).join('; ')}</small></article>
+              })}
+            </div>
+            <p className="map-caution">{person.characterAndReputation.caution}</p>
+          </div>
+        </section>
+      ) : null}
 
       {era || personPolities.length || personChapters.length ? (
         <section className="entity-section entity-section-alt">

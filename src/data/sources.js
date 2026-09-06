@@ -367,7 +367,7 @@ export const sources = [
     id: 'source-juvaini-world-conqueror', title: 'Tarikh-i Jahan-gusha / The History of the World-Conqueror', author: 'Ata-Malik Juvayni',
     institution: null, publication: null, year: null, category: 'PERSIAN HISTORIOGRAPHY', eraId: 'rise-empire', status: 'verified',
     perspective: 'Mongol-era Persian administrator and historian', compositionContext: 'Persian historiography produced within the Mongol imperial world', temporalRelationship: 'Contemporary / near-contemporary to parts of Era III',
-    relatedEntityIds: ['polity-yeke-mongol-ulus','polity-khwarazmian-empire','event-otrar-crisis-1218','event-khwarazm-invasion-1219','event-baghdad-captured-1258'], citation: 'Ata-Malik Juvayni, Tarikh-i Jahan-gusha / The History of the World-Conqueror.', url: null,
+    relatedEntityIds: ['person-sorghaghtani-beki','polity-yeke-mongol-ulus','polity-khwarazmian-empire','event-otrar-crisis-1218','event-khwarazm-invasion-1219','event-baghdad-captured-1258'], citation: 'Ata-Malik Juvayni, Tarikh-i Jahan-gusha / The History of the World-Conqueror.', url: null,
   },
   {
     id: 'source-boyle-world-conqueror-1958', title: 'The History of the World-Conqueror', author: 'J. A. Boyle, translator',
@@ -379,7 +379,7 @@ export const sources = [
     id: 'source-rashid-al-din-compendium', title: 'Jami al-Tawarikh / Compendium of Chronicles', author: 'Rashid al-Din',
     institution: null, publication: null, year: null, category: 'PERSIAN HISTORIOGRAPHY', eraId: 'rise-empire', status: 'verified',
     perspective: 'Later Ilkhanid historian and compiler', compositionContext: 'Ilkhanid court historiography', temporalRelationship: 'Later Ilkhanid compilation, not an eyewitness account of 1206',
-    relatedEntityIds: ['polity-yeke-mongol-ulus'], citation: 'Rashid al-Din, Jami al-Tawarikh / Compendium of Chronicles.', url: null,
+    relatedEntityIds: ['person-sorghaghtani-beki','polity-yeke-mongol-ulus'], citation: 'Rashid al-Din, Jami al-Tawarikh / Compendium of Chronicles.', url: null,
   },
   {
     id: 'source-bemmann-mapping-karakorum-2022', title: 'Mapping Karakorum, the capital of the Mongol Empire', author: 'Jan Bemmann; Sven Linzen; Susanne Reichert; Lkh. Munkhbayar',
