@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import Header from './components/Header'
 import Hero from './components/Hero'
 import Introduction from './components/Introduction'
@@ -21,6 +21,8 @@ import { places } from './data/places'
 import { sites } from './data/sites'
 import { objects } from './data/objects'
 import './App.css'
+
+const HistoricalMapPage = lazy(() => import('./components/HistoricalMapPage'))
 
 function getCurrentPath() {
   return window.location.pathname || '/'
@@ -97,6 +99,7 @@ function App() {
   const showEraPage = Boolean(era)
   const showChapterPage = Boolean(chapter)
   const showTimelinePage = route === '/timeline'
+  const showMapPage = route === '/map'
   const showPeopleIndexPage = route === '/people'
   const showPeopleStoryPage = Boolean(person?.storyId)
   const showPersonDetailPage = /^\/people\/[^/]+$/.test(route) && !showPeopleStoryPage
@@ -106,7 +109,9 @@ function App() {
     <>
       <Header />
       <main>
-        {showEntityPage ? (
+        {showMapPage ? (
+          <Suspense fallback={<div className="section-inner map-loading">Loading historical map…</div>}><HistoricalMapPage /></Suspense>
+        ) : showEntityPage ? (
           <HistoricalEntityPage entity={entity} />
         ) : showChapterPage ? (
           <ChapterPage chapter={chapter} />
