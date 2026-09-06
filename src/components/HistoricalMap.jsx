@@ -3,6 +3,7 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { mapPlaces } from '../data/mapPlaces'
 import { mapCampaigns } from '../data/mapCampaigns'
+import { mapRegions } from '../data/mapRegions'
 import { campaigns } from '../data/campaigns'
 
 const TILE_URL = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
@@ -33,6 +34,7 @@ function buildSnapshotData(snapshot) {
   const activeCampaigns = mapCampaigns.filter(
     (campaign) => snapshot.activeCampaignIds.includes(campaign.campaignId),
   )
+  const activeRegions = mapRegions.filter((region) => snapshot.visibleRegionIds.includes(region.id))
 
   const campaignSegments = activeCampaigns.flatMap((campaign) => (
     campaign.segments.flatMap(([fromId, toId]) => {
@@ -45,7 +47,7 @@ function buildSnapshotData(snapshot) {
     })
   ))
 
-  return { visiblePlaces, activeCampaigns, campaignSegments }
+  return { visiblePlaces, activeCampaigns, campaignSegments, activeRegions }
 }
 
 function setGroupVisibility(map, group, visible) {
@@ -53,16 +55,36 @@ function setGroupVisibility(map, group, visible) {
   if (!visible && map.hasLayer(group)) map.removeLayer(group)
 }
 
-function renderHistoricalLayers(holder, data, layers, selection, onSelect) {
-  const { map, placesLayer, sitesLayer, campaignsLayer } = holder
+function renderHistoricalLayers(holder, data, layers, selection, onSelect, snapshotYear) {
+  const { map, regionsLayer, placesLayer, sitesLayer, campaignsLayer } = holder
+  regionsLayer.clearLayers()
   placesLayer.clearLayers()
   sitesLayer.clearLayers()
   campaignsLayer.clearLayers()
+
+  for (const region of data.activeRegions) {
+    if (!region.geometry) continue
+    const selected = selection?.kind === 'region' && selection.record.id === region.id
+    const claimant = region.representation === 'CLAIMANT_SPHERE'
+    L.geoJSON(region.geometry, {
+      pane: 'politicalRegionsPane',
+      style: {
+        color: claimant ? '#8e5d43' : '#8f7139',
+        weight: selected ? 2 : 1.25,
+        opacity: selected ? 0.8 : 0.55,
+        fillColor: claimant ? '#8e5d43' : '#b78a3a',
+        fillOpacity: selected ? 0.2 : 0.11,
+        dashArray: claimant ? '6 6' : null,
+      },
+      onEachFeature: (_, layer) => layer.on('click', () => onSelect({ kind:'region', record:region, snapshotYear })),
+    }).addTo(regionsLayer)
+  }
 
   for (const place of data.visiblePlaces) {
     const selected = selection?.kind === 'place' && selection.record.id === place.id
     const isSite = place.entityType === 'SITE'
     const marker = L.circleMarker(toLeafletLatLng(place.coordinates), {
+      pane: isSite ? 'historicalSitesPane' : 'historicalPlacesPane',
       radius: selected ? 10 : isSite ? 9 : 8,
       color: isSite ? '#651d19' : '#e4d4b7',
       weight: 3,
@@ -81,6 +103,7 @@ function renderHistoricalLayers(holder, data, layers, selection, onSelect) {
       toLeafletLatLng(segment.from.coordinates),
       toLeafletLatLng(segment.to.coordinates),
     ], {
+      pane: 'historicalCampaignsPane',
       color: selected ? '#f0d596' : '#b78a3a',
       weight: selected ? 4 : 3,
       opacity: selected ? 0.95 : 0.78,
@@ -91,6 +114,7 @@ function renderHistoricalLayers(holder, data, layers, selection, onSelect) {
     line.addTo(campaignsLayer)
   }
 
+  setGroupVisibility(map, regionsLayer, layers.politicalWorlds)
   setGroupVisibility(map, placesLayer, layers.places)
   setGroupVisibility(map, sitesLayer, layers.sites)
   setGroupVisibility(map, campaignsLayer, layers.campaigns)
@@ -112,17 +136,19 @@ function HistoricalMap({ snapshot, layers, selection, onSelect }) {
   const layersRef = useRef(layers)
   const selectionRef = useRef(selection)
   const onSelectRef = useRef(onSelect)
+  const snapshotYearRef = useRef(snapshot.year)
 
   useEffect(() => {
     snapshotDataRef.current = snapshotData
     layersRef.current = layers
     selectionRef.current = selection
     onSelectRef.current = onSelect
+    snapshotYearRef.current = snapshot.year
 
     if (mapRef.current) {
-      renderHistoricalLayers(mapRef.current, snapshotData, layers, selection, onSelect)
+      renderHistoricalLayers(mapRef.current, snapshotData, layers, selection, onSelect, snapshot.year)
     }
-  }, [snapshotData, layers, selection, onSelect])
+  }, [snapshotData, layers, selection, onSelect, snapshot.year])
 
   useEffect(() => {
     if (!containerRef.current) return undefined
@@ -139,8 +165,14 @@ function HistoricalMap({ snapshot, layers, selection, onSelect }) {
       subdomains: 'abc',
     }).addTo(map)
 
+    map.createPane('politicalRegionsPane').style.zIndex = 300
+    map.createPane('historicalCampaignsPane').style.zIndex = 410
+    map.createPane('historicalPlacesPane').style.zIndex = 420
+    map.createPane('historicalSitesPane').style.zIndex = 430
+
     const holder = {
       map,
+      regionsLayer: L.layerGroup().addTo(map),
       placesLayer: L.layerGroup().addTo(map),
       sitesLayer: L.layerGroup().addTo(map),
       campaignsLayer: L.layerGroup().addTo(map),
@@ -152,6 +184,7 @@ function HistoricalMap({ snapshot, layers, selection, onSelect }) {
       layersRef.current,
       selectionRef.current,
       onSelectRef.current,
+      snapshotYearRef.current,
     )
 
     const resizeObserver = new ResizeObserver(() => map.invalidateSize())
@@ -182,6 +215,13 @@ function HistoricalMap({ snapshot, layers, selection, onSelect }) {
             >
               {campaigns.find((campaign) => campaign.id === spatial.campaignId)?.title}
             </button>
+          ))}
+        </div>
+      ) : null}
+      {layers.politicalWorlds && snapshotData.activeRegions.length ? (
+        <div className="map-region-selector" aria-label="Political worlds">
+          {snapshotData.activeRegions.map((region) => (
+            <button key={region.id} type="button" onClick={() => onSelect({ kind:'region', record:region, snapshotYear:snapshot.year })}>{region.name}{region.geometry ? '' : ' · metadata'}</button>
           ))}
         </div>
       ) : null}

@@ -2,11 +2,20 @@ import { campaigns } from '../data/campaigns'
 import { people } from '../data/people'
 import { places } from '../data/places'
 import { sites } from '../data/sites'
+import { sources } from '../data/sources'
 import { getEntityHref } from '../data/entityRoutes'
 import GeographicConfidenceBadge from './GeographicConfidenceBadge'
 
 function MapInfoPanel({ selection, activeCampaignIds }) {
-  if (!selection) return <aside className="map-info-panel"><p className="section-label">Map Evidence</p><h2>Select a place, site, or campaign</h2><p>Map symbols are evidence-aware teaching references. They do not define exact medieval borders.</p></aside>
+  if (!selection) return <aside className="map-info-panel"><p className="section-label">Map Evidence</p><h2>Select a place, site, campaign, or political world</h2><p>Map symbols are evidence-aware teaching references. They do not define exact medieval borders.</p></aside>
+
+  if (selection.kind === 'region') {
+    const regionSources = sources.filter((source) => selection.record.sourceIds.includes(source.id))
+    const provenance = selection.record.geometrySource
+      ? `${selection.record.geometrySource.replaceAll('_',' ')} · ${selection.record.geometryMethod.replaceAll('_',' ')}`
+      : 'Geometry unavailable — cartographic source gap'
+    return <aside className="map-info-panel"><p className="section-label">Political World · {selection.snapshotYear}</p><h2>{selection.record.name}</h2><p><strong>Representation:</strong> {selection.record.representation.replaceAll('_',' ')}</p><GeographicConfidenceBadge value={selection.record.geographicConfidence} /><p><strong>Historical treatment:</strong> {selection.record.treatment}</p><p>{selection.record.summary}</p><p><strong>Geometry / provenance:</strong> {provenance}</p><p className="map-caution">{selection.record.caution}</p>{regionSources.length ? <p><strong>Sources:</strong> {regionSources.map((source) => source.title).join('; ')}</p> : null}</aside>
+  }
 
   if (selection.kind === 'campaign') {
     const campaign = campaigns.find((item) => item.id === selection.record.campaignId)

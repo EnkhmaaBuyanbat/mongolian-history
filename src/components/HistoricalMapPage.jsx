@@ -9,7 +9,7 @@ import { MeanderLine } from './Ornament'
 
 function HistoricalMapPage() {
   const [selectedYear, setSelectedYear] = useState(1221)
-  const [layers, setLayers] = useState({ places:true,sites:true,campaigns:true })
+  const [layers, setLayers] = useState({ places:true,sites:true,campaigns:true,politicalWorlds:true })
   const [selection, setSelection] = useState(null)
   const snapshot = useMemo(() => mapSnapshots.find((item) => item.year === selectedYear) ?? mapSnapshots[0], [selectedYear])
   const selectFeature = useCallback((value) => setSelection(value), [])

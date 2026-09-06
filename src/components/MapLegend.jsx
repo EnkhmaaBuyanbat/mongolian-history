@@ -8,7 +8,7 @@ function MapLegend() {
       <p><GeographicConfidenceBadge value="APPROXIMATE" /> Broad spatial reconstruction</p>
       <p><GeographicConfidenceBadge value="SCHEMATIC" /> Teaching representation, not a precise route</p>
       <p><GeographicConfidenceBadge value="DISPUTED" /> Location or spatial interpretation contested</p>
-      <small>Geographic precision is separate from historical claim treatment.</small>
+      <small>Political spheres are approximate reconstructions, not surveyed medieval borders. Geographic precision is separate from historical claim treatment.</small>
     </aside>
   )
 }
