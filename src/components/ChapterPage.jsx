@@ -7,12 +7,13 @@ import { sites } from '../data/sites'
 import { objects } from '../data/objects'
 import { sources } from '../data/sources'
 import { eras } from '../data/eras'
+import { chapters } from '../data/chapters'
 import { campaigns } from '../data/campaigns'
 import { sortChronologically } from '../data/chronology'
 import ChapterNav from './ChapterNav'
 import ChapterSection from './ChapterSection'
 import { MeanderLine } from './Ornament'
-import { getEntityHref } from '../data/entityRoutes'
+import { getChapterHref, getEntityHref } from '../data/entityRoutes'
 
 const sectionLabels = {
   'origins-and-context': 'Origins and Context',
@@ -64,17 +65,24 @@ function ChapterPage({ chapter }) {
       }))
   const chapterSources = sources.filter((source) => chapter.sourceIds?.includes(source.id))
   const chapterCampaigns = campaigns.filter((campaign) => chapter.campaignIds?.includes(campaign.id))
+  const eraChapters = era?.chapterIds.map((chapterId) => chapters.find((item) => item.id === chapterId)).filter(Boolean) ?? []
+  const chapterIndex = eraChapters.findIndex((item) => item.id === chapter.id)
+  const previousChapter = eraChapters[chapterIndex - 1]
+  const nextChapter = eraChapters[chapterIndex + 1]
+  const nextEra = eras[eras.findIndex((item) => item.id === era?.id) + 1]
+  const eraHref = `/eras/${era?.slug ?? chapter.eraId}`
 
   return (
     <article className="chapter-page">
       <header className="chapter-header">
         <div className="section-inner chapter-header-inner">
           <p className="chapter-context">
-            <a href={`/eras/${era?.slug ?? chapter.eraId}`}>{era?.title ?? chapter.eraId}</a>
+            <a href={eraHref}>{era?.title ?? chapter.eraId}</a>
             <span aria-hidden="true"> / </span>
             Chapter {chapter.number}
           </p>
           <p className="section-label">Chapter {chapter.number}</p>
+          {chapterIndex >= 0 ? <p className="chapter-progress">Chapter {chapterIndex + 1} of {eraChapters.length}</p> : null}
           <h1>{chapter.title}</h1>
           {chapter.subtitle ? <p className="chapter-subtitle">{chapter.subtitle}</p> : null}
           {chapter.period ? <p className="chapter-period">{chapter.period}</p> : null}
@@ -161,6 +169,11 @@ function ChapterPage({ chapter }) {
           </div>
         </div>
       </div>
+      <nav className="contextual-page-nav section-inner" aria-label="Chapter navigation">
+        {previousChapter ? <a href={getChapterHref(previousChapter)}><span>Previous Chapter</span><strong>← {previousChapter.title}</strong></a> : <span />}
+        <a className="contextual-page-nav-overview" href={eraHref}><span>Return to</span><strong>Era Overview</strong></a>
+        {nextChapter ? <a className="contextual-page-nav-next" href={getChapterHref(nextChapter)}><span>Next Chapter</span><strong>{nextChapter.title} →</strong></a> : nextEra ? <a className="contextual-page-nav-next" href={`/eras/${nextEra.slug ?? nextEra.id}`}><span>Next Era</span><strong>Era {nextEra.numeral} →</strong></a> : <span />}
+      </nav>
     </article>
   )
 }

@@ -2,16 +2,19 @@ export const journeyPaths = [
   {
     id: 'learn',
     title: 'Learn',
-    text: 'Timeline, people, events and culture',
+    text: 'Eras, chapters, events and historical context',
+    href: '/eras',
   },
   {
     id: 'explore',
     title: 'Explore',
-    text: 'Maps, relationships and historical connections',
+    text: 'People, relationships and historical connections',
+    href: '/people',
   },
   {
     id: 'experience',
     title: 'Experience',
     text: 'Immersive historical scenes',
+    status: 'coming-soon',
   },
 ]

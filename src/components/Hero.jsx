@@ -113,10 +113,10 @@ function Hero() {
           transformations that shaped Mongolia and the Mongolian steppe.
         </p>
         <div className="hero-actions">
-          <a className="btn-primary" href="#introduction">
+          <a className="btn-primary" href="/eras">
             Begin the Journey
           </a>
-          <a className="btn-secondary" href="#eras">
+          <a className="btn-secondary" href="/timeline">
             Explore Timeline
           </a>
         </div>

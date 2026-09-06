@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { navItems } from '../data/nav'
 
 function NavLinks({ onNavigate }) {
@@ -27,6 +28,8 @@ function NavLinks({ onNavigate }) {
 }
 
 function Header() {
+  const [requestedLanguage, setRequestedLanguage] = useState('en')
+
   return (
     <header className="site-header">
       <a className="wordmark" href="/">
@@ -49,15 +52,16 @@ function Header() {
       </details>
 
       <div className="lang-switch" role="group" aria-label="Language">
-        <a href="/" aria-current="true" lang="en">
+        <button type="button" aria-pressed={requestedLanguage === 'en'} lang="en" onClick={() => setRequestedLanguage('en')}>
           EN
-        </a>
+        </button>
         <span className="lang-rule" aria-hidden="true">
           |
         </span>
-        <span lang="mn" title="Mongolian coming soon">
+        <button type="button" aria-pressed={requestedLanguage === 'mn'} lang="mn" onClick={() => setRequestedLanguage('mn')}>
           МН
-        </span>
+        </button>
+        {requestedLanguage === 'mn' ? <span className="language-status" role="status">Mongolian version in development</span> : null}
       </div>
     </header>
   )

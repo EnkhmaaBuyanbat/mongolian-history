@@ -6,6 +6,7 @@ import { places } from '../data/places'
 import { polities } from '../data/polities'
 import { sites } from '../data/sites'
 import { chapters } from '../data/chapters'
+import { eras } from '../data/eras'
 import { sortChronologically } from '../data/chronology'
 import { MeanderLine } from './Ornament'
 import { getEntityHref } from '../data/entityRoutes'
@@ -49,6 +50,10 @@ function EraDetailPage({ era }) {
 
   const eraEvents = recordsByGroup.events
     .filter((event) => event.importance === 'major')
+  const eraIndex = eras.findIndex((item) => item.id === era.id)
+  const previousEra = eras[eraIndex - 1]
+  const nextEra = eras[eraIndex + 1]
+  const eraHref = (item) => `/eras/${item.slug ?? item.id}`
 
   if (!era) {
     return null
@@ -168,6 +173,12 @@ function EraDetailPage({ era }) {
           })}
         </div>
       </section>
+
+      <nav className="contextual-page-nav section-inner" aria-label="Era navigation">
+        {previousEra ? <a href={eraHref(previousEra)}><span>Previous Era</span><strong>← Era {previousEra.numeral}</strong></a> : <span />}
+        <a className="contextual-page-nav-overview" href="/eras"><span>Explore</span><strong>All Eras</strong></a>
+        {nextEra ? <a className="contextual-page-nav-next" href={eraHref(nextEra)}><span>Next Era</span><strong>Era {nextEra.numeral} →</strong></a> : <span />}
+      </nav>
     </article>
   )
 }

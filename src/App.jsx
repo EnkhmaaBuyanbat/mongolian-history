@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import Header from './components/Header'
 import Hero from './components/Hero'
 import Introduction from './components/Introduction'
@@ -12,6 +12,7 @@ import ChapterPage from './components/ChapterPage'
 import PeopleIndexPage from './components/PeopleIndexPage'
 import PeopleStoryPage from './components/PeopleStoryPage'
 import PersonDetailPage from './components/PersonDetailPage'
+import FamilyTreePage from './components/FamilyTreePage'
 import EntityExplorerPage from './components/EntityExplorerPage'
 import { eras } from './data/eras'
 import { chapters } from './data/chapters'
@@ -30,12 +31,39 @@ function getCurrentPath() {
 
 function App() {
   const [route, setRoute] = useState(getCurrentPath)
+  const scrollToTopAfterNavigation = useRef(false)
+
+  useLayoutEffect(() => {
+    if (!scrollToTopAfterNavigation.current) return
+
+    scrollToTopAfterNavigation.current = false
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+  }, [route])
 
   useEffect(() => {
     const handleChange = () => setRoute(getCurrentPath())
+    const handleNavigation = (event) => {
+      const link = event.target instanceof Element ? event.target.closest('a[href]') : null
+      if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target || link.hasAttribute('download')) return
+      const destination = new URL(link.href, window.location.href)
+      if (destination.origin !== window.location.origin || destination.hash) return
+
+      event.preventDefault()
+      if (destination.pathname === window.location.pathname) {
+        window.scrollTo({ top:0, behavior:'auto' })
+        return
+      }
+      window.history.pushState({}, '', `${destination.pathname}${destination.search}`)
+      scrollToTopAfterNavigation.current = true
+      setRoute(destination.pathname)
+    }
 
     window.addEventListener('popstate', handleChange)
-    return () => window.removeEventListener('popstate', handleChange)
+    document.addEventListener('click', handleNavigation)
+    return () => {
+      window.removeEventListener('popstate', handleChange)
+      document.removeEventListener('click', handleNavigation)
+    }
   }, [])
 
   const entity = useMemo(() => {
@@ -101,6 +129,8 @@ function App() {
   const showTimelinePage = route === '/timeline'
   const showMapPage = route === '/map'
   const showPeopleIndexPage = route === '/people'
+  const showErasIndexPage = route === '/eras'
+  const showFamilyTreePage = route === '/family-tree'
   const showPeopleStoryPage = Boolean(person?.storyId)
   const showPersonDetailPage = /^\/people\/[^/]+$/.test(route) && !showPeopleStoryPage
   const showExplorerPage = explorerEntity !== undefined
@@ -121,6 +151,10 @@ function App() {
           <EntityExplorerPage entity={explorerEntity} />
         ) : showTimelinePage ? (
           <GlobalTimelinePage />
+        ) : showFamilyTreePage ? (
+          <FamilyTreePage />
+        ) : showErasIndexPage ? (
+          <EraPreview />
         ) : showPeopleStoryPage ? (
           <PeopleStoryPage person={person} />
         ) : showPersonDetailPage ? (
@@ -130,9 +164,9 @@ function App() {
         ) : (
           <>
             <Hero />
-            <Introduction />
-            <EraPreview />
             <JourneyPreview />
+            <EraPreview />
+            <Introduction />
           </>
         )}
       </main>

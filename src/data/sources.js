@@ -295,7 +295,7 @@ export const sources = [
     year: null,
     category: 'MEDIEVAL MONGOLIAN NARRATIVE',
     eraId: 'before-chinggis', status: 'verified',
-    relatedEntityIds: ['person-temujin-chinggis-khan', 'person-borte', 'person-hoelun', 'person-yesugei', 'person-jamukha', 'person-toghrul-ong-khan', 'event-birth-temujin-debated', 'event-jamukha-gur-khan-1201', 'event-kereit-defeat-1203', 'event-new-mongol-order-1206'],
+    relatedEntityIds: ['person-temujin-chinggis-khan', 'person-borte', 'person-qulan-khatun', 'person-kolgen', 'person-yisugen', 'person-yisui', 'person-ibaqa-beki', 'person-qojin-beki', 'person-checheyigen', 'person-alaqa-beki', 'person-tumelun', 'person-al-altun', 'person-hoelun', 'person-yesugei', 'person-jamukha', 'person-toghrul-ong-khan', 'event-birth-temujin-debated', 'event-jamukha-gur-khan-1201', 'event-kereit-defeat-1203', 'event-new-mongol-order-1206'],
     citation: 'The Secret History of the Mongols — medieval Mongolian narrative tradition.', url: null,
   },
   {
@@ -303,7 +303,7 @@ export const sources = [
     title: 'The Secret History of the Mongols: A Mongolian Epic Chronicle of the Thirteenth Century. Translated with Historical and Philological Commentary',
     author: 'Igor de Rachewiltz', institution: 'Brill', publication: 'Brill’s Inner Asian Library; corrected impression', year: 2006,
     category: 'MODERN SCHOLARLY TRANSLATION / COMMENTARY', eraId: 'before-chinggis', status: 'verified',
-    relatedEntityIds: ['person-temujin-chinggis-khan', 'person-borte', 'person-hoelun', 'person-yesugei', 'person-jamukha', 'person-toghrul-ong-khan', 'event-birth-temujin-debated', 'event-jamukha-gur-khan-1201', 'event-kereit-defeat-1203', 'event-new-mongol-order-1206'],
+    relatedEntityIds: ['person-temujin-chinggis-khan', 'person-borte', 'person-qulan-khatun', 'person-kolgen', 'person-yisugen', 'person-yisui', 'person-ibaqa-beki', 'person-qojin-beki', 'person-checheyigen', 'person-alaqa-beki', 'person-tumelun', 'person-al-altun', 'person-hoelun', 'person-yesugei', 'person-jamukha', 'person-toghrul-ong-khan', 'event-birth-temujin-debated', 'event-jamukha-gur-khan-1201', 'event-kereit-defeat-1203', 'event-new-mongol-order-1206'],
     citation: 'Igor de Rachewiltz, The Secret History of the Mongols: A Mongolian Epic Chronicle of the Thirteenth Century. Translated with Historical and Philological Commentary, Brill’s Inner Asian Library, corrected impression, 2006.', url: null,
   },
   {
@@ -331,8 +331,17 @@ export const sources = [
     id: 'source-dunnell-rise-chinggis-2023', title: 'The Rise of Chinggis Khan and the United Empire, 1206–1260', author: 'Ruth W. Dunnell',
     institution: 'Cambridge University Press', publication: 'The Cambridge History of the Mongol Empire, vol. I, pp. 19–106, ed. Michal Biran and Hodong Kim; print 2023, online 2024', year: 2023,
     category: 'MODERN SCHOLARSHIP', eraId: 'before-chinggis', status: 'verified',
-    relatedEntityIds: ['person-temujin-chinggis-khan', 'polity-kereit', 'polity-emerging-mongol-order', 'event-new-mongol-order-1206'],
+    relatedEntityIds: ['person-temujin-chinggis-khan', 'person-jochi', 'person-orda', 'person-batu', 'person-berke', 'person-chagatai', 'person-mutukan', 'person-qara-hulegu', 'person-ogedei-khan', 'person-guyuk-khan', 'person-qadan', 'person-kochu', 'person-shiremun', 'polity-kereit', 'polity-emerging-mongol-order', 'event-new-mongol-order-1206'],
     citation: 'Ruth W. Dunnell, “The Rise of Chinggis Khan and the United Empire, 1206–1260,” in The Cambridge History of the Mongol Empire, vol. I, pp. 19–106, ed. Michal Biran and Hodong Kim, Cambridge University Press, print 2023; online 2024.', doi: '10.1017/9781316337424.002', url: null,
+  },
+  {
+    id: 'source-broadbridge-women-mongol-empire-2018', title: 'Women and the Making of the Mongol Empire', author: 'Anne F. Broadbridge',
+    institution: 'Cambridge University Press', publication: 'Cambridge Studies in Islamic Civilization', year: 2018,
+    category: 'MODERN SCHOLARSHIP', eraId: 'rise-empire', status: 'verified',
+    themes: ['Mongol imperial women','wives of Chinggis Khan','daughters of Chinggis Khan','marriage politics','imperial households','alliance networks','Chinggisid succession and family politics'],
+    relatedEntityIds: ['person-borte','person-qulan-khatun','person-yisugen','person-yisui','person-ibaqa-beki','person-qojin-beki','person-checheyigen','person-alaqa-beki','person-tumelun','person-al-altun','person-toregene-khatun','person-sorghaghtani-beki','person-oghul-qaimish'],
+    citation: 'Anne F. Broadbridge, Women and the Making of the Mongol Empire, Cambridge University Press, 2018.',
+    sourceNote: 'Modern scholarly study of Mongol imperial women, households, marriage politics and alliance networks. Individual relationship claims require daughter-specific citation review.', url: null,
   },
   {
     id: 'source-cambridge-map-mongol-empire-1241', title: 'The Mongol Empire, 1241', author: null,
@@ -379,7 +388,7 @@ export const sources = [
     id: 'source-rashid-al-din-compendium', title: 'Jami al-Tawarikh / Compendium of Chronicles', author: 'Rashid al-Din',
     institution: null, publication: null, year: null, category: 'PERSIAN HISTORIOGRAPHY', eraId: 'rise-empire', status: 'verified',
     perspective: 'Later Ilkhanid historian and compiler', compositionContext: 'Ilkhanid court historiography', temporalRelationship: 'Later Ilkhanid compilation, not an eyewitness account of 1206',
-    relatedEntityIds: ['person-sorghaghtani-beki','polity-yeke-mongol-ulus'], citation: 'Rashid al-Din, Jami al-Tawarikh / Compendium of Chronicles.', url: null,
+    relatedEntityIds: ['person-sorghaghtani-beki','person-kolgen','person-orda','person-berke','person-tuqa-timur','person-mutukan','person-qara-hulegu','person-kochu','person-shiremun','person-qojin-beki','person-checheyigen','person-alaqa-beki','person-tumelun','person-al-altun','polity-yeke-mongol-ulus'], citation: 'Rashid al-Din, Jami al-Tawarikh / Compendium of Chronicles.', url: null,
   },
   {
     id: 'source-bemmann-mapping-karakorum-2022', title: 'Mapping Karakorum, the capital of the Mongol Empire', author: 'Jan Bemmann; Sven Linzen; Susanne Reichert; Lkh. Munkhbayar',
