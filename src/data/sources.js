@@ -335,6 +335,14 @@ export const sources = [
     citation: 'Ruth W. Dunnell, “The Rise of Chinggis Khan and the United Empire, 1206–1260,” in The Cambridge History of the Mongol Empire, vol. I, pp. 19–106, ed. Michal Biran and Hodong Kim, Cambridge University Press, print 2023; online 2024.', doi: '10.1017/9781316337424.002', url: null,
   },
   {
+    id: 'source-cambridge-map-mongol-empire-1241', title: 'The Mongol Empire, 1241', author: null,
+    institution: 'Cambridge University Press', publication: 'Map 1.1', year: null,
+    category: 'MODERN SCHOLARLY CARTOGRAPHY', eraId: 'rise-empire', status: 'verified',
+    relatedEntityIds: ['polity-yeke-mongol-ulus'],
+    citation: 'Cambridge University Press, Map 1.1, “The Mongol Empire, 1241.”',
+    sourceNote: 'Cartographic reference for a deliberately simplified educational reconstruction of Mongol imperial political reach in 1241.', url: null,
+  },
+  {
     id: 'source-munkh-erdene-chinggisid-dynasty-2018', title: 'The Rise of the Chinggisid Dynasty: Pre-Modern Eurasian Political Order and Culture at a Glance', author: 'Lhamsuren Munkh-Erdene',
     institution: 'International Journal of Asian Studies', publication: 'Cambridge University Press; online 31 January 2018', year: 2018,
     category: 'MODERN SCHOLARSHIP', eraId: 'before-chinggis', status: 'verified',
