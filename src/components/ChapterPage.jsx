@@ -29,6 +29,7 @@ const sectionLabels = {
 const recordGroups = [
   { key: 'people', label: 'People', records: people, ids: 'relatedPeopleIds' },
   { key: 'events', label: 'Events', records: events, ids: 'relatedEventIds' },
+  { key: 'polities', label: 'Political Worlds', records: polities, ids: 'relatedPolityIds' },
   { key: 'sites', label: 'Archaeological Sites', records: sites, ids: 'relatedSiteIds' },
   { key: 'places', label: 'Places', records: places, ids: 'relatedPlaceIds' },
   { key: 'objects', label: 'Objects', records: objects, ids: 'relatedObjectIds' },
