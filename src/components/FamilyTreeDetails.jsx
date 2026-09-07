@@ -1,4 +1,5 @@
 import { getPersonHref } from '../data/entityRoutes'
+import { eras } from '../data/eras'
 import ConfidenceBadge from './ConfidenceBadge'
 
 function FamilyList({ label, records }) {
@@ -7,6 +8,9 @@ function FamilyList({ label, records }) {
 }
 
 function FamilyTreeDetails({ person, family, sources }) {
+  const personEraIds = person.eraIds ?? [person.eraId]
+  const personEras = eras.filter((era) => personEraIds.includes(era.id))
+
   return (
     <aside className="family-tree-details" aria-live="polite">
       <p className="section-label">Selected Person</p>
@@ -14,6 +18,7 @@ function FamilyTreeDetails({ person, family, sources }) {
       <p className="family-tree-details-period">{person.periodDisplay ?? person.period ?? 'Dates not securely established'}</p>
       <p className="family-tree-details-role">{person.role}</p>
       <p className="family-tree-branch-label">{person.dynasticBranch ? `${person.dynasticBranch} branch` : 'Founding generation'}</p>
+      {personEras.length ? <div className="family-tree-era-badges" aria-label="Historical eras">{personEras.map((era) => <span key={era.id}>Era {era.numeral}</span>)}</div> : null}
 
       <section><h3>Short History</h3><p>{person.shortBio}</p></section>
 

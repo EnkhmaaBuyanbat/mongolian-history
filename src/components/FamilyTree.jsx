@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { people } from '../data/people'
 import { personRelationships } from '../data/personRelationships'
 import { sources } from '../data/sources'
+import { eras } from '../data/eras'
 import FamilyTreeDetails from './FamilyTreeDetails'
 import FamilyTreeNode from './FamilyTreeNode'
 
@@ -17,13 +18,23 @@ const householdGroups = {
 }
 
 const branchGroups = {
-  JOCHID:['person-jochi','person-orda','person-batu','person-berke','person-tuqa-timur'],
+  JOCHID:['person-jochi','person-orda','person-batu','person-berke','person-tuqa-timur','person-oz-beg','person-jani-beg'],
   CHAGATAID:['person-chagatai','person-mutukan','person-qara-hulegu'],
   OGEDEID:['person-ogedei-khan','person-toregene-khatun','person-guyuk-khan','person-qadan','person-kochu','person-shiremun'],
-  TOLUID:['person-tolui','person-sorghaghtani-beki','person-mongke-khan','person-qubilai','person-hulegu','person-ariq-boke'],
+  TOLUID:['person-tolui','person-sorghaghtani-beki','person-mongke-khan','person-qubilai','person-chabi','person-zhenjin','person-temur-oljeytu','person-hulegu','person-doquz-khatun','person-abaqa','person-ariq-boke','person-toghon-temur','person-ayushiridara','person-dayan-khan'],
 }
 
-const treePersonIds = [...new Set([...coreTreePersonIds,...Object.values(householdGroups).flat(),...Object.values(branchGroups).flat()])]
+const laterFamilyGroups = [
+  { id:'pre-1206-household',eraId:'before-chinggis',label:'Pre-1206 Family Foundation',personIds:['person-yesugei','person-hoelun','person-temujin-chinggis-khan','person-borte'],relationship:'Yesügei → Temüjin · Hö’elün → Temüjin · Temüjin + Börte' },
+  { id:'yuan-household',eraId:'mongol-world',label:'Yuan Household',personIds:['person-qubilai','person-chabi','person-zhenjin','person-temur-oljeytu'],relationship:'Qubilai + Chabi → Zhenjin → Temür Öljeytü' },
+  { id:'ilkhanid-household',eraId:'mongol-world',label:'Ilkhanid Household',personIds:['person-hulegu','person-doquz-khatun','person-abaqa'],relationship:'Hülegü + Doquz Khatun · Hülegü → Abaqa' },
+  { id:'jochid-continuity',eraId:'mongol-world',label:'Jochid Continuity',personIds:['person-oz-beg','person-jani-beg'],relationship:'Öz Beg → Jani Beg' },
+  { id:'post-yuan-continuity',eraId:'northern-yuan',label:'Post-Yuan Continuity',personIds:['person-toghon-temur','person-ayushiridara'],relationship:'Toghon Temür → Ayushiridara' },
+  { id:'dayan-restoration',eraId:'northern-yuan',label:'Later Chinggisid Restoration',personIds:['person-mandukhai-khatun','person-dayan-khan'],relationship:'Mandukhai Khatun + Dayan Khan' },
+]
+
+const treePersonIds = [...new Set([...coreTreePersonIds,...Object.values(householdGroups).flat(),...Object.values(branchGroups).flat(),...laterFamilyGroups.flatMap((group) => group.personIds)])]
+const treeEras = eras.filter((era) => ['II','III','IV','V'].includes(era.numeral))
 
 const positions = {
   'person-temujin-chinggis-khan':{x:350,y:35}, 'person-borte':{x:570,y:35},
@@ -62,17 +73,30 @@ function FamilyTree() {
   const singleParentEdges = parentEdges.filter((edge) => !coveredParentEdges.has(`${edge.personId}-${edge.relatedPersonId}`))
   const [selectedId, setSelectedId] = useState('person-sorghaghtani-beki')
   const [expandedBranch, setExpandedBranch] = useState(null)
+  const [eraScope, setEraScope] = useState('all')
   const selectedPerson = treePeople.find((person) => person.id === selectedId) ?? treePeople[0]
   const adjacentIds = new Set(familyEdges.filter((edge) => edge.personId === selectedId || edge.relatedPersonId === selectedId).flatMap((edge) => [edge.personId,edge.relatedPersonId]))
   const selectedFamily = getFamily(selectedPerson, familyEdges, treePeople)
   const selectedSourceIds = new Set([...(selectedPerson.sourceRefs ?? []), ...(selectedPerson.characterAndReputation?.traits ?? []).flatMap((trait) => trait.sourceIds ?? [])])
   const selectedSources = sources.filter((source) => selectedSourceIds.has(source.id))
-  const peopleFor = (group) => householdGroups[group].map((id) => treePeople.find((person) => person.id === id)).filter(Boolean)
+  const belongsToScope = (person) => eraScope === 'all' || (person.eraIds ?? [person.eraId]).includes(eraScope)
+  const peopleFor = (group) => householdGroups[group].map((id) => treePeople.find((person) => person.id === id)).filter((person) => person && belongsToScope(person))
   const roster = (group) => <div className="family-tree-roster">{peopleFor(group).map((person) => <button key={person.id} type="button" aria-pressed={person.id===selectedId} onClick={() => setSelectedId(person.id)}><strong>{person.title}</strong><span>{person.householdContext?.role?.replaceAll('_',' ') ?? person.role}</span></button>)}</div>
+  const scopedLaterGroups = laterFamilyGroups.filter((group) => eraScope === 'all' || group.eraId === eraScope)
+  const selectEraScope = (nextScope) => {
+    setEraScope(nextScope)
+    setExpandedBranch(null)
+    const nextPerson = treePeople.find((person) => nextScope === 'all' || (person.eraIds ?? [person.eraId]).includes(nextScope))
+    if (nextPerson) setSelectedId(nextPerson.id)
+  }
 
   return (
     <div className="family-tree-exhibit">
       <div className="family-tree-main">
+        <nav className="family-tree-era-scope" aria-label="Filter family tree by era">
+          <button type="button" aria-pressed={eraScope==='all'} onClick={() => selectEraScope('all')}>All</button>
+          {treeEras.map((era) => <button key={era.id} type="button" aria-pressed={eraScope===era.id} onClick={() => selectEraScope(era.id)}>Era {era.numeral}</button>)}
+        </nav>
         <div className="family-tree-household">
           <p className="section-label">Chinggis Khan’s Household</p>
           <details open><summary>Principal household</summary>{roster('principal')}</details>
@@ -84,7 +108,7 @@ function FamilyTree() {
             <div className="family-tree-branch-controls">
               {Object.keys(branchGroups).map((branch) => <button key={branch} type="button" aria-expanded={expandedBranch===branch} onClick={() => setExpandedBranch((current) => current===branch ? null : branch)}><strong>{branch.slice(0,-1)}</strong><span>{expandedBranch===branch ? 'Collapse branch' : 'Expand branch'}</span></button>)}
             </div>
-            {expandedBranch ? <div className="family-tree-branch-members" aria-live="polite">{branchGroups[expandedBranch].map((id) => treePeople.find((person) => person.id===id)).filter(Boolean).map((person) => <button key={person.id} type="button" aria-pressed={person.id===selectedId} onClick={() => setSelectedId(person.id)}><strong>{person.title}</strong><span>{person.role}</span></button>)}</div> : null}
+            {expandedBranch ? <div className="family-tree-branch-members" aria-live="polite">{branchGroups[expandedBranch].map((id) => treePeople.find((person) => person.id===id)).filter((person) => person && belongsToScope(person)).map((person) => <button key={person.id} type="button" aria-pressed={person.id===selectedId} onClick={() => setSelectedId(person.id)}><strong>{person.title}</strong><span>{person.role}</span></button>)}</div> : null}
           </div>
         </div>
         <div className="family-tree-scroll" tabIndex="0" aria-label="Scrollable Chinggisid family tree">
@@ -106,9 +130,17 @@ function FamilyTree() {
               return <path key={`${edge.personId}-${edge.relatedPersonId}`} className={edge.personId===selectedId||edge.relatedPersonId===selectedId?'is-active':''} d={`M ${from.x+90} ${from.y+190} V ${to.y-45} H ${to.x+90} V ${to.y}`} />
             })}
           </svg>
-          {coreTreePersonIds.map((id) => treePeople.find((person) => person.id === id)).filter(Boolean).map((person) => <FamilyTreeNode key={person.id} person={person} position={positions[person.id]} selected={person.id===selectedId} connected={adjacentIds.has(person.id)&&person.id!==selectedId} dimmed={!adjacentIds.has(person.id)} onSelect={setSelectedId} />)}
+          {coreTreePersonIds.map((id) => treePeople.find((person) => person.id === id)).filter(Boolean).map((person) => <FamilyTreeNode key={person.id} person={person} position={positions[person.id]} selected={person.id===selectedId} connected={adjacentIds.has(person.id)&&person.id!==selectedId} dimmed={!adjacentIds.has(person.id) || !belongsToScope(person)} onSelect={setSelectedId} />)}
           </div>
         </div>
+        {scopedLaterGroups.length ? <section className="family-tree-later" aria-labelledby="later-continuity-title">
+          <div><p className="section-label">Cross-Era Genealogy</p><h3 id="later-continuity-title">Family Foundations &amp; Later Continuity</h3><p>Only source-supported relationships currently represented in the canonical genealogy appear here.</p></div>
+          {eraScope === 'northern-yuan' || eraScope === 'all' ? <aside className="family-tree-gap"><strong>Genealogical Gap</strong><span>Chinggisid descent — intermediate generations not yet represented.</span><p>Source-supported dynastic descent is known, but the intermediate genealogical chain to Dayan Khan has not yet been added to this educational tree.</p></aside> : null}
+          <div className="family-tree-later-groups">{scopedLaterGroups.map((group) => {
+            const groupEra = eras.find((era) => era.id === group.eraId)
+            return <article key={group.id}><header><span>Era {groupEra?.numeral}</span><h4>{group.label}</h4><p>{group.relationship}</p></header><div>{group.personIds.map((id) => treePeople.find((person) => person.id===id)).filter(Boolean).map((person) => <button key={person.id} type="button" aria-pressed={person.id===selectedId} onClick={() => setSelectedId(person.id)}><strong>{person.title}</strong><span>{person.role}</span></button>)}</div></article>
+          })}</div>
+        </section> : null}
       </div>
       <FamilyTreeDetails person={selectedPerson} family={selectedFamily} sources={selectedSources} />
     </div>
