@@ -185,7 +185,16 @@ export const eras = [
     startYear: 1911,
     endYear: 1990,
     description: 'Independence, revolution, and the socialist state of the twentieth century.',
-    chapterIds: [],
+    chapterIds: [
+      'chapter-1911-independence',
+      'chapter-bogd-khanate-contested-independence',
+      'chapter-occupation-revolution-1921',
+      'chapter-mpr-socialist-project',
+      'chapter-collectivization-repression-monastic-order',
+      'chapter-khalkhin-gol-world-war',
+      'chapter-socialist-society-economy',
+      'chapter-late-socialism-democratic-revolution-1990',
+    ],
   },
   {
     id: 'modern',

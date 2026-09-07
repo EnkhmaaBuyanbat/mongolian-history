@@ -81,7 +81,7 @@ function EraDetailPage({ era }) {
             </div>
             <div className="era-chapter-grid">
               {eraChapters.map((chapter) => (
-                chapter.status === 'in-progress' ? (
+                chapter.status === 'in-progress' || chapter.status === 'complete' ? (
                     <a
                       key={chapter.id}
                       href={`/eras/${era.slug ?? era.id}/chapters/${chapter.slug ?? chapter.id.replace('chapter-', '')}`}

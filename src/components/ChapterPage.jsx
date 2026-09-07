@@ -9,6 +9,8 @@ import { sources } from '../data/sources'
 import { eras } from '../data/eras'
 import { chapters } from '../data/chapters'
 import { campaigns } from '../data/campaigns'
+import { claims } from '../data/claims'
+import { organizations } from '../data/organizations'
 import { sortChronologically } from '../data/chronology'
 import ChapterNav from './ChapterNav'
 import ChapterSection from './ChapterSection'
@@ -33,6 +35,8 @@ const recordGroups = [
   { key: 'sites', label: 'Archaeological Sites', records: sites, ids: 'relatedSiteIds' },
   { key: 'places', label: 'Places', records: places, ids: 'relatedPlaceIds' },
   { key: 'objects', label: 'Objects', records: objects, ids: 'relatedObjectIds' },
+  { key: 'claims', label: 'Claims & Questions', records: claims, ids: 'claimIds' },
+  { key: 'organizations', label: 'Organizations', records: organizations, ids: 'organizationIds' },
 ]
 
 function resolveRecords(chapter) {

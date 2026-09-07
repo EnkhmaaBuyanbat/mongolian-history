@@ -1376,6 +1376,7 @@
   color: var(--parchment);
   font-size: 1.05rem;
   line-height: 1.2;
+  overflow-wrap: break-word;
   text-transform: uppercase;
 }
 
@@ -3112,7 +3113,7 @@
 
 .era-detail-header {
   border-bottom: 1px solid rgba(183, 138, 58, 0.22);
-  padding: 4rem 0 2.5rem;
+  padding: clamp(5rem, 8vw, 6rem) 0 2.5rem;
 }
 
 .era-detail-header-inner {
@@ -3124,6 +3125,7 @@
   font-size: clamp(2.7rem, 7vw, 5.5rem);
   line-height: 0.9;
   letter-spacing: 0.06em;
+  overflow-wrap: break-word;
   text-transform: uppercase;
 }
 
