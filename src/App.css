@@ -1920,6 +1920,107 @@
   letter-spacing: 0.1em;
 }
 
+.person-visual-evidence-section {
+  padding-block: 2rem;
+}
+
+.historical-media {
+  display: grid;
+  gap: 1rem;
+  max-width: 42rem;
+  margin: 0;
+  border: 1px solid rgba(183, 138, 58, 0.3);
+  background: rgba(14, 17, 17, 0.48);
+}
+
+.historical-media-heading,
+.historical-media figcaption {
+  display: grid;
+  gap: 0.55rem;
+  padding: 1rem 1.2rem;
+}
+
+.historical-media-heading {
+  border-bottom: 1px solid rgba(183, 138, 58, 0.22);
+  color: var(--gold);
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.historical-media-heading strong {
+  color: var(--parchment);
+  font-size: 0.7rem;
+}
+
+.historical-media img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.historical-media-no-asset {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 4.5rem;
+  padding: 0 1.2rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.historical-media-no-asset span {
+  color: var(--bronze);
+  font-size: 1.2rem;
+}
+
+.historical-media figcaption {
+  border-top: 1px solid rgba(183, 138, 58, 0.16);
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.historical-media figcaption p,
+.historical-media-metadata {
+  margin: 0;
+}
+
+.historical-media-metadata {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.25rem 0.8rem;
+}
+
+.historical-media-metadata dt,
+.historical-media-context strong {
+  color: var(--gold);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.historical-media-metadata dd {
+  margin: 0;
+}
+
+.historical-media-context {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.historical-media-caution {
+  padding-left: 0.8rem;
+  border-left: 1px solid var(--bronze);
+}
+
+.historical-media figcaption small,
+.historical-media figcaption a {
+  display: block;
+}
+
 .person-story-layout {
   max-width: 62rem;
 }

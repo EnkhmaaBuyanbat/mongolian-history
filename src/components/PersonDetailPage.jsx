@@ -11,8 +11,10 @@ import { sites } from '../data/sites'
 import { sources } from '../data/sources'
 import { getChapterHref, getEntityHref } from '../data/entityRoutes'
 import { sortChronologically } from '../data/chronology'
+import { resolvePortrait } from '../data/mediaResolvers'
 import { MeanderLine } from './Ornament'
 import ConfidenceBadge from './ConfidenceBadge'
+import HistoricalMedia from './HistoricalMedia'
 
 function uniqueRecords(records) {
   return [...new Map(records.map((record) => [record.id, record])).values()]
@@ -81,6 +83,7 @@ function PersonDetailPage({ person }) {
     ...personSites.map((record) => ({ ...record, kind: 'Site' })),
     ...personObjects.map((record) => ({ ...record, kind: 'Object' })),
   ]
+  const portrait = resolvePortrait(person)
 
   return (
     <article className="person-profile-page">
@@ -96,6 +99,14 @@ function PersonDetailPage({ person }) {
           <MeanderLine className="entity-meander" />
         </div>
       </header>
+
+      {person.portrait ? (
+        <section className="entity-section person-visual-evidence-section">
+          <div className="section-inner person-profile-inner">
+            <HistoricalMedia media={portrait.media} status={portrait.status} note={portrait.note} />
+          </div>
+        </section>
+      ) : null}
 
       {person.shortBio ? (
         <section className="entity-section">

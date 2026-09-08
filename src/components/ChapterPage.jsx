@@ -13,8 +13,10 @@ import { claims } from '../data/claims'
 import { organizations } from '../data/organizations'
 import { companies } from '../data/companies'
 import { sortChronologically } from '../data/chronology'
+import { getMediaForChapter } from '../data/mediaResolvers'
 import ChapterNav from './ChapterNav'
 import ChapterSection from './ChapterSection'
+import HistoricalMedia from './HistoricalMedia'
 import { MeanderLine } from './Ornament'
 import { getChapterHref, getEntityHref } from '../data/entityRoutes'
 
@@ -72,6 +74,7 @@ function ChapterPage({ chapter }) {
       }))
   const chapterSources = sources.filter((source) => chapter.sourceIds?.includes(source.id))
   const chapterCampaigns = campaigns.filter((campaign) => chapter.campaignIds?.includes(campaign.id))
+  const chapterMedia = getMediaForChapter(chapter)
   const eraChapters = era?.chapterIds.map((chapterId) => chapters.find((item) => item.id === chapterId)).filter(Boolean) ?? []
   const chapterIndex = eraChapters.findIndex((item) => item.id === chapter.id)
   const previousChapter = eraChapters[chapterIndex - 1]
@@ -107,6 +110,13 @@ function ChapterPage({ chapter }) {
             </section>
 
             <ChapterNav sections={chapterSections} />
+
+            {chapterMedia.length ? (
+              <section className="chapter-related">
+                <div className="chapter-section-heading"><p className="section-label">Visual Evidence</p><h2>Historical media</h2></div>
+                {chapterMedia.map((record) => <HistoricalMedia key={record.id} media={record} />)}
+              </section>
+            ) : null}
 
             {chapterCampaigns.length ? (
               <section className="chapter-related">
