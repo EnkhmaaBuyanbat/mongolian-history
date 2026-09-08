@@ -3,7 +3,7 @@ import Header from './components/Header'
 import Hero from './components/Hero'
 import Introduction from './components/Introduction'
 import EraPreview from './components/EraPreview'
-import JourneyPreview from './components/JourneyPreview'
+import { ExperienceHistory, FeaturedStory, ObjectsAndEvidence, PeopleAndDynasties } from './components/HomeMuseumSections'
 import GlobalTimelinePage from './components/GlobalTimelinePage'
 import Footer from './components/Footer'
 import HistoricalEntityPage from './components/EntityDetailPage'
@@ -164,8 +164,11 @@ function App() {
         ) : (
           <>
             <Hero />
-            <JourneyPreview />
             <EraPreview />
+            <FeaturedStory />
+            <PeopleAndDynasties />
+            <ObjectsAndEvidence />
+            <ExperienceHistory />
             <Introduction />
           </>
         )}

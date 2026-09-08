@@ -61,7 +61,7 @@ function EraDetailPage({ era }) {
 
   return (
     <article className="era-detail-page">
-      <header className="era-detail-header">
+      <header className="era-detail-header cinematic-context-header" data-era-id={era.id}>
         <div className="section-inner era-detail-header-inner">
           <p className="section-label">ERA {era.number}</p>
           <h1>{era.title}</h1>

@@ -1,12 +1,25 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useHeroParallax } from '../hooks/useHeroParallax'
 import { getMediaById } from '../data/mediaResolvers'
+import { heroScenes } from '../data/heroScenes'
 import { MeanderLine } from './Ornament'
 
 function Hero() {
   const heroRef = useRef(null)
   const { layerStyle, reduced } = useHeroParallax(heroRef)
-  const heroMedia = getMediaById('media-orkhon-valley-01')
+  const availableScenes = heroScenes.filter((scene) => scene.approved && getMediaById(scene.mediaId)?.approved)
+  const [sceneIndex, setSceneIndex] = useState(0)
+  const activeScene = availableScenes[sceneIndex] ?? availableScenes[0]
+  const heroMedia = getMediaById(activeScene?.mediaId)
+  const mediumWidth = Math.min(heroMedia?.asset?.width ?? 900, 900)
+  const largeWidth = Math.min(heroMedia?.asset?.width ?? 1600, 1600)
+  const srcSet = [
+    heroMedia?.asset?.mediumPath ? `${heroMedia.asset.mediumPath} ${mediumWidth}w` : null,
+    heroMedia?.asset?.largePath && largeWidth !== mediumWidth ? `${heroMedia.asset.largePath} ${largeWidth}w` : null,
+  ].filter(Boolean).join(', ')
+  const selectAdjacentScene = (direction) => {
+    setSceneIndex((current) => (current + direction + availableScenes.length) % availableScenes.length)
+  }
 
   return (
     <section
@@ -18,23 +31,19 @@ function Hero() {
       <div className="hero-scene">
         {heroMedia?.approved ? (
           <img
+            key={activeScene.id}
             className="hero-media-image"
             src={heroMedia.asset.largePath}
-            srcSet={`${heroMedia.asset.mediumPath} 900w, ${heroMedia.asset.largePath} 1600w`}
-            sizes="100vw"
+            srcSet={srcSet || undefined}
+            sizes={srcSet ? '100vw' : undefined}
             width={heroMedia.asset.width}
             height={heroMedia.asset.height}
             alt=""
             aria-hidden="true"
-            loading="eager"
+            loading={sceneIndex === 0 ? 'eager' : 'lazy'}
+            style={{ objectPosition: activeScene.position }}
           />
         ) : null}
-        <div
-          className="hero-layer layer-sky"
-          style={layerStyle(0.08, -120)}
-          aria-hidden="true"
-        />
-
         <div className="hero-layer hero-vignette" aria-hidden="true" />
 
         <div className="hero-layer hero-frame" aria-hidden="true">
@@ -44,76 +53,20 @@ function Hero() {
           <span className="frame-line frame-line-left" />
         </div>
 
-        <svg
-          className="hero-layer layer-mountains"
-          style={layerStyle(0.2, -80)}
-          viewBox="0 0 1440 420"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-          <path
-            className="ridge ridge-far"
-            d="M0 248 C 120 236, 210 198, 340 214 C 470 230, 560 176, 720 196 C 880 216, 980 168, 1140 190 C 1260 206, 1360 188, 1440 200 L 1440 420 L 0 420 Z"
-          />
-          <path
-            className="ridge ridge-mid"
-            d="M0 286 C 180 268, 300 312, 460 284 C 620 256, 760 300, 940 272 C 1100 248, 1260 292, 1440 270 L 1440 420 L 0 420 Z"
-          />
-        </svg>
-
         <div
           className="hero-layer layer-ornament"
           style={layerStyle(0.14, -40)}
           aria-hidden="true"
         />
-
-        <div
-          className="hero-layer hero-steppe hero-steppe-back"
-          style={layerStyle(0.16, -70)}
-          aria-hidden="true"
-        />
-
-        <div
-          className="hero-layer hero-steppe hero-steppe-mid"
-          style={layerStyle(0.28, -40)}
-          aria-hidden="true"
-        />
-
-        <div
-          className="hero-layer layer-banners"
-          style={layerStyle(0.32, -20)}
-          aria-hidden="true"
-        >
-          <span />
-          <span />
-          <span />
-          <span />
-        </div>
-
-        <div
-          className="hero-layer hero-steppe hero-steppe-front"
-          style={layerStyle(0.52, 0)}
-          aria-hidden="true"
-        />
-
-        <svg
-          className="hero-layer layer-foreground"
-          style={layerStyle(0.55, 0)}
-          viewBox="0 0 1440 280"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-          <path
-            className="ridge ridge-near"
-            d="M0 168 C 160 154, 280 198, 430 172 C 590 146, 740 188, 910 164 C 1080 140, 1240 176, 1440 158 L 1440 280 L 0 280 Z"
-          />
-        </svg>
       </div>
 
       {heroMedia?.approved ? (
-        <a className="hero-media-credit" href={heroMedia.sourceUrl} target="_blank" rel="noopener noreferrer">
-          {heroMedia.attribution}
-        </a>
+        <div className="hero-scene-record" aria-live="polite">
+          <span>{activeScene.evidenceLabel}</span>
+          <strong>{activeScene.title}</strong>
+          <small>{activeScene.subtitle}</small>
+          <a href={heroMedia.sourceUrl} target="_blank" rel="noopener noreferrer">{heroMedia.attribution}</a>
+        </div>
       ) : null}
 
       <div
@@ -142,6 +95,26 @@ function Hero() {
           </a>
         </div>
       </div>
+
+      {availableScenes.length > 1 ? (
+        <div className="hero-scene-controls" aria-label="Choose hero scene">
+          <button type="button" onClick={() => selectAdjacentScene(-1)} aria-label="Previous hero scene">←</button>
+          <div className="hero-scene-dots">
+            {availableScenes.map((scene, index) => (
+              <button
+                key={scene.id}
+                type="button"
+                aria-label={`Show scene: ${scene.title}`}
+                aria-pressed={index === sceneIndex}
+                onClick={() => setSceneIndex(index)}
+              />
+            ))}
+          </div>
+          <button type="button" onClick={() => selectAdjacentScene(1)} aria-label="Next hero scene">→</button>
+        </div>
+      ) : null}
+
+      <a className="hero-scroll-cue" href="#eras">Scroll to explore <span aria-hidden="true">↓</span></a>
     </section>
   )
 }

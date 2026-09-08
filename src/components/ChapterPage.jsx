@@ -84,7 +84,7 @@ function ChapterPage({ chapter }) {
 
   return (
     <article className="chapter-page">
-      <header className="chapter-header">
+      <header className="chapter-header cinematic-context-header" data-era-id={chapter.eraId} data-chapter-id={chapter.id}>
         <div className="section-inner chapter-header-inner">
           <p className="chapter-context">
             <a href={eraHref}>{era?.title ?? chapter.eraId}</a>

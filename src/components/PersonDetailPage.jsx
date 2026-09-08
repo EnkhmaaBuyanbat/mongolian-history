@@ -88,7 +88,7 @@ function PersonDetailPage({ person }) {
 
   return (
     <article className="person-profile-page">
-      <header className="entity-header person-profile-header">
+      <header className="entity-header person-profile-header cinematic-context-header" data-era-id={person.eraId} data-person-id={person.id}>
         <div className="section-inner entity-header-inner">
           <p className="section-label">{person.profileType === 'story' ? 'Story' : person.profileType === 'biography' ? 'Historical Biography' : 'Reference Profile'}</p>
           <h1>{person.title}</h1>
