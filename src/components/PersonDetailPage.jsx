@@ -11,7 +11,7 @@ import { sites } from '../data/sites'
 import { sources } from '../data/sources'
 import { getChapterHref, getEntityHref } from '../data/entityRoutes'
 import { sortChronologically } from '../data/chronology'
-import { resolvePortrait } from '../data/mediaResolvers'
+import { getMediaForPerson, resolvePortrait } from '../data/mediaResolvers'
 import { MeanderLine } from './Ornament'
 import ConfidenceBadge from './ConfidenceBadge'
 import HistoricalMedia from './HistoricalMedia'
@@ -84,6 +84,7 @@ function PersonDetailPage({ person }) {
     ...personObjects.map((record) => ({ ...record, kind: 'Object' })),
   ]
   const portrait = resolvePortrait(person)
+  const personMedia = getMediaForPerson(person.id).filter((record) => record.id !== portrait.media?.id)
 
   return (
     <article className="person-profile-page">
@@ -107,6 +108,14 @@ function PersonDetailPage({ person }) {
           </div>
         </section>
       ) : null}
+
+      {personMedia.map((record) => (
+        <section key={record.id} className="entity-section person-visual-evidence-section">
+          <div className="section-inner person-profile-inner">
+            <HistoricalMedia media={record} heading="Associated Visual Evidence" />
+          </div>
+        </section>
+      ))}
 
       {person.shortBio ? (
         <section className="entity-section">

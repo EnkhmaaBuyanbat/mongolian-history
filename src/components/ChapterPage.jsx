@@ -111,13 +111,6 @@ function ChapterPage({ chapter }) {
 
             <ChapterNav sections={chapterSections} />
 
-            {chapterMedia.length ? (
-              <section className="chapter-related">
-                <div className="chapter-section-heading"><p className="section-label">Visual Evidence</p><h2>Historical media</h2></div>
-                {chapterMedia.map((record) => <HistoricalMedia key={record.id} media={record} />)}
-              </section>
-            ) : null}
-
             {chapterCampaigns.length ? (
               <section className="chapter-related">
                 <div className="chapter-section-heading"><p className="section-label">Campaign Context</p><h2>Connected campaigns</h2></div>
@@ -137,6 +130,13 @@ function ChapterPage({ chapter }) {
                 />
               ))}
             </div>
+
+            {chapterMedia.length ? (
+              <section className="chapter-related">
+                <div className="chapter-section-heading"><p className="section-label">Visual Evidence</p><h2>Historical media</h2></div>
+                {chapterMedia.map((record) => <HistoricalMedia key={record.id} media={record} />)}
+              </section>
+            ) : null}
 
             <section className="chapter-related">
               <div className="chapter-section-heading">

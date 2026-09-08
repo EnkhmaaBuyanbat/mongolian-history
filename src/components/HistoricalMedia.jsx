@@ -4,6 +4,12 @@ function formatLabel(value) {
 
 function HistoricalMedia({ media, status, note, heading = 'Visual Evidence', lazy = true, decorative = false }) {
   const assetPath = media?.asset?.largePath ?? media?.asset?.mediumPath ?? media?.asset?.originalPath
+  const mediumWidth = Math.min(media?.asset?.width ?? 900, 900)
+  const largeWidth = Math.min(media?.asset?.width ?? 1600, 1600)
+  const srcSet = [
+    media?.asset?.mediumPath ? `${media.asset.mediumPath} ${mediumWidth}w` : null,
+    media?.asset?.largePath && largeWidth !== mediumWidth ? `${media.asset.largePath} ${largeWidth}w` : null,
+  ].filter(Boolean).join(', ')
   const evidenceLabel = media?.evidenceType ?? status
   const noReliablePortrait = status === 'NO_RELIABLE_PORTRAIT'
 
@@ -19,6 +25,8 @@ function HistoricalMedia({ media, status, note, heading = 'Visual Evidence', laz
       {assetPath ? (
         <img
           src={assetPath}
+          srcSet={srcSet || undefined}
+          sizes={srcSet ? '(max-width: 760px) 100vw, 672px' : undefined}
           alt={decorative ? '' : media.alt ?? ''}
           aria-hidden={decorative || undefined}
           width={media.asset.width ?? undefined}
@@ -47,7 +55,7 @@ function HistoricalMedia({ media, status, note, heading = 'Visual Evidence', laz
         {media?.institution || media?.collection ? <small>{[media.institution, media.collection].filter(Boolean).join(' · ')}</small> : null}
         {media?.attribution ? <small>Credit: {media.attribution}</small> : null}
         {media?.license || media?.reuseRestrictions ? <small>Rights: {media.license ?? media.reuseRestrictions}</small> : null}
-        {media?.sourceUrl ? <a href={media.sourceUrl} target="_blank" rel="noopener noreferrer">View source record</a> : null}
+        {media?.sourceUrl ? <a href={media.sourceUrl} target="_blank" rel="noopener noreferrer">View collection record</a> : null}
       </figcaption>
     </figure>
   )

@@ -1,10 +1,12 @@
 import { useRef } from 'react'
 import { useHeroParallax } from '../hooks/useHeroParallax'
+import { getMediaById } from '../data/mediaResolvers'
 import { MeanderLine } from './Ornament'
 
 function Hero() {
   const heroRef = useRef(null)
   const { layerStyle, reduced } = useHeroParallax(heroRef)
+  const heroMedia = getMediaById('media-orkhon-valley-01')
 
   return (
     <section
@@ -14,6 +16,19 @@ function Hero() {
       aria-labelledby="hero-title"
     >
       <div className="hero-scene">
+        {heroMedia?.approved ? (
+          <img
+            className="hero-media-image"
+            src={heroMedia.asset.largePath}
+            srcSet={`${heroMedia.asset.mediumPath} 900w, ${heroMedia.asset.largePath} 1600w`}
+            sizes="100vw"
+            width={heroMedia.asset.width}
+            height={heroMedia.asset.height}
+            alt=""
+            aria-hidden="true"
+            loading="eager"
+          />
+        ) : null}
         <div
           className="hero-layer layer-sky"
           style={layerStyle(0.08, -120)}
@@ -94,6 +109,12 @@ function Hero() {
           />
         </svg>
       </div>
+
+      {heroMedia?.approved ? (
+        <a className="hero-media-credit" href={heroMedia.sourceUrl} target="_blank" rel="noopener noreferrer">
+          {heroMedia.attribution}
+        </a>
+      ) : null}
 
       <div
         className={`hero-copy${reduced ? '' : ' hero-copy-enter'}`}
