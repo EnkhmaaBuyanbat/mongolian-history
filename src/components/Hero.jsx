@@ -1,22 +1,63 @@
-import { useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useHeroParallax } from '../hooks/useHeroParallax'
 import { getMediaById } from '../data/mediaResolvers'
+import { getReconstructionById, isApprovedReconstruction } from '../data/reconstructionResolvers'
 import { heroScenes } from '../data/heroScenes'
 import { MeanderLine } from './Ornament'
+
+function resolveScene(scene) {
+  if (!scene || Boolean(scene.mediaId) === Boolean(scene.reconstructionId)) return null
+
+  if (scene.mediaId) {
+    const media = getMediaById(scene.mediaId)
+    if (!scene.approved || !media?.approved) return null
+    return {
+      scene,
+      asset: media.asset,
+      evidenceLabel: scene.evidenceLabel ?? media.evidenceType,
+      attribution: media.attribution,
+      sourceUrl: media.sourceUrl,
+      isReconstruction: false,
+    }
+  }
+
+  const reconstruction = getReconstructionById(scene.reconstructionId)
+  if (!scene.approved || !isApprovedReconstruction(reconstruction)) return null
+  return {
+    scene,
+    asset: reconstruction.asset,
+    evidenceLabel: reconstruction.evidenceLabel ?? 'HISTORICAL RECONSTRUCTION',
+    attribution: null,
+    sourceUrl: null,
+    isReconstruction: true,
+  }
+}
 
 function Hero() {
   const heroRef = useRef(null)
   const { layerStyle, reduced } = useHeroParallax(heroRef)
-  const availableScenes = heroScenes.filter((scene) => scene.approved && getMediaById(scene.mediaId)?.approved)
+  const availableScenes = useMemo(() => heroScenes.map(resolveScene).filter(Boolean), [])
   const [sceneIndex, setSceneIndex] = useState(0)
-  const activeScene = availableScenes[sceneIndex] ?? availableScenes[0]
-  const heroMedia = getMediaById(activeScene?.mediaId)
-  const mediumWidth = Math.min(heroMedia?.asset?.width ?? 900, 900)
-  const largeWidth = Math.min(heroMedia?.asset?.width ?? 1600, 1600)
+  const activeVisual = availableScenes[sceneIndex] ?? availableScenes[0]
+  const activeScene = activeVisual?.scene
+  const activeAsset = activeVisual?.asset
+  const mediumWidth = Math.min(activeAsset?.width ?? 1200, 1200)
+  const largeWidth = Math.min(activeAsset?.width ?? 1920, 1920)
   const srcSet = [
-    heroMedia?.asset?.mediumPath ? `${heroMedia.asset.mediumPath} ${mediumWidth}w` : null,
-    heroMedia?.asset?.largePath && largeWidth !== mediumWidth ? `${heroMedia.asset.largePath} ${largeWidth}w` : null,
+    activeAsset?.mobilePath ? `${activeAsset.mobilePath} 800w` : null,
+    activeAsset?.mediumPath ? `${activeAsset.mediumPath} ${mediumWidth}w` : null,
+    activeAsset?.largePath && largeWidth !== mediumWidth ? `${activeAsset.largePath} ${largeWidth}w` : null,
   ].filter(Boolean).join(', ')
+
+  useEffect(() => {
+    if (availableScenes.length < 2) return
+    const nextScene = availableScenes[(sceneIndex + 1) % availableScenes.length]
+    const nextPath = nextScene.asset?.mediumPath ?? nextScene.asset?.largePath
+    if (!nextPath) return
+    const preload = new Image()
+    preload.src = nextPath
+  }, [availableScenes, sceneIndex])
+
   const selectAdjacentScene = (direction) => {
     setSceneIndex((current) => (current + direction + availableScenes.length) % availableScenes.length)
   }
@@ -29,19 +70,22 @@ function Hero() {
       aria-labelledby="hero-title"
     >
       <div className="hero-scene">
-        {heroMedia?.approved ? (
+        {activeVisual ? (
           <img
             key={activeScene.id}
             className="hero-media-image"
-            src={heroMedia.asset.largePath}
+            src={activeAsset.largePath ?? activeAsset.mediumPath ?? activeAsset.mobilePath}
             srcSet={srcSet || undefined}
             sizes={srcSet ? '100vw' : undefined}
-            width={heroMedia.asset.width}
-            height={heroMedia.asset.height}
+            width={activeAsset.width ?? undefined}
+            height={activeAsset.height ?? undefined}
             alt=""
             aria-hidden="true"
             loading={sceneIndex === 0 ? 'eager' : 'lazy'}
-            style={{ objectPosition: activeScene.position }}
+            style={{
+              '--hero-object-position': activeScene.position,
+              '--hero-object-position-mobile': activeScene.mobilePosition ?? activeScene.position,
+            }}
           />
         ) : null}
         <div className="hero-layer hero-vignette" aria-hidden="true" />
@@ -60,12 +104,12 @@ function Hero() {
         />
       </div>
 
-      {heroMedia?.approved ? (
+      {activeVisual ? (
         <div className="hero-scene-record" aria-live="polite">
-          <span>{activeScene.evidenceLabel}</span>
+          <span>{activeVisual.evidenceLabel}</span>
           <strong>{activeScene.title}</strong>
           <small>{activeScene.subtitle}</small>
-          <a href={heroMedia.sourceUrl} target="_blank" rel="noopener noreferrer">{heroMedia.attribution}</a>
+          {activeVisual.sourceUrl ? <a href={activeVisual.sourceUrl} target="_blank" rel="noopener noreferrer">{activeVisual.attribution}</a> : null}
         </div>
       ) : null}
 
@@ -100,12 +144,13 @@ function Hero() {
         <div className="hero-scene-controls" aria-label="Choose hero scene">
           <button type="button" onClick={() => selectAdjacentScene(-1)} aria-label="Previous hero scene">←</button>
           <div className="hero-scene-dots">
-            {availableScenes.map((scene, index) => (
+            {availableScenes.map((visual, index) => (
               <button
-                key={scene.id}
+                key={visual.scene.id}
                 type="button"
-                aria-label={`Show scene: ${scene.title}`}
+                aria-label={`Show scene: ${visual.scene.title}`}
                 aria-pressed={index === sceneIndex}
+                aria-current={index === sceneIndex ? 'true' : undefined}
                 onClick={() => setSceneIndex(index)}
               />
             ))}

@@ -2062,7 +2062,31 @@
 .hero-media-image {
   opacity: 0.62;
   filter: saturate(0.62) sepia(0.16) brightness(0.58);
+  object-position: var(--hero-object-position, center center);
   animation: hero-scene-reveal 0.8s ease both;
+}
+
+.reconstruction-info {
+  max-width: 42rem;
+  padding: 1.25rem;
+  border-left: 1px solid var(--bronze);
+  background: var(--bg-brown);
+}
+
+.reconstruction-info h2,
+.reconstruction-info > p,
+.reconstruction-info > div {
+  margin-top: 0.65rem;
+}
+
+.reconstruction-info strong,
+.reconstruction-info small {
+  color: var(--gold);
+}
+
+.reconstruction-info.is-compact > div,
+.reconstruction-info.is-compact > small {
+  display: none;
 }
 
 .hero-vignette {
@@ -2441,6 +2465,7 @@
   }
 
   .hero h1 { font-size: clamp(2.75rem, 16vw, 4.4rem); }
+  .hero-media-image { object-position: var(--hero-object-position-mobile, var(--hero-object-position, center center)); }
   .hero-scene-record { right: 1.25rem; left: 1.25rem; bottom: 4.9rem; max-width: none; }
   .hero-scene-controls { right: 1.25rem; bottom: 1.1rem; }
   .hero-scroll-cue { left: 1.25rem; bottom: 1.2rem; justify-items: start; transform: none; }

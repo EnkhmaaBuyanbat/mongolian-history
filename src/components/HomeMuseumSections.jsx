@@ -100,6 +100,13 @@ export function ObjectsAndEvidence() {
 }
 
 export function ExperienceHistory() {
+  const plannedExperiences = [
+    { title: 'Xiongnu Elite Tomb', type: 'Archaeological reconstruction' },
+    { title: 'The Order of 1206', type: 'Historical reconstruction' },
+    { title: 'Karakorum', type: 'Archaeological reconstruction' },
+    { title: 'Buddhist Artistic Worlds', type: 'Contextual historical reconstruction' },
+  ]
+
   return (
     <section className="museum-home-section experience-pathway">
       <div className="section-inner experience-layout">
@@ -109,11 +116,11 @@ export function ExperienceHistory() {
           text="Selected environments will become carefully researched, explorable historical spaces. Reconstruction will remain visibly distinct from surviving evidence."
         />
         <div className="experience-portals" aria-label="Planned historical experiences">
-          {['Xiongnu Elite Tomb', 'The Order of 1206', 'Karakorum', 'Buddhist Artistic Worlds'].map((title) => (
-            <article key={title}>
+          {plannedExperiences.map((experience) => (
+            <article key={experience.title}>
               <span>In development</span>
-              <h3>{title}</h3>
-              <small>Historical reconstruction</small>
+              <h3>{experience.title}</h3>
+              <small>{experience.type}</small>
             </article>
           ))}
         </div>
