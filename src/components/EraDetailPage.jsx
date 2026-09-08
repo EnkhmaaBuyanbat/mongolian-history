@@ -10,6 +10,8 @@ import { eras } from '../data/eras'
 import { sortChronologically } from '../data/chronology'
 import { MeanderLine } from './Ornament'
 import { getEntityHref } from '../data/entityRoutes'
+import { getEraHeaderVisual } from '../data/pageVisualResolvers'
+import CinematicPageHeader from './CinematicPageHeader'
 
 const entityGroups = [
   { key: 'polities', label: 'Political Worlds', records: polities },
@@ -54,6 +56,13 @@ function EraDetailPage({ era }) {
   const previousEra = eras[eraIndex - 1]
   const nextEra = eras[eraIndex + 1]
   const eraHref = (item) => `/eras/${item.slug ?? item.id}`
+  const headerVisual = getEraHeaderVisual(era.id)
+  const firstChapter = eraChapters[0]
+  const headerActions = [
+    firstChapter ? { label: 'Start Era', href: `/eras/${era.slug ?? era.id}/chapters/${firstChapter.slug ?? firstChapter.id.replace('chapter-', '')}` } : null,
+    { label: 'View Timeline', href: '/timeline' },
+    { label: 'View People', href: '/people' },
+  ].filter(Boolean)
 
   if (!era) {
     return null
@@ -61,16 +70,21 @@ function EraDetailPage({ era }) {
 
   return (
     <article className="era-detail-page">
-      <header className="era-detail-header cinematic-context-header" data-era-id={era.id}>
-        <div className="section-inner era-detail-header-inner">
-          <p className="section-label">ERA {era.number}</p>
-          <h1>{era.title}</h1>
-          <p className="era-detail-period">{era.period}</p>
-          {era.subtitle ? <p className="chapter-subtitle">{era.subtitle}</p> : null}
-          <MeanderLine className="entity-meander" />
-          <p className="era-detail-description">{era.description}</p>
-        </div>
-      </header>
+      <CinematicPageHeader
+        variant="era"
+        className="era-detail-header cinematic-context-header"
+        innerClassName="era-detail-header-inner"
+        visual={headerVisual}
+        label={`Era ${era.number}`}
+        title={era.title}
+        subtitle={era.subtitle}
+        period={era.period}
+        summary={era.description}
+        actions={headerActions}
+        dataAttributes={{ 'data-era-id': era.id }}
+      >
+        <MeanderLine className="entity-meander" />
+      </CinematicPageHeader>
 
       {eraChapters.length ? (
         <section className="era-detail-section era-chapters-section">

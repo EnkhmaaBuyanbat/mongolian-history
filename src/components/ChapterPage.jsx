@@ -19,6 +19,8 @@ import ChapterSection from './ChapterSection'
 import HistoricalMedia from './HistoricalMedia'
 import { MeanderLine } from './Ornament'
 import { getChapterHref, getEntityHref } from '../data/entityRoutes'
+import { getChapterHeaderVisual } from '../data/pageVisualResolvers'
+import CinematicPageHeader from './CinematicPageHeader'
 
 const sectionLabels = {
   'origins-and-context': 'Origins and Context',
@@ -81,24 +83,30 @@ function ChapterPage({ chapter }) {
   const nextChapter = eraChapters[chapterIndex + 1]
   const nextEra = eras[eras.findIndex((item) => item.id === era?.id) + 1]
   const eraHref = `/eras/${era?.slug ?? chapter.eraId}`
+  const headerVisual = getChapterHeaderVisual(chapter)
 
   return (
     <article className="chapter-page">
-      <header className="chapter-header cinematic-context-header" data-era-id={chapter.eraId} data-chapter-id={chapter.id}>
-        <div className="section-inner chapter-header-inner">
-          <p className="chapter-context">
+      <CinematicPageHeader
+        variant="chapter"
+        className="chapter-header cinematic-context-header"
+        innerClassName="chapter-header-inner"
+        visual={headerVisual}
+        context={<p className="chapter-context">
             <a href={eraHref}>{era?.title ?? chapter.eraId}</a>
             <span aria-hidden="true"> / </span>
             Chapter {chapter.number}
-          </p>
-          <p className="section-label">Chapter {chapter.number}</p>
-          {chapterIndex >= 0 ? <p className="chapter-progress">Chapter {chapterIndex + 1} of {eraChapters.length}</p> : null}
-          <h1>{chapter.title}</h1>
-          {chapter.subtitle ? <p className="chapter-subtitle">{chapter.subtitle}</p> : null}
-          {chapter.period ? <p className="chapter-period">{chapter.period}</p> : null}
+          </p>}
+        label={`Chapter ${chapter.number}`}
+        progress={chapterIndex >= 0 ? `Chapter ${chapterIndex + 1} of ${eraChapters.length}` : null}
+        title={chapter.title}
+        subtitle={chapter.subtitle}
+        period={chapter.period}
+        summary={chapter.summary}
+        dataAttributes={{ 'data-era-id': chapter.eraId, 'data-chapter-id': chapter.id }}
+      >
           <MeanderLine className="entity-meander" />
-        </div>
-      </header>
+      </CinematicPageHeader>
 
       <div className="chapter-main">
         <div className="section-inner chapter-layout">

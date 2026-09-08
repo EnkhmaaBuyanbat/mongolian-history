@@ -15,6 +15,8 @@ import { getMediaForPerson, resolvePortrait } from '../data/mediaResolvers'
 import { MeanderLine } from './Ornament'
 import ConfidenceBadge from './ConfidenceBadge'
 import HistoricalMedia from './HistoricalMedia'
+import { getPersonHeaderVisual } from '../data/pageVisualResolvers'
+import CinematicPageHeader from './CinematicPageHeader'
 
 function uniqueRecords(records) {
   return [...new Map(records.map((record) => [record.id, record])).values()]
@@ -85,21 +87,33 @@ function PersonDetailPage({ person }) {
   ]
   const portrait = resolvePortrait(person)
   const personMedia = getMediaForPerson(person.id).filter((record) => record.id !== portrait.media?.id)
+  const headerVisual = getPersonHeaderVisual(person)
+  const profileLabel = person.profileType === 'story' ? 'Story' : person.profileType === 'biography' ? 'Historical Biography' : 'Reference Profile'
+  const portraitLabel = person.portrait
+    ? (portrait.status === 'NO_RELIABLE_PORTRAIT' ? 'No reliable portrait' : portrait.status?.replaceAll('_', ' '))
+    : null
 
   return (
     <article className="person-profile-page">
-      <header className="entity-header person-profile-header cinematic-context-header" data-era-id={person.eraId} data-person-id={person.id}>
-        <div className="section-inner entity-header-inner">
-          <p className="section-label">{person.profileType === 'story' ? 'Story' : person.profileType === 'biography' ? 'Historical Biography' : 'Reference Profile'}</p>
-          <h1>{person.title}</h1>
+      <CinematicPageHeader
+        variant="person"
+        className="entity-header person-profile-header cinematic-context-header"
+        innerClassName="entity-header-inner"
+        visual={headerVisual}
+        context={era ? <a href={`/eras/${era.slug ?? era.id}`}>{era.title}</a> : null}
+        label={profileLabel}
+        title={person.title}
+        subtitle={person.role}
+        period={person.periodDisplay ?? person.period}
+        summary={person.summary ?? person.shortBio}
+        status={person.status === 'verified' ? 'Source-backed' : person.status}
+        portraitStatus={portraitLabel}
+        dataAttributes={{ 'data-era-id': person.eraId, 'data-person-id': person.id }}
+      >
           {person.alternativeNames?.length ? <p className="person-profile-aliases">Also known as {person.alternativeNames.join(', ')}</p> : null}
-          {person.role ? <p className="entity-period">{person.role}</p> : null}
-          {person.periodDisplay || person.period ? <p className="entity-period">{person.periodDisplay ?? person.period}</p> : null}
           {personPolities.length ? <p className="person-profile-affiliation">{personPolities.map((polity) => polity.title).join(' / ')}</p> : null}
-          <div className="entity-status-row"><span className="entity-status-badge">{person.status === 'verified' ? 'source-backed' : person.status}</span></div>
           <MeanderLine className="entity-meander" />
-        </div>
-      </header>
+      </CinematicPageHeader>
 
       {person.portrait ? (
         <section className="entity-section person-visual-evidence-section">
