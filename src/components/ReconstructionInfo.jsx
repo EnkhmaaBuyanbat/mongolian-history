@@ -10,6 +10,8 @@ function ReconstructionInfo({ reconstruction, compact = false }) {
       {!compact ? (
         <>
           <div><strong>Historical basis</strong><p>{reconstruction.historicalBasis}</p></div>
+          {reconstruction.knownEvidence?.length ? <div><strong>Known evidence</strong><ul>{reconstruction.knownEvidence.map((item) => <li key={item}>{item}</li>)}</ul></div> : null}
+          {reconstruction.uncertainElements?.length ? <div><strong>Uncertain elements</strong><ul>{reconstruction.uncertainElements.map((item) => <li key={item}>{item}</li>)}</ul></div> : null}
           <div><strong>Caution</strong><p>{reconstruction.historicalCaution}</p></div>
           {reconstruction.sourceRefs?.length ? <small>Source records: {reconstruction.sourceRefs.join(', ')}</small> : null}
         </>

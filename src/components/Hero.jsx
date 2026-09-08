@@ -15,6 +15,8 @@ function resolveScene(scene) {
       scene,
       asset: media.asset,
       evidenceLabel: scene.evidenceLabel ?? media.evidenceType,
+      period: scene.subtitle,
+      caption: scene.caption ?? media.caption,
       attribution: media.attribution,
       sourceUrl: media.sourceUrl,
       isReconstruction: false,
@@ -27,6 +29,8 @@ function resolveScene(scene) {
     scene,
     asset: reconstruction.asset,
     evidenceLabel: reconstruction.evidenceLabel ?? 'HISTORICAL RECONSTRUCTION',
+    period: reconstruction.dateDisplay ?? reconstruction.period,
+    caption: scene.caption ?? reconstruction.summary,
     attribution: null,
     sourceUrl: null,
     isReconstruction: true,
@@ -108,7 +112,8 @@ function Hero() {
         <div className="hero-scene-record" aria-live="polite">
           <span>{activeVisual.evidenceLabel}</span>
           <strong>{activeScene.title}</strong>
-          <small>{activeScene.subtitle}</small>
+          <small>{activeVisual.period}</small>
+          <small>{activeVisual.caption}</small>
           {activeVisual.sourceUrl ? <a href={activeVisual.sourceUrl} target="_blank" rel="noopener noreferrer">{activeVisual.attribution}</a> : null}
         </div>
       ) : null}
