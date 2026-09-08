@@ -11,6 +11,7 @@ import { chapters } from '../data/chapters'
 import { campaigns } from '../data/campaigns'
 import { claims } from '../data/claims'
 import { organizations } from '../data/organizations'
+import { companies } from '../data/companies'
 import { sortChronologically } from '../data/chronology'
 import ChapterNav from './ChapterNav'
 import ChapterSection from './ChapterSection'
@@ -37,6 +38,7 @@ const recordGroups = [
   { key: 'objects', label: 'Objects', records: objects, ids: 'relatedObjectIds' },
   { key: 'claims', label: 'Claims & Questions', records: claims, ids: 'claimIds' },
   { key: 'organizations', label: 'Organizations', records: organizations, ids: 'organizationIds' },
+  { key: 'companies', label: 'Companies', records: companies, ids: 'companyIds' },
 ]
 
 function resolveRecords(chapter) {
