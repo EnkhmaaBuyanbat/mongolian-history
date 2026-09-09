@@ -28,7 +28,17 @@ function CinematicPageHeader({
       }}
       {...dataAttributes}
     >
-      {assetPath ? <img className="cinematic-page-header-image" src={assetPath} alt="" aria-hidden="true" loading="eager" /> : null}
+      {assetPath ? (
+        <img
+          className="cinematic-page-header-image"
+          src={assetPath}
+          srcSet={[visual.asset.mobilePath ? `${visual.asset.mobilePath} 800w` : null, visual.asset.mediumPath ? `${visual.asset.mediumPath} 1200w` : null, visual.asset.largePath ? `${visual.asset.largePath} 1600w` : null].filter(Boolean).join(', ')}
+          sizes="100vw"
+          alt=""
+          aria-hidden="true"
+          loading="eager"
+        />
+      ) : null}
       <div className="cinematic-page-header-atmosphere" aria-hidden="true" />
       <div className="cinematic-page-header-frame" aria-hidden="true" />
       <div className={`section-inner cinematic-page-header-inner ${innerClassName}`.trim()}>

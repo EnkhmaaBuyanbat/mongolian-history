@@ -13,6 +13,8 @@ import { getEntityHref } from '../data/entityRoutes'
 import { getEraHeaderVisual } from '../data/pageVisualResolvers'
 import CinematicPageHeader from './CinematicPageHeader'
 import { getEraWorld } from '../data/eraWorlds'
+import { getReconstructionById } from '../data/reconstructionResolvers'
+import ReconstructionInfo from './ReconstructionInfo'
 
 const entityGroups = [
   { key: 'polities', label: 'Political Worlds', records: polities },
@@ -59,6 +61,7 @@ function EraDetailPage({ era }) {
   const eraHref = (item) => `/eras/${item.slug ?? item.id}`
   const headerVisual = getEraHeaderVisual(era.id)
   const eraWorld = getEraWorld(era.id)
+  const eraReconstruction = getReconstructionById(eraWorld?.reconstructionId)
   const firstChapter = eraChapters[0]
   const headerActions = [
     firstChapter ? { label: 'Start Era', href: `/eras/${era.slug ?? era.id}/chapters/${firstChapter.slug ?? firstChapter.id.replace('chapter-', '')}` } : null,
@@ -88,6 +91,12 @@ function EraDetailPage({ era }) {
       >
         <MeanderLine className="entity-meander" />
       </CinematicPageHeader>
+
+      {eraReconstruction ? (
+        <div className="section-inner">
+          <ReconstructionInfo reconstruction={eraReconstruction} />
+        </div>
+      ) : null}
 
       {eraChapters.length ? (
         <section className="era-detail-section era-chapters-section">
