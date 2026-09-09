@@ -23,7 +23,7 @@ function Section({ number, label, title, children, alt = false }) {
   return <section className={`entity-section person-dossier-section${alt ? ' entity-section-alt' : ''}`}><div className="section-inner person-profile-inner"><div className="entity-section-heading"><p className="section-label">{number} · {label}</p><h2>{title}</h2></div>{children}</div></section>
 }
 
-function PilotPersonPage({ person }) {
+function PersonDossierPage({ person }) {
   const presentation = getPersonPresentation(person)
   const relatedIds = person.relatedEntityIds ?? []
   const personEvents = sortChronologically(events.filter((event) => event.people?.includes(person.id) || person.eventIds?.includes(event.id) || relatedIds.includes(event.id)))
@@ -69,9 +69,9 @@ function PilotPersonPage({ person }) {
 
       {relatedPeople.length ? <Section number="09" label="Related People" title="Further connections"><div className="person-dossier-links">{relatedPeople.map((candidate) => <a key={candidate.id} href={getPersonHref(candidate)}><span>Person</span><strong>{candidate.title}</strong></a>)}</div></Section> : null}
 
-      <Section number="10" label="Continue Exploring" title="Continue through the collection" alt><div className="person-dossier-links"><a href="/people"><span>People</span><strong>All historical figures</strong></a>{presentation.eras.map((era) => <a key={era.id} href={`/eras/${era.slug ?? era.id}`}><span>Era {era.numeral}</span><strong>{era.title}</strong></a>)}{presentation.familyTreeEligible ? <a href={`/family-tree?person=${getPersonSlug(person)}`}><span>Interactive exhibit</span><strong>View in Family Tree</strong></a> : null}{personChapters.slice(0, 2).map((chapter) => <a key={chapter.id} href={getChapterHref(chapter)}><span>Chapter</span><strong>{chapter.title}</strong></a>)}</div>{personSources.length ? <details className="person-dossier-sources"><summary>View sources</summary><ul>{personSources.map((source) => <li key={source.id}>{source.title}</li>)}</ul></details> : null}</Section>
+      <Section number="10" label="Continue Exploring" title="Continue through the collection" alt><div className="person-dossier-links"><a href="/people"><span>People</span><strong>All historical figures</strong></a>{personEvents.length ? <a href="/timeline"><span>Timeline</span><strong>Explore the wider chronology</strong></a> : null}{presentation.eras.map((era) => <a key={era.id} href={`/eras/${era.slug ?? era.id}`}><span>Era {era.numeral}</span><strong>{era.title}</strong></a>)}{presentation.familyTreeEligible ? <a href={`/family-tree?person=${getPersonSlug(person)}`}><span>Interactive exhibit</span><strong>View in Family Tree</strong></a> : null}{personChapters.slice(0, 2).map((chapter) => <a key={chapter.id} href={getChapterHref(chapter)}><span>Chapter</span><strong>{chapter.title}</strong></a>)}</div>{personSources.length ? <details className="person-dossier-sources"><summary>View sources</summary><ul>{personSources.map((source) => <li key={source.id}>{source.title}</li>)}</ul></details> : null}</Section>
     </article>
   )
 }
 
-export default PilotPersonPage
+export default PersonDossierPage

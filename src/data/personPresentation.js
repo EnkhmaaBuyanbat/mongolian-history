@@ -6,13 +6,25 @@ import { personRelationships } from './personRelationships'
 import { events } from './events'
 import { chapters } from './chapters'
 
-export const pilotPersonIds = new Set([
+export const dossierPersonIds = new Set([
   'person-modu-chanyu',
   'person-temujin-chinggis-khan',
   'person-sorghaghtani-beki',
   'person-kul-tegin',
   'person-zanabazar',
   'person-batmonkh',
+  'person-bilge-khagan',
+  'person-bumin-qaghan',
+  'person-tanshihuai',
+  'person-yujiulu-shelun',
+  'person-borte',
+  'person-jamukha',
+  'person-toghrul-ong-khan',
+  'person-ogedei-khan',
+  'person-mongke-khan',
+  'person-tolui',
+  'person-qubilai',
+  'person-mandukhai-khatun',
 ])
 
 const roleRules = [
@@ -47,7 +59,7 @@ export function getEvidenceState(person) {
   const directMedia = media.filter((record) => record.approved && record.reviewStatus === 'APPROVED' && record.relatedPersonIds?.includes(person.id))
   if (directMedia.length) return { label: directMedia[0].evidenceType.replaceAll('_', ' '), media: directMedia }
   if (person.portrait?.status === 'NO_RELIABLE_PORTRAIT') return { label: 'NO RELIABLE PORTRAIT', media: [] }
-  return { label: 'VISUAL RECORD NOT YET ESTABLISHED', media: [] }
+  return { label: 'NO RELIABLE PORTRAIT', media: [] }
 }
 
 export function getPersonPresentation(person) {
@@ -68,7 +80,7 @@ export function getPersonPresentation(person) {
     roleCategory: getRoleCategory(person),
     polities: getPersonPolities(person),
     familyTreeEligible: familyTreePersonIds.includes(person.id),
-    isPilot: pilotPersonIds.has(person.id),
+    isDossier: dossierPersonIds.has(person.id),
     availableSections: {
       overview: Boolean(person.summary || person.shortBio || person.storyId || person.biographySections?.length),
       context: Boolean(personEras.length || getPersonPolities(person).length || hasChapters),
