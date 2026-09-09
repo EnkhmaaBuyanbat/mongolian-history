@@ -3,9 +3,10 @@ import { getPersonPresentation } from '../data/personPresentation'
 
 function PersonCard({ person }) {
   const presentation = getPersonPresentation(person)
+  const collectionLabel = person.storyId ? 'HISTORICAL BIOGRAPHY' : presentation.isDossier ? 'DETAILED PROFILE' : presentation.depth.label
   return (
     <a href={getPersonHref(person)} className="person-card">
-      <div className="person-card-topline"><span>{presentation.depth.label}</span>{person.sourceRefs?.length ? <span>SOURCE-BACKED</span> : null}</div>
+      <div className="person-card-topline"><span>{collectionLabel}</span>{person.sourceRefs?.length ? <span>SOURCE-BACKED</span> : null}</div>
       <h2>{person.title}</h2>
       {person.alternativeNames?.length ? <p className="person-card-alias">Also known as {person.alternativeNames.slice(0, 2).join(', ')}</p> : null}
       <p className={`person-card-period${presentation.periodEstablished ? '' : ' is-uncertain'}`}>{presentation.period}</p>
