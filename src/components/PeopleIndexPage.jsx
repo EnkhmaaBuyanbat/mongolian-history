@@ -1,12 +1,15 @@
 import { useState } from 'react'
 import { people } from '../data/people'
 import { eras } from '../data/eras'
-import { getPersonHref } from '../data/entityRoutes'
+import { getPersonPresentation, getRoleCategory } from '../data/personPresentation'
+import PersonCard from './PersonCard'
 
 function PeopleIndexPage() {
   const [query, setQuery] = useState('')
   const [eraId, setEraId] = useState('all')
   const [branch, setBranch] = useState('all')
+  const [roleCategory, setRoleCategory] = useState('all')
+  const [polityId, setPolityId] = useState('all')
   const visiblePeople = people.filter(
     (person) => person.status === 'researched' || person.status === 'verified',
   )
@@ -17,12 +20,17 @@ function PeopleIndexPage() {
     if (branch !== 'all' && !nextBranches.has(branch)) setBranch('all')
   }
   const normalizedQuery = query.trim().toLocaleLowerCase()
+  const roleCategories = [...new Set(visiblePeople.map(getRoleCategory).filter(Boolean))]
+  const politicalContexts = [...new Map(visiblePeople.flatMap((person) => getPersonPresentation(person).polities).map((polity) => [polity.id, polity])).values()]
+    .sort((a, b) => a.title.localeCompare(b.title))
   const filteredPeople = visiblePeople.filter((person) => {
     const searchable = [person.title, ...(person.alternativeNames ?? []), ...(person.nameVariants ?? []), person.role].filter(Boolean).join(' ').toLocaleLowerCase()
     const personEraIds = person.eraIds ?? [person.eraId]
     return (!normalizedQuery || searchable.includes(normalizedQuery))
       && (eraId === 'all' || personEraIds.includes(eraId))
       && (branch === 'all' || person.dynasticBranch === branch)
+      && (roleCategory === 'all' || getRoleCategory(person) === roleCategory)
+      && (polityId === 'all' || getPersonPresentation(person).polities.some((polity) => polity.id === polityId))
   })
 
   return (
@@ -41,24 +49,12 @@ function PeopleIndexPage() {
             <label className="people-search"><span>Search People</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Name, variant, or role" /></label>
             <fieldset><legend>Era</legend><div className="people-filter-row"><button type="button" aria-pressed={eraId==='all'} onClick={() => selectEra('all')}>All Eras</button>{eras.map((era) => <button key={era.id} type="button" aria-pressed={eraId===era.id} onClick={() => selectEra(era.id)}>Era {era.numeral}</button>)}</div></fieldset>
             {availableBranches.length ? <fieldset><legend>Dynastic branch</legend><div className="people-filter-row"><button type="button" aria-pressed={branch==='all'} onClick={() => setBranch('all')}>All Branches</button>{availableBranches.map((item) => <button key={item} type="button" aria-pressed={branch===item} onClick={() => setBranch(item)}>{item}</button>)}</div></fieldset> : null}
+            <fieldset><legend>Role / type</legend><div className="people-filter-row"><button type="button" aria-pressed={roleCategory==='all'} onClick={() => setRoleCategory('all')}>All Roles</button>{roleCategories.map((item) => <button key={item} type="button" aria-pressed={roleCategory===item} onClick={() => setRoleCategory(item)}>{item}</button>)}</div></fieldset>
+            <label className="people-context-filter"><span>Political context</span><select value={polityId} onChange={(event) => setPolityId(event.target.value)}><option value="all">All political contexts</option>{politicalContexts.map((polity) => <option key={polity.id} value={polity.id}>{polity.title}</option>)}</select></label>
             <p className="people-result-count" aria-live="polite">{filteredPeople.length} {filteredPeople.length === 1 ? 'person' : 'people'}</p>
           </div>
           <div className="people-index-grid">
-            {filteredPeople.map((person) => {
-              const personEraIds = person.eraIds ?? [person.eraId]
-              const personEras = eras.filter((era) => personEraIds.includes(era.id))
-              const href = getPersonHref(person)
-              return (
-                <a key={person.id} href={href} className="people-index-card">
-                  <strong>{person.title}</strong>
-                  {person.periodDisplay || person.period ? <small>{person.periodDisplay ?? person.period}</small> : null}
-                  <span>{person.role ?? 'Historical figure'}</span>
-                  <small>{personEras.map((era) => `Era ${era.numeral}`).join(' / ')}</small>
-                  {person.shortBio || person.summary ? <p>{person.shortBio ?? person.summary}</p> : null}
-                  <em>{person.storyId || person.profileType === 'story' ? 'View Story' : person.profileType === 'biography' ? 'View Biography' : 'View Profile'}</em>
-                </a>
-              )
-            })}
+            {filteredPeople.map((person) => <PersonCard key={person.id} person={person} />)}
           </div>
           {!filteredPeople.length ? <p className="entity-empty-state">No people match the current search and filters.</p> : null}
         </div>

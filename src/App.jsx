@@ -12,6 +12,7 @@ import ChapterPage from './components/ChapterPage'
 import PeopleIndexPage from './components/PeopleIndexPage'
 import PeopleStoryPage from './components/PeopleStoryPage'
 import PersonDetailPage from './components/PersonDetailPage'
+import PilotPersonPage from './components/PilotPersonPage'
 import FamilyTreePage from './components/FamilyTreePage'
 import EntityExplorerPage from './components/EntityExplorerPage'
 import { eras } from './data/eras'
@@ -21,6 +22,7 @@ import { polities } from './data/polities'
 import { places } from './data/places'
 import { sites } from './data/sites'
 import { objects } from './data/objects'
+import { pilotPersonIds } from './data/personPresentation'
 import './App.css'
 
 const HistoricalMapPage = lazy(() => import('./components/HistoricalMapPage'))
@@ -132,6 +134,7 @@ function App() {
   const showErasIndexPage = route === '/eras'
   const showFamilyTreePage = route === '/family-tree'
   const showPeopleStoryPage = Boolean(person?.storyId)
+  const showPilotPersonPage = Boolean(person && pilotPersonIds.has(person.id))
   const showPersonDetailPage = /^\/people\/[^/]+$/.test(route) && !showPeopleStoryPage
   const showExplorerPage = explorerEntity !== undefined
 
@@ -155,6 +158,8 @@ function App() {
           <FamilyTreePage />
         ) : showErasIndexPage ? (
           <EraPreview />
+        ) : showPilotPersonPage ? (
+          <PilotPersonPage person={person} />
         ) : showPeopleStoryPage ? (
           <PeopleStoryPage person={person} />
         ) : showPersonDetailPage ? (
