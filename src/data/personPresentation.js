@@ -25,6 +25,20 @@ export const dossierPersonIds = new Set([
   'person-tolui',
   'person-qubilai',
   'person-mandukhai-khatun',
+  'person-hulegu',
+  'person-chabi',
+  'person-zhenjin',
+  'person-temur-oljeytu',
+  'person-abaqa',
+  'person-oz-beg',
+  'person-jani-beg',
+  'person-dayan-khan',
+  'person-altan-khan',
+  'person-ligden-khan',
+  'person-esen-taishi',
+  'person-hong-taiji',
+  'person-kangxi-emperor',
+  'person-qianlong-emperor',
 ])
 
 const roleRules = [
