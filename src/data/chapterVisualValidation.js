@@ -2,7 +2,8 @@ import { chapters } from './chapters.js'
 import { media } from './media.js'
 import { reconstructions } from './reconstructions.js'
 import { sources } from './sources.js'
-import { chapterFallbackMotifOptions, chapterHeroStatusOptions, chapterVisualAssignments, chapterVisualInventory, chapterVisualStatusOptions, chapterVisualTypeOptions, educationalDiagrams } from './chapterVisuals.js'
+import { people } from './people.js'
+import { chapterFallbackMotifOptions, chapterHeroStatusOptions, chapterVisualAssignments, chapterVisualInventory, chapterVisualStatusOptions, chapterVisualTypeOptions, educationalDiagramTypeOptions, educationalDiagrams } from './chapterVisuals.js'
 
 const duplicateValues = (values) => [...new Set(values.filter((value, index) => values.indexOf(value) !== index))]
 
@@ -13,6 +14,7 @@ export function validateChapterVisuals() {
   const reconstructionIds = new Set(reconstructions.map((record) => record.id))
   const diagramIds = new Set(educationalDiagrams.map((record) => record.id))
   const sourceIds = new Set(sources.map((record) => record.id))
+  const personIds = new Set(people.map((record) => record.id))
 
   duplicateValues(chapterVisualAssignments.map((record) => record.id)).forEach((id) => errors.push(`Duplicate chapter visual id: ${id}`))
   duplicateValues(chapterVisualAssignments.map((record) => record.chapterId)).forEach((id) => errors.push(`Duplicate chapter visual assignment: ${id}`))
@@ -22,6 +24,7 @@ export function validateChapterVisuals() {
     if (!chapterIds.has(record.chapterId)) errors.push(`${record.id}: broken chapterId ${record.chapterId}`)
     if (!chapterVisualTypeOptions.includes(record.visualType)) errors.push(`${record.id}: invalid visualType`)
     if (!chapterVisualStatusOptions.includes(record.status)) errors.push(`${record.id}: invalid status`)
+    if (!educationalDiagramTypeOptions.includes(record.educationalType)) errors.push(`${record.id}: invalid educationalType`)
     const references = [record.mediaId, record.reconstructionId, record.diagramId].filter(Boolean)
     if (record.visualType !== 'INTENTIONAL_FALLBACK' && references.length !== 1) errors.push(`${record.id}: expected exactly one visual reference`)
     if (record.mediaId && !mediaIds.has(record.mediaId)) errors.push(`${record.id}: broken mediaId ${record.mediaId}`)
@@ -41,8 +44,17 @@ export function validateChapterVisuals() {
   })
 
   educationalDiagrams.forEach((record) => {
+    if (!educationalDiagramTypeOptions.includes(record.type)) errors.push(`${record.id}: invalid diagram type`)
     ;(record.chapterIds ?? []).forEach((id) => { if (!chapterIds.has(id)) errors.push(`${record.id}: broken chapterId ${id}`) })
     ;(record.sourceRefs ?? []).forEach((id) => { if (!sourceIds.has(id)) errors.push(`${record.id}: broken sourceRef ${id}`) })
+    ;(record.items ?? []).forEach((item) => { if (item.personId && !personIds.has(item.personId)) errors.push(`${record.id}: broken personId ${item.personId}`) })
+    const nodeIds = new Set((record.items ?? []).map((item) => item.id).filter(Boolean))
+    ;(record.edges ?? []).forEach((edge) => { if (!nodeIds.has(edge.from) || !nodeIds.has(edge.to)) errors.push(`${record.id}: broken connector ${edge.from} → ${edge.to}`) })
+    ;(record.phases ?? []).forEach((phase) => {
+      const phaseNodeIds = new Set((phase.items ?? []).map((item) => item.id))
+      ;(phase.items ?? []).forEach((item) => { if (item.personId && !personIds.has(item.personId)) errors.push(`${record.id}: broken phase personId ${item.personId}`) })
+      ;(phase.edges ?? []).forEach((edge) => { if (!phaseNodeIds.has(edge.from) || !phaseNodeIds.has(edge.to)) errors.push(`${record.id}: broken phase connector ${edge.from} → ${edge.to}`) })
+    })
   })
   if (chapterVisualInventory.length !== chapters.length) errors.push(`Expected ${chapters.length} inventory records, found ${chapterVisualInventory.length}`)
   chapterVisualInventory.forEach((record) => {

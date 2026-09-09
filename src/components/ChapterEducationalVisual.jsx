@@ -4,6 +4,7 @@ import { getReconstructionById, isApprovedReconstruction } from '../data/reconst
 import EducationalVisual from './EducationalVisual'
 import HistoricalMedia from './HistoricalMedia'
 import ReconstructionInfo from './ReconstructionInfo'
+import VisualSourceReferences from './VisualSourceReferences'
 
 function ChapterEducationalVisual({ assignment }) {
   if (!assignment || assignment.status !== 'READY') return null
@@ -19,6 +20,12 @@ function ChapterEducationalVisual({ assignment }) {
         <p>{assignment.summary}</p>
       </div>
       {media?.approved ? <HistoricalMedia media={media} /> : null}
+      {media?.approved && (assignment.canSupport || assignment.cannotEstablish) ? (
+        <div className="chapter-visual-evidence-limits">
+          {assignment.canSupport ? <div><strong>What it can support</strong><p>{assignment.canSupport}</p></div> : null}
+          {assignment.cannotEstablish ? <div><strong>What it cannot establish</strong><p>{assignment.cannotEstablish}</p></div> : null}
+        </div>
+      ) : null}
       {diagram ? <EducationalVisual {...diagram} ariaDescription={assignment.alt} /> : null}
       {isApprovedReconstruction(reconstruction) ? (
         <div className="chapter-primary-reconstruction">
@@ -26,7 +33,8 @@ function ChapterEducationalVisual({ assignment }) {
           <ReconstructionInfo reconstruction={reconstruction} />
         </div>
       ) : null}
-      <small className="chapter-primary-visual-sources">{assignment.evidenceLabel} · Source records: {assignment.sourceRefs.join(', ')}</small>
+      <small className="chapter-primary-visual-sources">{assignment.evidenceLabel}</small>
+      <VisualSourceReferences sourceRefs={assignment.sourceRefs} />
     </section>
   )
 }
