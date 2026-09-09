@@ -20,6 +20,7 @@ export const heroScenes = [
     position: 'center center',
     mobilePosition: '30% center',
     overlay: 'deep',
+    homepageEnabled: true,
     approved: true,
   },
   {
@@ -37,6 +38,7 @@ export const heroScenes = [
     position: 'center center',
     mobilePosition: 'center center',
     overlay: 'deep',
+    homepageEnabled: false,
     approved: true,
   },
   {
@@ -54,6 +56,7 @@ export const heroScenes = [
     position: 'center center',
     mobilePosition: 'center center',
     overlay: 'deep',
+    homepageEnabled: false,
     approved: false,
   },
 ]

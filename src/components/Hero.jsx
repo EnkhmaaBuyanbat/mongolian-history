@@ -40,7 +40,7 @@ function resolveScene(scene) {
 function Hero() {
   const heroRef = useRef(null)
   const { layerStyle, reduced } = useHeroParallax(heroRef)
-  const availableScenes = useMemo(() => heroScenes.map(resolveScene).filter(Boolean), [])
+  const availableScenes = useMemo(() => heroScenes.filter((scene) => scene.homepageEnabled).map(resolveScene).filter(Boolean), [])
   const [sceneIndex, setSceneIndex] = useState(0)
   const activeVisual = availableScenes[sceneIndex] ?? availableScenes[0]
   const activeScene = activeVisual?.scene

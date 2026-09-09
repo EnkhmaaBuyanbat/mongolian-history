@@ -12,6 +12,7 @@ import { MeanderLine } from './Ornament'
 import { getEntityHref } from '../data/entityRoutes'
 import { getEraHeaderVisual } from '../data/pageVisualResolvers'
 import CinematicPageHeader from './CinematicPageHeader'
+import { getEraWorld } from '../data/eraWorlds'
 
 const entityGroups = [
   { key: 'polities', label: 'Political Worlds', records: polities },
@@ -57,6 +58,7 @@ function EraDetailPage({ era }) {
   const nextEra = eras[eraIndex + 1]
   const eraHref = (item) => `/eras/${item.slug ?? item.id}`
   const headerVisual = getEraHeaderVisual(era.id)
+  const eraWorld = getEraWorld(era.id)
   const firstChapter = eraChapters[0]
   const headerActions = [
     firstChapter ? { label: 'Start Era', href: `/eras/${era.slug ?? era.id}/chapters/${firstChapter.slug ?? firstChapter.id.replace('chapter-', '')}` } : null,
@@ -75,6 +77,7 @@ function EraDetailPage({ era }) {
         className="era-detail-header cinematic-context-header"
         innerClassName="era-detail-header-inner"
         visual={headerVisual}
+        world={eraWorld}
         label={`Era ${era.number}`}
         title={era.title}
         subtitle={era.subtitle}

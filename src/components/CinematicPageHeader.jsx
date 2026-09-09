@@ -3,6 +3,7 @@ function CinematicPageHeader({
   className = '',
   innerClassName = '',
   visual,
+  world,
   context,
   label,
   title,
@@ -20,7 +21,11 @@ function CinematicPageHeader({
 
   return (
     <header
-      className={`cinematic-page-header cinematic-page-header-${variant} ${visual ? 'has-visual' : 'is-fallback'} ${className}`.trim()}
+      className={`cinematic-page-header cinematic-page-header-${variant} ${visual ? 'has-visual' : 'is-fallback'} ${world?.fallbackStyle ? `era-world-${world.fallbackStyle}` : ''} ${className}`.trim()}
+      style={{
+        '--page-header-position': visual?.desktopPosition ?? 'center',
+        '--page-header-mobile-position': visual?.mobilePosition ?? visual?.desktopPosition ?? 'center',
+      }}
       {...dataAttributes}
     >
       {assetPath ? <img className="cinematic-page-header-image" src={assetPath} alt="" aria-hidden="true" loading="eager" /> : null}

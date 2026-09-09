@@ -21,6 +21,7 @@ import { MeanderLine } from './Ornament'
 import { getChapterHref, getEntityHref } from '../data/entityRoutes'
 import { getChapterHeaderVisual } from '../data/pageVisualResolvers'
 import CinematicPageHeader from './CinematicPageHeader'
+import { getEraWorld } from '../data/eraWorlds'
 
 const sectionLabels = {
   'origins-and-context': 'Origins and Context',
@@ -84,6 +85,7 @@ function ChapterPage({ chapter }) {
   const nextEra = eras[eras.findIndex((item) => item.id === era?.id) + 1]
   const eraHref = `/eras/${era?.slug ?? chapter.eraId}`
   const headerVisual = getChapterHeaderVisual(chapter)
+  const eraWorld = getEraWorld(chapter.eraId)
 
   return (
     <article className="chapter-page">
@@ -92,6 +94,7 @@ function ChapterPage({ chapter }) {
         className="chapter-header cinematic-context-header"
         innerClassName="chapter-header-inner"
         visual={headerVisual}
+        world={eraWorld}
         context={<p className="chapter-context">
             <a href={eraHref}>{era?.title ?? chapter.eraId}</a>
             <span aria-hidden="true"> / </span>

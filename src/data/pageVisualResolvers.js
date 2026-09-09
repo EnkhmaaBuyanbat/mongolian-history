@@ -1,5 +1,6 @@
 import { media } from './media.js'
-import { getReconstructionForChapter, getReconstructionForEra, getContextualReconstructionForPerson } from './reconstructionResolvers.js'
+import { getContextualReconstructionForPerson, getReconstructionById, getReconstructionForChapter, isApprovedReconstruction } from './reconstructionResolvers.js'
+import { getEraWorld } from './eraWorlds.js'
 
 function hasAsset(asset) {
   return Boolean(asset?.mediumPath || asset?.largePath || asset?.mobilePath)
@@ -40,18 +41,41 @@ function reconstructionVisual(record, scope) {
 }
 
 export function getEraHeaderVisual(eraId) {
-  const directMedia = approvedMedia(media.filter((record) => record.relatedEraIds?.includes(eraId)))[0]
-  return mediaVisual(directMedia, 'era')
-    ?? reconstructionVisual(getReconstructionForEra(eraId), 'era')
+  const world = getEraWorld(eraId)
+  if (!world?.approved) return null
+  if (world.reconstructionId) {
+    const reconstruction = getReconstructionById(world.reconstructionId)
+    return isApprovedReconstruction(reconstruction) ? {
+      ...reconstructionVisual(reconstruction, 'era'),
+      desktopPosition: world.desktopPosition,
+      mobilePosition: world.mobilePosition,
+      overlayStrength: world.overlayStrength,
+    } : null
+  }
+  if (world.mediaId) {
+    const record = approvedMedia(media.filter((item) => item.id === world.mediaId))[0]
+    return record ? {
+      ...mediaVisual(record, 'era'),
+      desktopPosition: world.desktopPosition,
+      mobilePosition: world.mobilePosition,
+      overlayStrength: world.overlayStrength,
+    } : null
+  }
+  return null
 }
 
 export function getChapterHeaderVisual(chapter) {
   const chapterId = typeof chapter === 'string' ? chapter : chapter?.id
   const eraId = typeof chapter === 'string' ? null : chapter?.eraId
-  const directMedia = approvedMedia(media.filter((record) => record.relatedChapterIds?.includes(chapterId)))[0]
-  return mediaVisual(directMedia, 'chapter')
-    ?? reconstructionVisual(getReconstructionForChapter(chapterId), 'chapter')
+  const visual = reconstructionVisual(getReconstructionForChapter(chapterId), 'chapter')
     ?? getEraHeaderVisual(eraId)
+  if (!visual || typeof chapter === 'string') return visual
+  return {
+    ...visual,
+    desktopPosition: chapter.headerVisual?.desktopPosition ?? visual.desktopPosition,
+    mobilePosition: chapter.headerVisual?.mobilePosition ?? visual.mobilePosition,
+    overlayStrength: chapter.headerVisual?.overlayStrength ?? visual.overlayStrength,
+  }
 }
 
 export function getPersonHeaderVisual(person) {
