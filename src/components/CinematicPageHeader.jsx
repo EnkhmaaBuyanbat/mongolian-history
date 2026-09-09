@@ -4,6 +4,7 @@ function CinematicPageHeader({
   innerClassName = '',
   visual,
   world,
+  designedFallback,
   context,
   label,
   title,
@@ -21,7 +22,7 @@ function CinematicPageHeader({
 
   return (
     <header
-      className={`cinematic-page-header cinematic-page-header-${variant} ${visual ? 'has-visual' : 'is-fallback'} ${world?.fallbackStyle ? `era-world-${world.fallbackStyle}` : ''} ${className}`.trim()}
+      className={`cinematic-page-header cinematic-page-header-${variant} ${visual ? 'has-visual' : 'is-fallback'} ${world?.fallbackStyle ? `era-world-${world.fallbackStyle}` : ''} ${designedFallback?.motif ? `chapter-fallback-${designedFallback.motif.toLowerCase().replaceAll('_', '-')}` : ''} ${className}`.trim()}
       style={{
         '--page-header-position': visual?.desktopPosition ?? 'center',
         '--page-header-mobile-position': visual?.mobilePosition ?? visual?.desktopPosition ?? 'center',

@@ -19,9 +19,11 @@ import ChapterSection from './ChapterSection'
 import HistoricalMedia from './HistoricalMedia'
 import { MeanderLine } from './Ornament'
 import { getChapterHref, getEntityHref } from '../data/entityRoutes'
-import { getChapterHeaderVisual } from '../data/pageVisualResolvers'
+import { getChapterHeaderFallback, getChapterHeaderVisual } from '../data/pageVisualResolvers'
 import CinematicPageHeader from './CinematicPageHeader'
 import { getEraWorld } from '../data/eraWorlds'
+import { getChapterPrimaryVisual } from '../data/chapterVisuals'
+import ChapterEducationalVisual from './ChapterEducationalVisual'
 
 const sectionLabels = {
   'origins-and-context': 'Origins and Context',
@@ -77,7 +79,8 @@ function ChapterPage({ chapter }) {
       }))
   const chapterSources = sources.filter((source) => chapter.sourceIds?.includes(source.id))
   const chapterCampaigns = campaigns.filter((campaign) => chapter.campaignIds?.includes(campaign.id))
-  const chapterMedia = getMediaForChapter(chapter)
+  const primaryVisual = getChapterPrimaryVisual(chapter.id)
+  const chapterMedia = getMediaForChapter(chapter).filter((record) => record.id !== primaryVisual?.mediaId)
   const eraChapters = era?.chapterIds.map((chapterId) => chapters.find((item) => item.id === chapterId)).filter(Boolean) ?? []
   const chapterIndex = eraChapters.findIndex((item) => item.id === chapter.id)
   const previousChapter = eraChapters[chapterIndex - 1]
@@ -85,6 +88,7 @@ function ChapterPage({ chapter }) {
   const nextEra = eras[eras.findIndex((item) => item.id === era?.id) + 1]
   const eraHref = `/eras/${era?.slug ?? chapter.eraId}`
   const headerVisual = getChapterHeaderVisual(chapter)
+  const headerFallback = getChapterHeaderFallback(chapter.id)
   const eraWorld = getEraWorld(chapter.eraId)
 
   return (
@@ -95,6 +99,7 @@ function ChapterPage({ chapter }) {
         innerClassName="chapter-header-inner"
         visual={headerVisual}
         world={eraWorld}
+        designedFallback={headerFallback}
         context={<p className="chapter-context">
             <a href={eraHref}>{era?.title ?? chapter.eraId}</a>
             <span aria-hidden="true"> / </span>
@@ -119,6 +124,8 @@ function ChapterPage({ chapter }) {
               <h2>{chapter.introTitle ?? polity?.title ?? chapter.title}</h2>
               <p>{chapter.intro || chapter.summary || polity?.summary || 'Historical narrative in research.'}</p>
             </section>
+
+            <ChapterEducationalVisual assignment={primaryVisual} />
 
             <ChapterNav sections={chapterSections} />
 

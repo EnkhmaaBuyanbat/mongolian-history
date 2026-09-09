@@ -1757,6 +1757,22 @@
   text-transform: uppercase;
 }
 
+.chapter-primary-visual {
+  margin-top: 3rem;
+  padding: clamp(1.25rem,3vw,2rem);
+  border: 1px solid rgba(183,138,58,.28);
+  background: rgba(18,13,11,.72);
+}
+.chapter-primary-visual .chapter-section-heading > p:last-child { max-width: 46rem; color: var(--muted); line-height: 1.65; }
+.chapter-primary-reconstruction { display: grid; gap: 1rem; margin-top: 1.5rem; }
+.chapter-primary-reconstruction img { width: 100%; max-height: 32rem; object-fit: cover; border: 1px solid rgba(183,138,58,.25); }
+.chapter-primary-visual-sources,.educational-visual-evidence,.educational-visual-sources { display: block; margin-top: 1rem; color: var(--gold); font-size: .62rem; letter-spacing: .08em; line-height: 1.5; text-transform: uppercase; }
+.educational-visual-summary { max-width: 42rem; margin-top: .75rem; color: var(--muted); line-height: 1.6; }
+
+@media (min-width: 900px) {
+  .chapter-primary-reconstruction { grid-template-columns: minmax(0,1.45fr) minmax(18rem,.75fr); align-items: start; }
+}
+
 .educational-visual-items {
   display: grid;
   gap: 1px;
@@ -4080,6 +4096,8 @@
 .cinematic-page-header-image { z-index: -4; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: var(--page-header-position,center); filter: saturate(.72) sepia(.1) brightness(.78); }
 .cinematic-page-header-atmosphere { z-index: -3; background: linear-gradient(90deg,rgba(7,6,5,.84) 0%,rgba(7,6,5,.56) 30%,rgba(7,6,5,.24) 60%,rgba(7,6,5,.08) 100%),linear-gradient(180deg,rgba(7,6,5,.1),transparent 42%,rgba(7,6,5,.42)); }
 .cinematic-page-header.is-fallback .cinematic-page-header-atmosphere { background: repeating-linear-gradient(90deg,transparent 0 9rem,rgba(183,138,58,.025) 9rem calc(9rem + 1px)),radial-gradient(circle at 72% 26%,rgba(101,29,25,.23),transparent 25%),linear-gradient(145deg,rgba(23,16,12,.2),rgba(8,7,6,.82)); }
+.cinematic-page-header-chapter.chapter-fallback-political-order .cinematic-page-header-atmosphere { background: linear-gradient(90deg,rgba(8,7,6,.9),rgba(8,7,6,.58) 58%,rgba(8,7,6,.36)),repeating-linear-gradient(90deg,transparent 0 11rem,rgba(183,138,58,.09) 11rem calc(11rem + 1px)),repeating-linear-gradient(0deg,transparent 0 7rem,rgba(183,138,58,.055) 7rem calc(7rem + 1px)),radial-gradient(circle at 74% 42%,rgba(183,138,58,.2),transparent 28%); }
+.cinematic-page-header-chapter.chapter-fallback-succession .cinematic-page-header-atmosphere { background: linear-gradient(90deg,rgba(8,7,6,.9),rgba(8,7,6,.6) 58%,rgba(8,7,6,.38)),linear-gradient(125deg,transparent 52%,rgba(183,138,58,.12) 52.2%,transparent 52.5%),linear-gradient(55deg,transparent 67%,rgba(101,29,25,.16) 67.2%,transparent 67.5%),radial-gradient(ellipse at 76% 48%,rgba(183,138,58,.18),transparent 32%); }
 .cinematic-page-header.era-world-ancient-stone { background: radial-gradient(ellipse at 70% 72%,rgba(122,85,41,.22),transparent 22%),linear-gradient(155deg,#1b1712,#080706 72%); }
 .cinematic-page-header.era-world-fragmented-steppe { background: radial-gradient(ellipse at 72% 68%,rgba(183,138,58,.13),transparent 18%),radial-gradient(ellipse at 42% 75%,rgba(101,29,25,.13),transparent 16%),linear-gradient(150deg,#18110d,#080706 72%); }
 .cinematic-page-header.era-world-imperial-steppe { background: radial-gradient(circle at 68% 28%,rgba(183,138,58,.19),transparent 25%),linear-gradient(150deg,#1d130e,#080706 75%); }

@@ -1,6 +1,7 @@
 import { media } from './media.js'
 import { getContextualReconstructionForPerson, getReconstructionById, getReconstructionForChapter, isApprovedReconstruction } from './reconstructionResolvers.js'
 import { getEraWorld } from './eraWorlds.js'
+import { getChapterHeroAssignment } from './chapterVisuals.js'
 
 function hasAsset(asset) {
   return Boolean(asset?.mediumPath || asset?.largePath || asset?.mobilePath)
@@ -67,8 +68,17 @@ export function getEraHeaderVisual(eraId) {
 export function getChapterHeaderVisual(chapter) {
   const chapterId = typeof chapter === 'string' ? chapter : chapter?.id
   const eraId = typeof chapter === 'string' ? null : chapter?.eraId
-  const visual = reconstructionVisual(getReconstructionForChapter(chapterId), 'chapter')
-    ?? getEraHeaderVisual(eraId)
+  const heroAssignment = getChapterHeroAssignment(chapterId)
+  const assignedMedia = heroAssignment?.mediaId
+    ? approvedMedia(media.filter((item) => item.id === heroAssignment.mediaId))[0]
+    : null
+  const assignedReconstruction = heroAssignment?.reconstructionId
+    ? getReconstructionById(heroAssignment.reconstructionId)
+    : null
+  const visual = mediaVisual(assignedMedia, 'chapter')
+    ?? (isApprovedReconstruction(assignedReconstruction) ? reconstructionVisual(assignedReconstruction, 'chapter') : null)
+    ?? (heroAssignment?.designedFallback ? null : reconstructionVisual(getReconstructionForChapter(chapterId), 'chapter'))
+    ?? (heroAssignment?.designedFallback ? null : getEraHeaderVisual(eraId))
   if (!visual || typeof chapter === 'string') return visual
   return {
     ...visual,
@@ -76,6 +86,11 @@ export function getChapterHeaderVisual(chapter) {
     mobilePosition: chapter.headerVisual?.mobilePosition ?? visual.mobilePosition,
     overlayStrength: chapter.headerVisual?.overlayStrength ?? visual.overlayStrength,
   }
+}
+
+export function getChapterHeaderFallback(chapterId) {
+  const heroAssignment = getChapterHeroAssignment(chapterId)
+  return heroAssignment?.designedFallback ? { motif: heroAssignment.designedFallback } : null
 }
 
 export function getPersonHeaderVisual(person) {
