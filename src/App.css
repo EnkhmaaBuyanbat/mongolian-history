@@ -1555,6 +1555,28 @@
   color: var(--parchment);
 }
 
+:lang(mn) .chapter-header h1,
+:lang(mn) .era-chapter-card h3 {
+  letter-spacing: 0.015em;
+  text-transform: none;
+}
+
+:lang(mn) .chapter-header h1 {
+  max-width: 15ch;
+  line-height: 0.98;
+}
+
+:lang(mn) .chapter-nav a,
+:lang(mn) .contextual-page-nav span,
+:lang(mn) .chapter-callout-label,
+:lang(mn) .era-chapter-action,
+:lang(mn) .chapter-visual-evidence-limits strong,
+:lang(mn) .chapter-primary-visual-sources,
+:lang(mn) .educational-visual-evidence,
+:lang(mn) .educational-visual-sources {
+  letter-spacing: 0.04em;
+}
+
 .chapter-narrative {
   margin-top: 2rem;
 }

@@ -110,33 +110,34 @@ function EraDetailPage({ era }) {
               <h2>{ui.chapters}</h2>
             </div>
             <div className="era-chapter-grid">
-              {eraChapters.map((chapter) => (
-                chapter.status === 'in-progress' || chapter.status === 'complete' ? (
+              {eraChapters.map((chapter) => {
+                const chapterPresentation = localizedRecord('chapters', chapter.id, chapter)
+                return chapter.status === 'in-progress' || chapter.status === 'complete' ? (
                     <a
                       key={chapter.id}
                       href={`/eras/${era.slug ?? era.id}/chapters/${chapter.slug ?? chapter.id.replace('chapter-', '')}`}
                       className="era-chapter-card era-chapter-link"
                     >
                       <span className="era-chapter-number">{chapter.number}</span>
-                      <h3>{chapter.title}</h3>
-                      {chapter.subtitle || chapter.period ? (
-                        <p>{chapter.subtitle || chapter.period}</p>
+                      <h3>{chapterPresentation.title}</h3>
+                      {chapterPresentation.subtitle || chapterPresentation.period ? (
+                        <p>{chapterPresentation.subtitle || chapterPresentation.period}</p>
                       ) : null}
-                      {chapter.summary ? <p>{chapter.summary}</p> : null}
+                      {chapterPresentation.summary ? <p>{chapterPresentation.summary}</p> : null}
                       <span className="era-chapter-action">{ui.exploreChapter}</span>
                     </a>
                 ) : (
                     <article key={chapter.id} className="era-chapter-card">
                       <span className="era-chapter-number">{chapter.number}</span>
-                      <h3>{chapter.title}</h3>
-                      {chapter.subtitle || chapter.period ? (
-                        <p>{chapter.subtitle || chapter.period}</p>
+                      <h3>{chapterPresentation.title}</h3>
+                      {chapterPresentation.subtitle || chapterPresentation.period ? (
+                        <p>{chapterPresentation.subtitle || chapterPresentation.period}</p>
                       ) : null}
-                      {chapter.summary ? <p>{chapter.summary}</p> : null}
+                      {chapterPresentation.summary ? <p>{chapterPresentation.summary}</p> : null}
                       <span className="era-chapter-action">{ui.comingSoon}</span>
                     </article>
                 )
-              ))}
+              })}
             </div>
           </div>
         </section>
