@@ -1,23 +1,17 @@
 import { MeanderLine } from './Ornament'
+import { useLocale } from '../i18n/useLocale'
 
 function Introduction() {
+  const { t } = useLocale()
+  const copy = t('home.introduction')
   return (
     <section className="introduction" id="introduction">
       <div className="section-inner introduction-layout">
-        <p className="section-label">The platform</p>
+        <p className="section-label">{copy.label}</p>
         <div className="introduction-copy">
-          <h2>More Than an Empire</h2>
+          <h2>{copy.title}</h2>
           <MeanderLine />
-          <p>
-            Mongolian history did not begin with Chinggis Khan, and it did not
-            end with the Mongol Empire.
-          </p>
-          <p>
-            This project will follow the Mongolian steppe from ancient societies
-            and early steppe powers, through the rise of the Mongols and the
-            Mongol world, into later Mongol states, Qing rule, independence,
-            socialism, democratic transition, and modern Mongolia.
-          </p>
+          {copy.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
         </div>
       </div>
     </section>

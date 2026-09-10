@@ -1,22 +1,22 @@
+import { useLocale } from '../i18n/useLocale'
+
 function Footer() {
+  const { t } = useLocale()
+  const copy = t('home.footer')
   return (
     <footer className="site-footer">
       <div className="section-inner footer-inner">
         <div>
-          <p className="footer-mark">Mongolian History</p>
-          <p className="footer-sub">
-            From the Ancient Steppe to the Modern Nation
-          </p>
-          <p className="footer-note">
-            An independent educational and interactive history project.
-          </p>
+          <p className="footer-mark">{copy.title}</p>
+          <p className="footer-sub">{copy.subtitle}</p>
+          <p className="footer-note">{copy.note}</p>
         </div>
 
         <ul className="footer-slots">
-          <li>Sources</li>
-          <li>Methodology</li>
-          <li>GitHub</li>
-          <li>About</li>
+          <li>{copy.sources}</li>
+          <li>{copy.methodology}</li>
+          <li>{copy.github}</li>
+          <li>{copy.about}</li>
         </ul>
       </div>
     </footer>

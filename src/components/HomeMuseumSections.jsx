@@ -2,6 +2,7 @@ import { getApprovedMedia, getMediaById } from '../data/mediaResolvers'
 import { people } from '../data/people'
 import HistoricalMedia from './HistoricalMedia'
 import { MeanderLine } from './Ornament'
+import { useLocale } from '../i18n/useLocale'
 
 const representativePeopleIds = [
   'person-temujin-chinggis-khan',
@@ -29,15 +30,17 @@ function SectionHeading({ label, title, text }) {
 }
 
 export function FeaturedStory() {
+  const { t } = useLocale()
+  const copy = t('home.featured')
   return (
     <section className="museum-home-section featured-world">
       <div className="section-inner featured-world-layout">
-        <SectionHeading label="Featured World" title="The Steppe and the World" />
+        <SectionHeading label={copy.label} title={copy.title} />
         <div className="featured-world-copy">
-          <p>Mongolian history connects landscape, mobility, political power, exchange, belief, and cultural change across centuries.</p>
+          <p>{copy.text}</p>
           <div className="featured-world-actions">
-            <a href="/eras/ancient-steppe">Enter Ancient Steppe Worlds</a>
-            <a href="/timeline">Follow the chronology</a>
+            <a href="/eras/ancient-steppe">{copy.ancient}</a>
+            <a href="/timeline">{copy.chronology}</a>
           </div>
         </div>
       </div>
@@ -46,6 +49,8 @@ export function FeaturedStory() {
 }
 
 export function PeopleAndDynasties() {
+  const { t } = useLocale()
+  const copy = t('home.people')
   const representativePeople = representativePeopleIds
     .map((id) => people.find((person) => person.id === id))
     .filter(Boolean)
@@ -54,9 +59,9 @@ export function PeopleAndDynasties() {
     <section className="museum-home-section people-pathway">
       <div className="section-inner">
         <SectionHeading
-          label="Explore People"
-          title="People and Dynasties"
-          text="Enter through biographies, changing relationships, households, and dynastic branches—without substituting invented portraits for evidence."
+          label={copy.label}
+          title={copy.title}
+          text={copy.text}
         />
         <div className="people-pathway-grid">
           {representativePeople.map((person) => (
@@ -68,8 +73,8 @@ export function PeopleAndDynasties() {
           ))}
         </div>
         <div className="museum-home-actions">
-          <a href="/people">Explore People</a>
-          <a href="/family-tree">Explore Family Tree</a>
+          <a href="/people">{copy.explorePeople}</a>
+          <a href="/family-tree">{copy.exploreTree}</a>
         </div>
       </div>
     </section>
@@ -77,6 +82,8 @@ export function PeopleAndDynasties() {
 }
 
 export function ObjectsAndEvidence() {
+  const { t } = useLocale()
+  const copy = t('home.evidence')
   const evidenceMedia = getApprovedMedia(
     evidenceMediaIds.map(getMediaById).filter(Boolean),
   )
@@ -85,9 +92,9 @@ export function ObjectsAndEvidence() {
     <section className="museum-home-section evidence-pathway">
       <div className="section-inner">
         <SectionHeading
-          label="History Through Evidence"
-          title="Objects and Evidence"
-          text="Archaeology, documents, depictions, and photographs answer different questions. Each visual record states what it can show—and what it cannot."
+          label={copy.label}
+          title={copy.title}
+          text={copy.text}
         />
         <div className="evidence-pathway-rail">
           {evidenceMedia.map((record) => (
@@ -100,25 +107,22 @@ export function ObjectsAndEvidence() {
 }
 
 export function ExperienceHistory() {
-  const plannedExperiences = [
-    { title: 'Xiongnu Elite Tomb', type: 'Archaeological reconstruction' },
-    { title: 'The Order of 1206', type: 'Historical reconstruction' },
-    { title: 'Karakorum', type: 'Archaeological reconstruction' },
-    { title: 'Buddhist Artistic Worlds', type: 'Contextual historical reconstruction' },
-  ]
+  const { t } = useLocale()
+  const copy = t('home.experience')
+  const plannedExperiences = copy.items
 
   return (
     <section className="museum-home-section experience-pathway">
       <div className="section-inner experience-layout">
         <SectionHeading
-          label="Future Experience"
-          title="Experience History"
-          text="Selected environments will become carefully researched, explorable historical spaces. Reconstruction will remain visibly distinct from surviving evidence."
+          label={copy.label}
+          title={copy.title}
+          text={copy.text}
         />
-        <div className="experience-portals" aria-label="Planned historical experiences">
+        <div className="experience-portals" aria-label={copy.plannedLabel}>
           {plannedExperiences.map((experience) => (
             <article key={experience.title}>
-              <span>In development</span>
+              <span>{copy.development}</span>
               <h3>{experience.title}</h3>
               <small>{experience.type}</small>
             </article>

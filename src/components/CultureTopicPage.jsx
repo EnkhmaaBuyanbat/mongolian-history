@@ -1,5 +1,4 @@
 import { chapters } from '../data/chapters'
-import { cultureEn } from '../data/locales/en/culture'
 import { getChapterHref, getEntityHref } from '../data/entityRoutes'
 import { people } from '../data/people'
 import { places } from '../data/places'
@@ -8,6 +7,7 @@ import { sources } from '../data/sources'
 import CultureEraJourney from './CultureEraJourney'
 import CultureEvidenceCollection from './CultureEvidenceCollection'
 import { MeanderLine } from './Ornament'
+import { useLocale } from '../i18n/useLocale'
 
 function RelatedRecords({ records, label, viewLabel }) {
   if (!records.length) return null
@@ -15,7 +15,8 @@ function RelatedRecords({ records, label, viewLabel }) {
 }
 
 function CultureTopicPage({ topic }) {
-  const { ui, topics } = cultureEn
+  const { localeSection } = useLocale()
+  const { ui, topics } = localeSection('culture')
   if (!topic) return <article className="culture-page"><div className="section-inner culture-not-found"><p className="section-label">{ui.collection}</p><h1>{ui.notFound}</h1><a href="/culture">{ui.returnCulture}</a></div></article>
   const copy = topics[topic.id]
   const relatedPeople = topic.peopleIds.map((id) => people.find((record) => record.id === id)).filter(Boolean)

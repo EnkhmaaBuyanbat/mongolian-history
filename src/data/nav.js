@@ -1,9 +1,9 @@
 export const navItems = [
-  { id: 'home', label: 'Home', href: '/' },
-  { id: 'eras', label: 'Eras', href: '/eras' },
-  { id: 'timeline', label: 'Timeline', href: '/timeline' },
-  { id: 'people', label: 'People', href: '/people' },
-  { id: 'family-tree', label: 'Family Tree', href: '/family-tree' },
-  { id: 'culture', label: 'Culture', href: '/culture' },
-  { id: 'about', label: 'About', href: '#about', placeholder: true },
+  { id: 'home', labelKey: 'home', href: '/' },
+  { id: 'eras', labelKey: 'eras', href: '/eras' },
+  { id: 'timeline', labelKey: 'timeline', href: '/timeline' },
+  { id: 'people', labelKey: 'people', href: '/people' },
+  { id: 'family-tree', labelKey: 'familyTree', href: '/family-tree' },
+  { id: 'culture', labelKey: 'culture', href: '/culture' },
+  { id: 'about', labelKey: 'about', href: '#about', placeholder: true },
 ]

@@ -1,17 +1,18 @@
 import { useState } from 'react'
 import { cultureTopics } from '../data/cultureTopics'
-import { cultureEn } from '../data/locales/en/culture'
 import { eras } from '../data/eras'
 import { media } from '../data/media'
 import CultureTopicCard from './CultureTopicCard'
 import HistoricalMedia from './HistoricalMedia'
 import { MeanderLine } from './Ornament'
+import { useLocale } from '../i18n/useLocale'
 
 const featuredMediaIds = ['media-deer-stones-uushgiin-uvur-01', 'media-kul-tegin-inscription-01', 'media-zanabazar-maitreya-01']
 
 function CultureIndexPage() {
   const [eraFilter, setEraFilter] = useState('all')
-  const { index, topics, ui } = cultureEn
+  const { localeSection } = useLocale()
+  const { index, topics, ui } = localeSection('culture')
   const visibleTopics = eraFilter === 'all' ? cultureTopics : cultureTopics.filter((topic) => topic.eraIds.includes(eraFilter))
   const featuredMedia = featuredMediaIds.map((id) => media.find((record) => record.id === id)).filter((record) => record?.approved)
   return (
@@ -39,11 +40,11 @@ function CultureIndexPage() {
       </div></section>
 
       <section className="culture-section culture-section-alt"><div className="section-inner culture-narrow">
-        <p className="section-label">Evidence caution</p><h2>{index.archaeologyTitle}</h2><p>{index.archaeology}</p>
+        <p className="section-label">{ui.evidenceCaution}</p><h2>{index.archaeologyTitle}</h2><p>{index.archaeology}</p>
       </div></section>
 
       <section className="culture-section"><div className="section-inner">
-        <div className="culture-heading"><p className="section-label">04 · Continue</p><h2>{index.continueTitle}</h2></div>
+        <div className="culture-heading"><p className="section-label">04 · {ui.continue}</p><h2>{index.continueTitle}</h2></div>
         <nav className="culture-continue" aria-label={index.continueTitle}>{index.continueLinks.map((link) => <a key={link.href} href={link.href}>{link.label}<span aria-hidden="true">→</span></a>)}</nav>
       </div></section>
     </article>

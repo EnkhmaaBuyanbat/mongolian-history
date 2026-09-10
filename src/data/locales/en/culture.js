@@ -9,6 +9,7 @@ export const cultureEn = {
     method: 'Method', collections: 'Collections', chapter: 'Chapter', person: 'Person', placeSite: 'Place / site',
     allCollections: 'All culture collections', allErasLink: 'Explore all eras', timelineLink: 'Follow the timeline',
     notFound: 'Culture topic not found', returnCulture: 'Return to Culture',
+    evidenceCaution: 'Evidence caution', relatedChaptersLabel: 'Related chapters',
   },
   index: {
     eyebrow: 'Culture & Material Life', title: 'Ways of Life Across the Mongolian World',

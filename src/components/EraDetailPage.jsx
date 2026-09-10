@@ -15,14 +15,15 @@ import CinematicPageHeader from './CinematicPageHeader'
 import { getEraWorld } from '../data/eraWorlds'
 import { getReconstructionById } from '../data/reconstructionResolvers'
 import ReconstructionInfo from './ReconstructionInfo'
+import { useLocale } from '../i18n/useLocale'
 
 const entityGroups = [
-  { key: 'polities', label: 'Political Worlds', records: polities },
-  { key: 'people', label: 'People', records: people },
-  { key: 'events', label: 'Events', records: events },
-  { key: 'places', label: 'Places', records: places },
-  { key: 'sites', label: 'Archaeology & Sites', records: sites },
-  { key: 'objects', label: 'Monuments & Objects', records: objects },
+  { key: 'polities', labelKey: 'politicalWorlds', records: polities },
+  { key: 'people', labelKey: 'people', records: people },
+  { key: 'events', labelKey: 'events', records: events },
+  { key: 'places', labelKey: 'places', records: places },
+  { key: 'sites', labelKey: 'archaeologySites', records: sites },
+  { key: 'objects', labelKey: 'monumentsObjects', records: objects },
 ]
 
 function belongsToEra(record, eraId) {
@@ -34,6 +35,9 @@ function isResearched(record) {
 }
 
 function EraDetailPage({ era }) {
+  const { localeSection, localizedRecord } = useLocale()
+  const { ui } = localeSection('eras')
+  const presentation = localizedRecord('eras', era.id, era)
   const recordsByGroup = useMemo(
     () =>
       Object.fromEntries(
@@ -64,9 +68,9 @@ function EraDetailPage({ era }) {
   const eraReconstruction = getReconstructionById(eraWorld?.reconstructionId)
   const firstChapter = eraChapters[0]
   const headerActions = [
-    firstChapter ? { label: 'Start Era', href: `/eras/${era.slug ?? era.id}/chapters/${firstChapter.slug ?? firstChapter.id.replace('chapter-', '')}` } : null,
-    { label: 'View Timeline', href: '/timeline' },
-    { label: 'View People', href: '/people' },
+    firstChapter ? { label: ui.startEra, href: `/eras/${era.slug ?? era.id}/chapters/${firstChapter.slug ?? firstChapter.id.replace('chapter-', '')}` } : null,
+    { label: ui.viewTimeline, href: '/timeline' },
+    { label: ui.viewPeople, href: '/people' },
   ].filter(Boolean)
 
   if (!era) {
@@ -81,11 +85,11 @@ function EraDetailPage({ era }) {
         innerClassName="era-detail-header-inner"
         visual={headerVisual}
         world={eraWorld}
-        label={`Era ${era.number}`}
-        title={era.title}
-        subtitle={era.subtitle}
-        period={era.period}
-        summary={era.description}
+        label={`${ui.era} ${era.number}`}
+        title={presentation.title}
+        subtitle={presentation.subtitle}
+        period={presentation.period}
+        summary={presentation.description}
         actions={headerActions}
         dataAttributes={{ 'data-era-id': era.id }}
       >
@@ -102,8 +106,8 @@ function EraDetailPage({ era }) {
         <section className="era-detail-section era-chapters-section">
           <div className="section-inner">
             <div className="entity-section-heading">
-              <p className="section-label">Learn This Era</p>
-              <h2>Chapters</h2>
+              <p className="section-label">{ui.learnEra}</p>
+              <h2>{ui.chapters}</h2>
             </div>
             <div className="era-chapter-grid">
               {eraChapters.map((chapter) => (
@@ -119,7 +123,7 @@ function EraDetailPage({ era }) {
                         <p>{chapter.subtitle || chapter.period}</p>
                       ) : null}
                       {chapter.summary ? <p>{chapter.summary}</p> : null}
-                      <span className="era-chapter-action">Explore Chapter</span>
+                      <span className="era-chapter-action">{ui.exploreChapter}</span>
                     </a>
                 ) : (
                     <article key={chapter.id} className="era-chapter-card">
@@ -129,7 +133,7 @@ function EraDetailPage({ era }) {
                         <p>{chapter.subtitle || chapter.period}</p>
                       ) : null}
                       {chapter.summary ? <p>{chapter.summary}</p> : null}
-                      <span className="era-chapter-action">Coming Soon</span>
+                      <span className="era-chapter-action">{ui.comingSoon}</span>
                     </article>
                 )
               ))}
@@ -141,8 +145,8 @@ function EraDetailPage({ era }) {
       <section className="era-detail-section">
         <div className="section-inner">
           <div className="entity-section-heading">
-            <p className="section-label">Era Timeline</p>
-            <h2>Major dated records</h2>
+            <p className="section-label">{ui.eraTimeline}</p>
+            <h2>{ui.majorRecords}</h2>
           </div>
           {eraEvents.length ? (
             <ol className="era-event-list">
@@ -157,7 +161,7 @@ function EraDetailPage({ era }) {
               ))}
             </ol>
           ) : (
-            <p className="entity-empty-state">No major dated records are currently linked to this era.</p>
+            <p className="entity-empty-state">{ui.noMajorRecords}</p>
           )}
         </div>
       </section>
@@ -173,7 +177,7 @@ function EraDetailPage({ era }) {
             return (
               <section key={group.key} className="era-entity-group">
                 <div className="entity-section-heading">
-                  <h2>{group.label}</h2>
+                  <h2>{ui[group.labelKey]}</h2>
                 </div>
                 <div className="era-entity-grid">
                   {records.map((record) => {
@@ -200,10 +204,10 @@ function EraDetailPage({ era }) {
         </div>
       </section>
 
-      <nav className="contextual-page-nav section-inner" aria-label="Era navigation">
-        {previousEra ? <a href={eraHref(previousEra)}><span>Previous Era</span><strong>← Era {previousEra.numeral}</strong></a> : <span />}
-        <a className="contextual-page-nav-overview" href="/eras"><span>Explore</span><strong>All Eras</strong></a>
-        {nextEra ? <a className="contextual-page-nav-next" href={eraHref(nextEra)}><span>Next Era</span><strong>Era {nextEra.numeral} →</strong></a> : <span />}
+      <nav className="contextual-page-nav section-inner" aria-label={ui.eraNavigation}>
+        {previousEra ? <a href={eraHref(previousEra)}><span>{ui.previousEra}</span><strong>← {ui.era} {previousEra.numeral}</strong></a> : <span />}
+        <a className="contextual-page-nav-overview" href="/eras"><span>{ui.explore}</span><strong>{ui.allEras}</strong></a>
+        {nextEra ? <a className="contextual-page-nav-next" href={eraHref(nextEra)}><span>{ui.nextEra}</span><strong>{ui.era} {nextEra.numeral} →</strong></a> : <span />}
       </nav>
     </article>
   )

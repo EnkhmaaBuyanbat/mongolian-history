@@ -1,7 +1,7 @@
-import { useState } from 'react'
 import { navItems } from '../data/nav'
+import { useLocale } from '../i18n/useLocale'
 
-function NavLinks({ onNavigate }) {
+function NavLinks({ onNavigate, labels }) {
   return (
     <ul className="nav-list">
       {navItems.map((item) => (
@@ -11,14 +11,14 @@ function NavLinks({ onNavigate }) {
               href={item.href}
               className="is-placeholder"
               aria-disabled="true"
-              aria-label={`${item.label}, coming soon`}
+              aria-label={labels[item.labelKey]}
               onClick={(event) => event.preventDefault()}
             >
-              {item.label}
+              {labels[item.labelKey]}
             </a>
           ) : (
             <a href={item.href} onClick={onNavigate}>
-              {item.label}
+              {labels[item.labelKey]}
             </a>
           )}
         </li>
@@ -28,22 +28,24 @@ function NavLinks({ onNavigate }) {
 }
 
 function Header() {
-  const [requestedLanguage, setRequestedLanguage] = useState('en')
+  const { locale, setLocale, t } = useLocale()
+  const navigation = t('common.navigation')
 
   return (
     <header className="site-header">
       <a className="wordmark" href="/">
-        Mongolian History
+        {t('home.footer.title')}
       </a>
 
-      <nav className="site-nav-desktop" aria-label="Primary">
-        <NavLinks />
+      <nav className="site-nav-desktop" aria-label={t('common.accessibility.primaryNavigation')}>
+        <NavLinks labels={navigation} />
       </nav>
 
       <details className="nav-drawer">
-        <summary>Menu</summary>
-        <nav aria-label="Primary mobile">
+        <summary>{navigation.menu}</summary>
+        <nav aria-label={t('common.accessibility.mobileNavigation')}>
           <NavLinks
+            labels={navigation}
             onNavigate={(event) => {
               event.currentTarget.closest('details')?.removeAttribute('open')
             }}
@@ -51,17 +53,16 @@ function Header() {
         </nav>
       </details>
 
-      <div className="lang-switch" role="group" aria-label="Language">
-        <button type="button" aria-pressed={requestedLanguage === 'en'} lang="en" onClick={() => setRequestedLanguage('en')}>
+      <div className="lang-switch" role="group" aria-label={t('common.accessibility.languageControl')}>
+        <button type="button" aria-label={t('common.languages.english')} aria-pressed={locale === 'en'} lang="en" onClick={() => setLocale('en')}>
           EN
         </button>
         <span className="lang-rule" aria-hidden="true">
           |
         </span>
-        <button type="button" aria-pressed={requestedLanguage === 'mn'} lang="mn" onClick={() => setRequestedLanguage('mn')}>
+        <button type="button" aria-label={t('common.languages.mongolian')} aria-pressed={locale === 'mn'} lang="mn" onClick={() => setLocale('mn')}>
           МН
         </button>
-        {requestedLanguage === 'mn' ? <span className="language-status" role="status">Mongolian version in development</span> : null}
       </div>
     </header>
   )

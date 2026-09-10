@@ -4348,3 +4348,28 @@
   .culture-topic-card { min-height: 0; }
   .culture-topic-card p:not(.section-label) { min-height: 0; }
 }
+
+/* Mongolian Cyrillic typography: preserve hierarchy without English display tracking. */
+:lang(mn) .wordmark,
+:lang(mn) .nav-list a,
+:lang(mn) .nav-drawer summary,
+:lang(mn) .section-label,
+:lang(mn) .hero-kicker,
+:lang(mn) .hero-actions a,
+:lang(mn) .hero-scroll-cue,
+:lang(mn) .cinematic-page-header h1,
+:lang(mn) .cinematic-page-header-period,
+:lang(mn) .cinematic-page-header-actions a,
+:lang(mn) .culture-hero h1,
+:lang(mn) .culture-era-filters button,
+:lang(mn) .culture-topic-card a,
+:lang(mn) .culture-record-grid span,
+:lang(mn) .culture-record-grid small {
+  letter-spacing: .045em;
+  text-transform: none;
+}
+
+:lang(mn) .hero h1 { letter-spacing: .015em; text-transform: none; }
+:lang(mn) .era-card h3 { max-width: none; font-size: 1.42rem; letter-spacing: .01em; overflow-wrap: anywhere; text-wrap: balance; }
+:lang(mn) .era-card p { overflow-wrap: break-word; }
+:lang(mn) .era-years { letter-spacing: .02em; }

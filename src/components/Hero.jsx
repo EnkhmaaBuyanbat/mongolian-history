@@ -4,6 +4,7 @@ import { getMediaById } from '../data/mediaResolvers'
 import { getReconstructionById, isApprovedReconstruction } from '../data/reconstructionResolvers'
 import { heroScenes } from '../data/heroScenes'
 import { MeanderLine } from './Ornament'
+import { useLocale } from '../i18n/useLocale'
 
 function resolveScene(scene) {
   if (!scene || Boolean(scene.mediaId) === Boolean(scene.reconstructionId)) return null
@@ -38,6 +39,8 @@ function resolveScene(scene) {
 }
 
 function Hero() {
+  const { t } = useLocale()
+  const copy = t('home.hero')
   const heroRef = useRef(null)
   const { layerStyle, reduced } = useHeroParallax(heroRef)
   const availableScenes = useMemo(() => heroScenes.filter((scene) => scene.homepageEnabled).map(resolveScene).filter(Boolean), [])
@@ -110,7 +113,7 @@ function Hero() {
 
       {activeVisual ? (
         <div className="hero-scene-record" aria-live="polite">
-          <span>{activeVisual.evidenceLabel}</span>
+          <span>{t(`evidence.${activeVisual.evidenceLabel}`) || activeVisual.evidenceLabel}</span>
           <strong>{activeScene.title}</strong>
           <small>{activeVisual.period}</small>
           <small>{activeVisual.caption}</small>
@@ -124,47 +127,43 @@ function Hero() {
       >
         <MeanderLine className="hero-meander" />
         <h1 id="hero-title">
-          <span>Mongolian</span>
-          <span>History</span>
+          {copy.title.map((line) => <span key={line}>{line}</span>)}
         </h1>
         <p className="hero-kicker">
-          From the Ancient Steppe
-          <span>To the Modern Nation</span>
+          {copy.kicker[0]}
+          <span>{copy.kicker[1]}</span>
         </p>
-        <p className="hero-lead">
-          Explore the peoples, empires, rulers, revolutions and cultural
-          transformations that shaped Mongolia and the Mongolian steppe.
-        </p>
+        <p className="hero-lead">{copy.lead}</p>
         <div className="hero-actions">
           <a className="btn-primary" href="/eras">
-            Begin the Journey
+            {copy.begin}
           </a>
           <a className="btn-secondary" href="/timeline">
-            Explore Timeline
+            {copy.timeline}
           </a>
         </div>
       </div>
 
       {availableScenes.length > 1 ? (
-        <div className="hero-scene-controls" aria-label="Choose hero scene">
-          <button type="button" onClick={() => selectAdjacentScene(-1)} aria-label="Previous hero scene">←</button>
+        <div className="hero-scene-controls" aria-label={copy.chooseScene}>
+          <button type="button" onClick={() => selectAdjacentScene(-1)} aria-label={copy.previousScene}>←</button>
           <div className="hero-scene-dots">
             {availableScenes.map((visual, index) => (
               <button
                 key={visual.scene.id}
                 type="button"
-                aria-label={`Show scene: ${visual.scene.title}`}
+                aria-label={`${copy.showScene}: ${visual.scene.title}`}
                 aria-pressed={index === sceneIndex}
                 aria-current={index === sceneIndex ? 'true' : undefined}
                 onClick={() => setSceneIndex(index)}
               />
             ))}
           </div>
-          <button type="button" onClick={() => selectAdjacentScene(1)} aria-label="Next hero scene">→</button>
+          <button type="button" onClick={() => selectAdjacentScene(1)} aria-label={copy.nextScene}>→</button>
         </div>
       ) : null}
 
-      <a className="hero-scroll-cue" href="#eras">Scroll to explore <span aria-hidden="true">↓</span></a>
+      <a className="hero-scroll-cue" href="#eras">{copy.scroll} <span aria-hidden="true">↓</span></a>
     </section>
   )
 }
