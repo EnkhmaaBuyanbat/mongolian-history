@@ -15,6 +15,8 @@ import PersonDetailPage from './components/PersonDetailPage'
 import PersonDossierPage from './components/PersonDossierPage'
 import FamilyTreePage from './components/FamilyTreePage'
 import EntityExplorerPage from './components/EntityExplorerPage'
+import CultureIndexPage from './components/CultureIndexPage'
+import CultureTopicPage from './components/CultureTopicPage'
 import { eras } from './data/eras'
 import { chapters } from './data/chapters'
 import { people } from './data/people'
@@ -23,6 +25,7 @@ import { places } from './data/places'
 import { sites } from './data/sites'
 import { objects } from './data/objects'
 import { dossierPersonIds } from './data/personPresentation'
+import { getCultureTopicBySlug } from './data/cultureTopics'
 import './App.css'
 
 const HistoricalMapPage = lazy(() => import('./components/HistoricalMapPage'))
@@ -125,6 +128,9 @@ function App() {
     return collections[type].find((item) => item.id === `${prefixes[type]}${slug}`) ?? null
   }, [route])
 
+  const cultureTopicRoute = route.match(/^\/culture\/([^/]+)$/)
+  const cultureTopic = cultureTopicRoute ? getCultureTopicBySlug(cultureTopicRoute[1]) : null
+
   const showEntityPage = Boolean(entity)
   const showEraPage = Boolean(era)
   const showChapterPage = Boolean(chapter)
@@ -137,6 +143,8 @@ function App() {
   const showPersonDossierPage = Boolean(person && dossierPersonIds.has(person.id))
   const showPersonDetailPage = /^\/people\/[^/]+$/.test(route) && !showPeopleStoryPage
   const showExplorerPage = explorerEntity !== undefined
+  const showCultureIndexPage = route === '/culture'
+  const showCultureTopicPage = Boolean(cultureTopicRoute)
 
   return (
     <>
@@ -166,6 +174,10 @@ function App() {
           <PersonDetailPage person={person} />
         ) : showPeopleIndexPage ? (
           <PeopleIndexPage />
+        ) : showCultureTopicPage ? (
+          <CultureTopicPage topic={cultureTopic} />
+        ) : showCultureIndexPage ? (
+          <CultureIndexPage />
         ) : (
           <>
             <Hero />
