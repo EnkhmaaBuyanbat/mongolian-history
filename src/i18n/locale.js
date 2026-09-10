@@ -19,4 +19,8 @@ export function mergeLocaleValues(base, translated) {
   return result
 }
 
+export function toEvidenceCode(value) {
+  return typeof value === 'string' ? value.trim().toUpperCase().replace(/[^A-Z0-9]+/g, '_').replace(/^_|_$/g, '') : ''
+}
+
 export const LocaleContext = createContext(null)

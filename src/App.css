@@ -4373,3 +4373,7 @@
 :lang(mn) .era-card h3 { max-width: none; font-size: 1.42rem; letter-spacing: .01em; overflow-wrap: anywhere; text-wrap: balance; }
 :lang(mn) .era-card p { overflow-wrap: break-word; }
 :lang(mn) .era-years { letter-spacing: .02em; }
+:lang(mn) .culture-topic-card h3,
+:lang(mn) .culture-era-stop strong,
+:lang(mn) .culture-hero h1 { overflow-wrap: anywhere; text-wrap: balance; }
+:lang(mn) .culture-sources summary { letter-spacing: .045em; text-transform: none; }

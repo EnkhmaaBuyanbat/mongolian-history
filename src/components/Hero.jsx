@@ -5,6 +5,7 @@ import { getReconstructionById, isApprovedReconstruction } from '../data/reconst
 import { heroScenes } from '../data/heroScenes'
 import { MeanderLine } from './Ornament'
 import { useLocale } from '../i18n/useLocale'
+import { toEvidenceCode } from '../i18n/locale'
 
 function resolveScene(scene) {
   if (!scene || Boolean(scene.mediaId) === Boolean(scene.reconstructionId)) return null
@@ -113,7 +114,7 @@ function Hero() {
 
       {activeVisual ? (
         <div className="hero-scene-record" aria-live="polite">
-          <span>{t(`evidence.${activeVisual.evidenceLabel}`) || activeVisual.evidenceLabel}</span>
+          <span>{t(`evidence.${toEvidenceCode(activeVisual.evidenceLabel)}`) || activeVisual.evidenceLabel}</span>
           <strong>{activeScene.title}</strong>
           <small>{activeVisual.period}</small>
           <small>{activeVisual.caption}</small>

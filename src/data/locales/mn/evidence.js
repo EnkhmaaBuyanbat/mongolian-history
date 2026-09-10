@@ -3,4 +3,5 @@ export const evidenceMn = {
   ARCHAEOLOGICAL_EVIDENCE: 'Археологийн баримт',
   HISTORICAL_RECONSTRUCTION: 'Түүхэн сэргээн дүрслэл',
   ATMOSPHERIC_HISTORICAL_RECONSTRUCTION: 'Түүхэн орчны сэргээн дүрслэл',
+  PRIMARY_DOCUMENT: 'Анхдагч баримт',
 }

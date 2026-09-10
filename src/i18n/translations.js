@@ -10,6 +10,7 @@ import { evidenceMn } from '../data/locales/mn/evidence'
 import { erasMn } from '../data/locales/mn/eras'
 import { homeMn } from '../data/locales/mn/home'
 import { cultureMn } from '../data/locales/mn/culture'
+import { terminologyMn } from '../data/locales/mn/terminology'
 import { SUPPORTED_LOCALES } from './locale'
 import { validateLocalization } from './validation'
 
@@ -24,6 +25,7 @@ const errors = validateLocalization({
   cultureTopicIds: cultureTopics.map(({ id }) => id),
   eraIds: eras.map(({ id }) => id),
   evidenceCodes: Object.keys(evidenceEn),
+  terminology: terminologyMn,
 })
 
 if (errors.length) throw new Error(`Localization validation failed:\n${errors.join('\n')}`)

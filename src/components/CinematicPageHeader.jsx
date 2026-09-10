@@ -1,3 +1,6 @@
+import { toEvidenceCode } from '../i18n/locale'
+import { useLocale } from '../i18n/useLocale'
+
 function CinematicPageHeader({
   variant,
   className = '',
@@ -18,6 +21,7 @@ function CinematicPageHeader({
   children,
   dataAttributes = {},
 }) {
+  const { t } = useLocale()
   const assetPath = visual?.asset?.mediumPath ?? visual?.asset?.largePath ?? visual?.asset?.mobilePath
 
   return (
@@ -58,7 +62,7 @@ function CinematicPageHeader({
       </div>
       {visual ? (
         <div className="cinematic-page-header-visual-record">
-          <span>{visual.label}</span>
+          <span>{t(`evidence.${toEvidenceCode(visual.label)}`) || visual.label}</span>
           <small>{visual.caption}</small>
           {visual.sourceUrl ? <a href={visual.sourceUrl} target="_blank" rel="noopener noreferrer">{visual.attribution}</a> : null}
         </div>

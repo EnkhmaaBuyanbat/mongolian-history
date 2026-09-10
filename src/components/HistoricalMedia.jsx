@@ -1,4 +1,5 @@
 import { useLocale } from '../i18n/useLocale'
+import { toEvidenceCode } from '../i18n/locale'
 
 function formatLabel(value) {
   return value?.replaceAll('_', ' ')
@@ -16,7 +17,7 @@ function HistoricalMedia({ media, status, note, heading, lazy = true, decorative
   ].filter(Boolean).join(', ')
   const resolvedHeading = heading ?? labels.visualEvidence
   const evidenceCode = media?.evidenceType ?? status
-  const evidenceLabel = t(`evidence.${evidenceCode}`) || evidenceCode
+  const evidenceLabel = t(`evidence.${toEvidenceCode(evidenceCode)}`) || evidenceCode
   const noReliablePortrait = status === 'NO_RELIABLE_PORTRAIT'
 
   if (!media && !evidenceLabel) return null
@@ -58,9 +59,9 @@ function HistoricalMedia({ media, status, note, heading, lazy = true, decorative
         ) : null}
         {media?.historicalContext ? <div className="historical-media-context"><strong>{labels.whyMatters}</strong><p>{media.historicalContext}</p></div> : null}
         {media?.evidenceCaution ? <p className="historical-media-caution">{media.evidenceCaution}</p> : null}
-        {media?.institution || media?.collection ? <small>{[media.institution, media.collection].filter(Boolean).join(' · ')}</small> : null}
-        {media?.attribution ? <small>{labels.credit}: {media.attribution}</small> : null}
-        {media?.license || media?.reuseRestrictions ? <small>{labels.rights}: {media.license ?? media.reuseRestrictions}</small> : null}
+        {media?.institution || media?.collection ? <small>{labels.collection}: {[media.institution, media.collection].filter(Boolean).join(' · ')}</small> : null}
+        {media?.attribution ? <small>{labels.attribution}: {media.attribution}</small> : null}
+        {media?.license || media?.reuseRestrictions ? <small>{labels.license}: {media.license ?? media.reuseRestrictions}</small> : null}
         {media?.sourceUrl ? <a href={media.sourceUrl} target="_blank" rel="noopener noreferrer">{labels.viewCollection}</a> : null}
       </figcaption>
     </figure>
