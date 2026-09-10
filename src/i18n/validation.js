@@ -50,8 +50,8 @@ export function validateLocalization({ bundles, supportedLocales, cultureTopicId
   Object.keys(bundles.mn?.eras?.records ?? {}).forEach((id) => { if (!eraIds.includes(id)) errors.push(`Unknown localized Era ID: ${id}`) })
   const localizedChapters = bundles.mn?.chapters?.records ?? {}
   const localizedChapterIds = Object.keys(localizedChapters)
-  const requiredEraIds = ['ancient-steppe', 'before-chinggis', 'rise-empire', 'mongol-world']
-  if (localizedChapterIds.length !== 32) errors.push(`Expected exactly 32 localized MN chapters; found ${localizedChapterIds.length}.`)
+  const requiredEraIds = ['ancient-steppe', 'before-chinggis', 'rise-empire', 'mongol-world', 'northern-yuan', 'qing-rule']
+  if (localizedChapterIds.length !== 48) errors.push(`Expected exactly 48 localized MN chapters; found ${localizedChapterIds.length}.`)
   requiredEraIds.forEach((eraId) => {
     const count = localizedChapterIds.filter((id) => chapters.some((chapter) => chapter.id === id && chapter.eraId === eraId)).length
     if (count !== 8) errors.push(`Expected 8 localized MN chapters for ${eraId}; found ${count}.`)

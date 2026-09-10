@@ -1,4 +1,5 @@
 import { chaptersEraIIIIVMn } from './chaptersEraIIIIV'
+import { chaptersEraVVIMn } from './chaptersEraVVI'
 
 export const chaptersMn = { ui: {
   chapter: 'Бүлэг', chapterOf: '{total} бүлгийн {current}-р бүлэг', introduction: 'Бүлгийн удиртгал', campaignContext: 'Аян дайны нөхцөл', connectedCampaigns: 'Холбогдох аян дайнууд', visualEvidence: 'Дүрслэх баримт', historicalMedia: 'Түүхэн дүрслэх материал', exploreRelated: 'Холбогдох материалыг судлах', researchRecords: 'Судалгааны бүртгэл', referenceOnly: 'Зөвхөн лавлагаа', sources: 'Эх сурвалж', furtherReading: 'Нэмж унших', previousChapter: 'Өмнөх бүлэг', nextChapter: 'Дараагийн бүлэг', eraOverview: 'Үеийн тойм', returnTo: 'Буцах', nextEra: 'Дараагийн үе', chapterNavigation: 'Бүлэг хоорондын навигаци', chapterVisual: 'Бүлгийн дүрслэл', canSupport: 'Юуг дэмжих баримт болох вэ', cannotEstablish: 'Юуг тогтоож чадахгүй вэ', sourceReports: 'Эх сурвалжид өгүүлснээр', relatedChapters: 'Холбогдох бүлгүүд', people: 'Хүмүүс', events: 'Үйл явдал', politicalWorlds: 'Улс төрийн ертөнц', archaeologicalSites: 'Археологийн дурсгалт газар', places: 'Газар нутаг', objects: 'Эд өлгийн зүйл', claimsQuestions: 'Нотолгоо ба асуулт', organizations: 'Байгууллага', companies: 'Компани',
@@ -94,3 +95,4 @@ Object.assign(chaptersMn.records['chapter-twelfth-century-steppe-powers'], { pri
 Object.assign(chaptersMn.records['chapter-temujin-jamukha-toghrul'], { primaryVisualPresentation: { title: 'Өөрчлөгдөж буй харилцаа', summary: 'Сүлжээ нь Тэмүжин, Жамуха, Тоорилыг цаг хугацаанд харилцаа нь өөрчлөгдсөн бие даасан улс төрийн оролцогчид болгон харуулна.', evidenceLabel: 'ХАРИЛЦААНЫ СҮЛЖЭЭ · ЭХ СУРВАЛЖИЙН ӨГҮҮЛЭМЖ / ТАЙЛБАРЛАСАН', alt: 'Эртний холбоо, хамтын ажиллагаа, өрсөлдөөн, Жамухын 1201 оны өргөмжлөл, 1203 оны хагарлыг байнгын шошгогүй харуулсан харилцааны сүлжээ.' } })
 
 Object.assign(chaptersMn.records, chaptersEraIIIIVMn)
+Object.assign(chaptersMn.records, chaptersEraVVIMn)
