@@ -6,14 +6,21 @@ import HistoricalMedia from './HistoricalMedia'
 import ReconstructionInfo from './ReconstructionInfo'
 import VisualSourceReferences from './VisualSourceReferences'
 import { useLocale } from '../i18n/useLocale'
+import { mergeLocaleValues } from '../i18n/locale'
 
 function ChapterEducationalVisual({ assignment }) {
   const { localeSection } = useLocale()
   const { ui } = localeSection('chapters')
   if (!assignment || assignment.status !== 'READY') return null
   const media = assignment.mediaId ? getMediaById(assignment.mediaId) : null
-  const reconstruction = assignment.reconstructionId ? getReconstructionById(assignment.reconstructionId) : null
-  const diagram = assignment.diagramId ? getEducationalDiagram(assignment.diagramId) : null
+  const canonicalReconstruction = assignment.reconstructionId ? getReconstructionById(assignment.reconstructionId) : null
+  const reconstruction = canonicalReconstruction
+    ? mergeLocaleValues(canonicalReconstruction, assignment.reconstructionPresentation)
+    : null
+  const canonicalDiagram = assignment.diagramId ? getEducationalDiagram(assignment.diagramId) : null
+  const diagram = canonicalDiagram
+    ? mergeLocaleValues(canonicalDiagram, assignment.diagramPresentation)
+    : null
 
   return (
     <section className="chapter-primary-visual" aria-labelledby={`${assignment.id}-title`}>
