@@ -1,5 +1,6 @@
 import { chaptersEraIIIIVMn } from './chaptersEraIIIIV'
 import { chaptersEraVVIMn } from './chaptersEraVVI'
+import { chaptersEraVIIVIIIMn } from './chaptersEraVIIVIII'
 
 export const chaptersMn = { ui: {
   chapter: 'Бүлэг', chapterOf: '{total} бүлгийн {current}-р бүлэг', introduction: 'Бүлгийн удиртгал', campaignContext: 'Аян дайны нөхцөл', connectedCampaigns: 'Холбогдох аян дайнууд', visualEvidence: 'Дүрслэх баримт', historicalMedia: 'Түүхэн дүрслэх материал', exploreRelated: 'Холбогдох материалыг судлах', researchRecords: 'Судалгааны бүртгэл', referenceOnly: 'Зөвхөн лавлагаа', sources: 'Эх сурвалж', furtherReading: 'Нэмж унших', previousChapter: 'Өмнөх бүлэг', nextChapter: 'Дараагийн бүлэг', eraOverview: 'Үеийн тойм', returnTo: 'Буцах', nextEra: 'Дараагийн үе', chapterNavigation: 'Бүлэг хоорондын навигаци', chapterVisual: 'Бүлгийн дүрслэл', canSupport: 'Юуг дэмжих баримт болох вэ', cannotEstablish: 'Юуг тогтоож чадахгүй вэ', sourceReports: 'Эх сурвалжид өгүүлснээр', relatedChapters: 'Холбогдох бүлгүүд', people: 'Хүмүүс', events: 'Үйл явдал', politicalWorlds: 'Улс төрийн ертөнц', archaeologicalSites: 'Археологийн дурсгалт газар', places: 'Газар нутаг', objects: 'Эд өлгийн зүйл', claimsQuestions: 'Нотолгоо ба асуулт', organizations: 'Байгууллага', companies: 'Компани',
@@ -96,3 +97,4 @@ Object.assign(chaptersMn.records['chapter-temujin-jamukha-toghrul'], { primaryVi
 
 Object.assign(chaptersMn.records, chaptersEraIIIIVMn)
 Object.assign(chaptersMn.records, chaptersEraVVIMn)
+Object.assign(chaptersMn.records, chaptersEraVIIVIIIMn)
