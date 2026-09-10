@@ -18,7 +18,9 @@ function inspectValues(value, path, errors) {
 function compatibleShape(base, translated, path, errors) {
   if (!isObject(translated)) return
   Object.entries(translated).forEach(([key, value]) => {
-    if (path === 'mn.chapters' && key === 'records') return
+    if ((path === 'mn.chapters' || path === 'mn.people') && key === 'records') return
+    if (path === 'mn.people' && ['events','stories','politicalContexts'].includes(key)) return
+    if (path === 'mn.personRelationships' && key === 'labels') return
     const baseValue = base?.[key]
     if (baseValue === undefined) errors.push(`Unknown translation key: ${path}.${key}`)
     else if (Array.isArray(value) !== Array.isArray(baseValue) || (isObject(value) !== isObject(baseValue))) errors.push(`Incompatible translation shape: ${path}.${key}`)
@@ -26,7 +28,7 @@ function compatibleShape(base, translated, path, errors) {
   })
 }
 
-export function validateLocalization({ bundles, supportedLocales, cultureTopicIds, eraIds, chapters, evidenceCodes, terminology }) {
+export function validateLocalization({ bundles, supportedLocales, cultureTopicIds, eraIds, chapters, evidenceCodes, terminology, people, dossierPersonIds, familyTreePersonIds, personRelationships, getPersonHref, eraI_IIDossierPersonIds, moduChanyuStory }) {
   const errors = []
   const requiredCommon = ['navigation.home', 'navigation.eras', 'navigation.timeline', 'navigation.people', 'navigation.familyTree', 'navigation.culture', 'languages.english', 'languages.mongolian', 'accessibility.primaryNavigation', 'metadata.title']
   Object.keys(bundles).forEach((locale) => { if (!supportedLocales.includes(locale)) errors.push(`Unsupported locale bundle: ${locale}`) })
@@ -74,6 +76,48 @@ export function validateLocalization({ bundles, supportedLocales, cultureTopicId
     localizedSectionIds.forEach((sectionId) => { if (!canonicalSectionIds.includes(sectionId)) errors.push(`Unknown MN Chapter section: ${id}.${sectionId}`) })
   })
   Object.keys(bundles.mn?.evidence ?? {}).forEach((code) => { if (!evidenceCodes.includes(code)) errors.push(`Unknown localized evidence code: ${code}`) })
+  const publicPeople = people.filter((person) => person.status === 'researched' || person.status === 'verified')
+  const localizedPeople = bundles.mn?.people?.records ?? {}
+  if (people.length !== 116) errors.push(`Expected 116 canonical people; found ${people.length}.`)
+  if (publicPeople.length !== 115) errors.push(`Expected 115 public people; found ${publicPeople.length}.`)
+  if (dossierPersonIds.size !== 32) errors.push(`Expected 32 dossier people; found ${dossierPersonIds.size}.`)
+  if (familyTreePersonIds.length !== 45) errors.push(`Expected 45 Family Tree people; found ${familyTreePersonIds.length}.`)
+  if (personRelationships.length !== 80) errors.push(`Expected 80 canonical relationships; found ${personRelationships.length}.`)
+  if (people.filter((person) => Boolean(person.storyId)).length !== 1) errors.push('Expected exactly one canonical person with a storyId.')
+  if (Object.keys(localizedPeople).length !== 115) errors.push(`Expected 115 localized MN public people; found ${Object.keys(localizedPeople).length}.`)
+  Object.entries(localizedPeople).forEach(([id, record]) => {
+    const canonical = people.find((person) => person.id === id)
+    if (!canonical) errors.push(`Unknown localized Person ID: ${id}`)
+    if (!record?.displayName?.trim()) errors.push(`Missing MN person display name: ${id}`)
+    if (canonical && getPersonHref(canonical) !== getPersonHref(mergeLocaleValues(canonical, record))) errors.push(`Localized person route changed: ${id}`)
+  })
+  publicPeople.forEach((person) => { if (!localizedPeople[person.id]) errors.push(`Missing MN public person: ${person.id}`) })
+  const canonicalTargets = people.filter((person) => dossierPersonIds.has(person.id) && ['ancient-steppe','before-chinggis'].includes(person.eraId))
+  if (canonicalTargets.length !== 10 || canonicalTargets.some((person) => !eraI_IIDossierPersonIds.includes(person.id)) || eraI_IIDossierPersonIds.some((id) => !canonicalTargets.some((person) => person.id === id))) errors.push('Era I/II dossier localization target set does not match the canonical dossier allow-list.')
+  canonicalTargets.forEach((person) => {
+    const record = localizedPeople[person.id]
+    if (person.role && !record?.role?.trim()) errors.push(`Missing MN dossier role: ${person.id}`)
+    if ((person.summary || person.shortBio) && !(record?.summary ?? record?.shortBio)?.trim()) errors.push(`Missing MN dossier summary: ${person.id}`)
+    if ((person.period || person.periodDisplay || !person.period) && !(record?.periodDisplay ?? record?.period)?.trim()) errors.push(`Missing MN dossier period: ${person.id}`)
+    ;(person.biographySections ?? []).forEach((section) => {
+      const translated = record?.biographySections?.[section.id]
+      if (!translated?.title?.trim()) errors.push(`Missing MN dossier section: ${person.id}.${section.id}`)
+      if ((translated?.paragraphs?.length ?? 0) !== (section.paragraphs?.length ?? 0)) errors.push(`MN dossier paragraph count mismatch: ${person.id}.${section.id}`)
+    })
+    const canonicalSectionIds = (person.biographySections ?? []).map((section) => section.id)
+    Object.keys(record?.biographySections ?? {}).forEach((sectionId) => { if (!canonicalSectionIds.includes(sectionId)) errors.push(`Unknown MN dossier section: ${person.id}.${sectionId}`) })
+  })
+  const localizedStory = bundles.mn?.people?.stories?.['modu-chanyu']
+  if ((localizedStory?.introduction?.length ?? 0) !== moduChanyuStory.introduction.length) errors.push('Modu MN story introduction coverage is incomplete.')
+  moduChanyuStory.sections.forEach((section) => {
+    const translated = localizedStory?.sections?.[section.id]
+    if (!translated?.title?.trim() || translated.paragraphs?.length !== section.paragraphs.length) errors.push(`Modu MN story section coverage is incomplete: ${section.id}`)
+  })
+  const canonicalStorySectionIds = moduChanyuStory.sections.map((section) => section.id)
+  Object.keys(localizedStory?.sections ?? {}).forEach((sectionId) => { if (!canonicalStorySectionIds.includes(sectionId)) errors.push(`Unknown Modu MN story section: ${sectionId}`) })
+  personRelationships.forEach((relationship) => {
+    if (!people.some((person) => person.id === relationship.personId) || !people.some((person) => person.id === relationship.relatedPersonId)) errors.push(`Dangling canonical relationship endpoint: ${relationship.personId}|${relationship.relatedPersonId}`)
+  })
   const terminologyEntries = Object.entries(terminology ?? {})
   if (new Set(terminologyEntries.map(([key]) => key)).size !== terminologyEntries.length) errors.push('Duplicate Mongolian terminology key.')
   terminologyEntries.forEach(([key, value]) => { if (typeof value !== 'string' || !value.trim()) errors.push(`Empty Mongolian terminology value: ${key}`) })

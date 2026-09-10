@@ -17,6 +17,7 @@ import ConfidenceBadge from './ConfidenceBadge'
 import HistoricalMedia from './HistoricalMedia'
 import { getPersonHeaderVisual } from '../data/pageVisualResolvers'
 import CinematicPageHeader from './CinematicPageHeader'
+import { getParentChildIds } from '../data/personLocalization'
 
 function uniqueRecords(records) {
   return [...new Map(records.map((record) => [record.id, record])).values()]
@@ -60,8 +61,7 @@ function PersonDetailPage({ person }) {
       person: people.find((item) => item.id === (relationship.personId === person.id ? relationship.relatedPersonId : relationship.personId)),
     }))
   const familyRelationships = relationships.filter((relationship) => relationship.type.includes('parent') || relationship.type === 'spouse')
-  const isParentOfPerson = (relationship) => relationship.relatedPersonId === person.id
-    || (relationship.personId === person.id && ['Father', 'Mother'].includes(relationship.label))
+  const isParentOfPerson = (relationship) => getParentChildIds(relationship)?.childId === person.id
   const familyGroups = [
     ['Parents', familyRelationships.filter((relationship) => relationship.type.includes('parent') && isParentOfPerson(relationship))],
     ['Spouse', familyRelationships.filter((relationship) => relationship.type === 'spouse')],

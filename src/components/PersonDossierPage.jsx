@@ -14,6 +14,9 @@ import PersonEvidencePanel from './PersonEvidencePanel'
 import PersonRelationshipVisual from './PersonRelationshipVisual'
 import PersonStorySection from './PersonStorySection'
 import { MeanderLine } from './Ornament'
+import { useLocale } from '../i18n/useLocale'
+import { mergeLocaleValues } from '../i18n/locale'
+import { getLocalizedPerson, getLocalizedPersonStory } from '../data/personLocalization'
 
 function unique(records) {
   return [...new Map(records.map((record) => [record.id, record])).values()]
@@ -24,9 +27,13 @@ function Section({ number, label, title, children, alt = false }) {
 }
 
 function PersonDossierPage({ person }) {
-  const presentation = getPersonPresentation(person)
+  const { localeSection, localizedRecord } = useLocale()
+  const peopleLocale = localeSection('people')
+  const ui = peopleLocale.ui
+  const displayPerson = getLocalizedPerson(person, peopleLocale)
+  const presentation = getPersonPresentation(displayPerson)
   const relatedIds = person.relatedEntityIds ?? []
-  const personEvents = sortChronologically(events.filter((event) => event.people?.includes(person.id) || person.eventIds?.includes(event.id) || relatedIds.includes(event.id)))
+  const personEvents = sortChronologically(events.filter((event) => event.people?.includes(person.id) || person.eventIds?.includes(event.id) || relatedIds.includes(event.id))).map((event) => mergeLocaleValues(event, peopleLocale.events?.[event.id]))
   const relationships = personRelationships.filter((record) => record.personId === person.id || record.relatedPersonId === person.id).map((record) => ({
     ...record,
     person: people.find((candidate) => candidate.id === (record.personId === person.id ? record.relatedPersonId : record.personId)),
@@ -36,40 +43,40 @@ function PersonDossierPage({ person }) {
   const relatedPeople = unique(relatedIds.filter((id) => id.startsWith('person-')).map((id) => people.find((candidate) => candidate.id === id)).filter(Boolean)).filter((candidate) => !relationships.some((record) => record.person.id === candidate.id))
   const personChapters = chapters.filter((chapter) => chapter.relatedPeopleIds?.includes(person.id))
   const personCampaigns = campaigns.filter((campaign) => campaign.commanders?.includes(person.id))
-  const story = person.id === moduChanyuStory.personId ? moduChanyuStory : null
+  const story = person.id === moduChanyuStory.personId ? getLocalizedPersonStory(moduChanyuStory, peopleLocale.stories?.[person.storyId]) : null
   const sourceIds = new Set([...(person.sourceRefs ?? []), ...(person.characterAndReputation?.traits ?? []).flatMap((trait) => trait.sourceIds ?? []), ...relationships.flatMap((record) => record.sourceIds ?? [])])
   const personSources = sources.filter((source) => sourceIds.has(source.id))
 
   return (
     <article className="person-profile-page person-dossier-page">
-      <CinematicPageHeader variant="person" className="entity-header person-profile-header cinematic-context-header" innerClassName="entity-header-inner" visual={null} context={presentation.eras.map((era) => <a key={era.id} href={`/eras/${era.slug ?? era.id}`}>Era {era.numeral} · {era.title}</a>)} label={presentation.depth.label} title={person.title} subtitle={person.role} period={presentation.period} summary={person.summary ?? person.shortBio} status="Source-backed" portraitStatus={presentation.evidence.label} dataAttributes={{ 'data-era-id': person.eraId, 'data-person-id': person.id }}>
-        {person.alternativeNames?.length ? <p className="person-profile-aliases">Also known as {person.alternativeNames.join(', ')}</p> : null}
+      <CinematicPageHeader variant="person" className="entity-header person-profile-header cinematic-context-header" innerClassName="entity-header-inner" visual={null} context={presentation.eras.map((era) => { const localized=localizedRecord('eras',era.id,era); return <a key={era.id} href={`/eras/${era.slug ?? era.id}`}>{ui.era} {era.numeral} · {localized.title}</a> })} label={ui[presentation.depth.key]} title={displayPerson.title} subtitle={displayPerson.role} period={presentation.periodEstablished ? presentation.period : ui.datesUnknown} summary={displayPerson.summary ?? displayPerson.shortBio} status={ui.sourceBacked} portraitStatus={localeSection('evidence')[presentation.evidence.code] ?? presentation.evidence.label} dataAttributes={{ 'data-era-id': person.eraId, 'data-person-id': person.id }}>
+        {person.alternativeNames?.length ? <p className="person-profile-aliases">{ui.alsoKnownAs} {person.alternativeNames.join(', ')}</p> : null}
         <MeanderLine className="entity-meander" />
       </CinematicPageHeader>
 
-      <Section number="01" label="Overview" title="Life and historical role">
+      <Section number="01" label={ui.overview} title={ui.lifeRole}>
         {story?.introduction?.map((paragraph) => <p key={paragraph} className="entity-copy">{paragraph}</p>)}
-        {!story && person.shortBio ? <p className="entity-copy">{person.shortBio}</p> : null}
-        {person.biographySections?.length ? <div className="person-dossier-narrative">{person.biographySections.map((section) => <article key={section.id}><h3>{section.title}</h3>{section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}{section.callout ? <aside><ConfidenceBadge label={section.callout.confidence} /><strong>{section.callout.label}</strong><p>{section.callout.text}</p></aside> : null}</article>)}</div> : null}
+        {!story && displayPerson.shortBio ? <p className="entity-copy">{displayPerson.shortBio}</p> : null}
+        {displayPerson.biographySections?.length ? <div className="person-dossier-narrative">{displayPerson.biographySections.map((section) => <article key={section.id}><h3>{section.title}</h3>{section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}{section.callout ? <aside><ConfidenceBadge label={section.callout.confidence} /><strong>{section.callout.label}</strong><p>{section.callout.text}</p></aside> : null}</article>)}</div> : null}
       </Section>
 
-      {(presentation.eras.length || presentation.polities.length || personChapters.length) ? <Section number="02" label="Historical Context" title="The world around this person" alt><div className="person-dossier-links">{presentation.eras.map((era) => <a key={era.id} href={`/eras/${era.slug ?? era.id}`}><span>Era {era.numeral}</span><strong>{era.title}</strong></a>)}{presentation.polities.map((polity) => <a key={polity.id} href={getEntityHref(polity)}><span>Political world</span><strong>{polity.title}</strong></a>)}{personChapters.slice(0, 4).map((chapter) => <a key={chapter.id} href={getChapterHref(chapter)}><span>Chapter {chapter.number}</span><strong>{chapter.title}</strong></a>)}</div></Section> : null}
+      {(presentation.eras.length || presentation.polities.length || personChapters.length) ? <Section number="02" label={ui.historicalContext} title={ui.worldAround} alt><div className="person-dossier-links">{presentation.eras.map((era) => { const localized=localizedRecord('eras',era.id,era); return <a key={era.id} href={`/eras/${era.slug ?? era.id}`}><span>{ui.era} {era.numeral}</span><strong>{localized.title}</strong></a> })}{presentation.polities.map((polity) => <a key={polity.id} href={getEntityHref(polity)}><span>{ui.politicalWorld}</span><strong>{peopleLocale.politicalContexts?.[polity.id] ?? polity.title}</strong></a>)}{personChapters.slice(0, 4).map((chapter) => { const localized=localizedRecord('chapters',chapter.id,chapter); return <a key={chapter.id} href={getChapterHref(chapter)}><span>{ui.chapter} {chapter.number}</span><strong>{localized.title}</strong></a> })}</div></Section> : null}
 
-      {personEvents.length ? <Section number="03" label="Life / Political Timeline" title="Dated records"><ol className="era-event-list">{personEvents.map((event) => <li key={event.id} className="era-event-record"><time>{event.dateDisplay}</time><div><strong>{event.title}</strong><p>{event.summary}</p></div></li>)}</ol></Section> : null}
+      {personEvents.length ? <Section number="03" label={ui.lifeTimeline} title={ui.datedRecords}><ol className="era-event-list">{personEvents.map((event) => <li key={event.id} className="era-event-record"><time>{event.dateDisplay}</time><div><strong>{event.title}</strong><p>{event.summary}</p></div></li>)}</ol></Section> : null}
 
-      {family.length ? <Section number="04" label="Family & Dynasty" title="Where this person fits" alt><PersonRelationshipVisual person={person} relationships={family} label="Family and dynasty" />{presentation.familyTreeEligible ? <a className="person-family-tree-cta" href={`/family-tree?person=${getPersonSlug(person)}`}>View in Family Tree →</a> : null}</Section> : null}
+      {family.length ? <Section number="04" label={ui.familyDynasty} title={ui.whereFits} alt><PersonRelationshipVisual person={displayPerson} relationships={family} label={ui.familyDynasty} />{presentation.familyTreeEligible ? <a className="person-family-tree-cta" href={`/family-tree?person=${getPersonSlug(person)}`}>{ui.viewFamilyTree} →</a> : null}</Section> : null}
 
-      {political.length || personCampaigns.length ? <Section number="05" label="Political Network" title="Power, cooperation and succession"><PersonRelationshipVisual person={person} relationships={political} label="Political" />{personCampaigns.map((campaign) => <article key={campaign.id} className="person-campaign-record"><span>{campaign.dateDisplay}</span><strong>{campaign.title}</strong><p>{campaign.summary}</p></article>)}</Section> : null}
+      {political.length || personCampaigns.length ? <Section number="05" label={ui.politicalNetwork} title={ui.powerSuccession}><PersonRelationshipVisual person={displayPerson} relationships={political} label={ui.politicalNetwork} />{personCampaigns.map((campaign) => <article key={campaign.id} className="person-campaign-record"><span>{campaign.dateDisplay}</span><strong>{campaign.title}</strong><p>{campaign.summary}</p></article>)}</Section> : null}
 
-      {person.characterAndReputation ? <Section number="06" label="Character & Reputation" title="Source reputation and interpretation" alt><p className="entity-copy">{person.characterAndReputation.overview}</p><div className="chapter-record-grid">{person.characterAndReputation.traits.map((trait) => <article key={trait.label} className="chapter-record-card"><ConfidenceBadge label={trait.treatment} /><strong>{trait.label}</strong><p>{trait.summary}</p></article>)}</div><p className="map-caution">{person.characterAndReputation.caution}</p></Section> : null}
+      {displayPerson.characterAndReputation ? <Section number="06" label={ui.characterReputation} title={ui.sourceReputation} alt><p className="entity-copy">{displayPerson.characterAndReputation.overview}</p><div className="chapter-record-grid">{displayPerson.characterAndReputation.traits.map((trait) => <article key={trait.label} className="chapter-record-card"><ConfidenceBadge label={trait.treatment} /><strong>{trait.label}</strong><p>{trait.summary}</p></article>)}</div><p className="map-caution">{displayPerson.characterAndReputation.caution}</p></Section> : null}
 
-      <Section number="07" label="Evidence & Depictions" title="What the visual record can support"><PersonEvidencePanel person={person} /></Section>
+      <Section number="07" label={ui.evidenceDepictions} title={ui.visualSupport}><PersonEvidencePanel person={displayPerson} /></Section>
 
-      {story?.sections?.length ? <Section number="08" label="Long-form Story" title="Modu Chanyu in the historical record" alt><div className="person-story-sections">{story.sections.map((section) => <PersonStorySection key={section.id} section={section} />)}</div></Section> : null}
+      {story?.sections?.length ? <Section number="08" label={ui.longStory} title={ui.moduRecord} alt><div className="person-story-sections">{story.sections.map((section) => <PersonStorySection key={section.id} section={section} />)}</div></Section> : null}
 
-      {relatedPeople.length ? <Section number="09" label="Related People" title="Further connections"><div className="person-dossier-links">{relatedPeople.map((candidate) => <a key={candidate.id} href={getPersonHref(candidate)}><span>Person</span><strong>{candidate.title}</strong></a>)}</div></Section> : null}
+      {relatedPeople.length ? <Section number="09" label={ui.relatedPeople} title={ui.furtherConnections}><div className="person-dossier-links">{relatedPeople.map((candidate) => { const localized=getLocalizedPerson(candidate,peopleLocale); return <a key={candidate.id} href={getPersonHref(candidate)}><span>{ui.person}</span><strong>{localized.title}</strong></a> })}</div></Section> : null}
 
-      <Section number="10" label="Continue Exploring" title="Continue through the collection" alt><div className="person-dossier-links"><a href="/people"><span>People</span><strong>All historical figures</strong></a>{personEvents.length ? <a href="/timeline"><span>Timeline</span><strong>Explore the wider chronology</strong></a> : null}{presentation.eras.map((era) => <a key={era.id} href={`/eras/${era.slug ?? era.id}`}><span>Era {era.numeral}</span><strong>{era.title}</strong></a>)}{presentation.familyTreeEligible ? <a href={`/family-tree?person=${getPersonSlug(person)}`}><span>Interactive exhibit</span><strong>View in Family Tree</strong></a> : null}{personChapters.slice(0, 2).map((chapter) => <a key={chapter.id} href={getChapterHref(chapter)}><span>Chapter</span><strong>{chapter.title}</strong></a>)}</div>{personSources.length ? <details className="person-dossier-sources"><summary>View sources</summary><ul>{personSources.map((source) => <li key={source.id}>{source.title}</li>)}</ul></details> : null}</Section>
+      <Section number="10" label={ui.continueExploring} title={ui.continueCollection} alt><div className="person-dossier-links"><a href="/people"><span>{ui.people}</span><strong>{ui.allHistoricalFigures}</strong></a>{personEvents.length ? <a href="/timeline"><span>{ui.timeline}</span><strong>{ui.widerChronology}</strong></a> : null}{presentation.eras.map((era) => { const localized=localizedRecord('eras',era.id,era); return <a key={era.id} href={`/eras/${era.slug ?? era.id}`}><span>{ui.era} {era.numeral}</span><strong>{localized.title}</strong></a> })}{presentation.familyTreeEligible ? <a href={`/family-tree?person=${getPersonSlug(person)}`}><span>{ui.interactiveExhibit}</span><strong>{ui.viewTree}</strong></a> : null}{personChapters.slice(0, 2).map((chapter) => { const localized=localizedRecord('chapters',chapter.id,chapter); return <a key={chapter.id} href={getChapterHref(chapter)}><span>{ui.chapter}</span><strong>{localized.title}</strong></a> })}</div>{personSources.length ? <details className="person-dossier-sources"><summary>{ui.viewSources}</summary><ul>{personSources.map((source) => <li key={source.id}>{source.title}</li>)}</ul></details> : null}</Section>
     </article>
   )
 }

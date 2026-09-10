@@ -1,4 +1,10 @@
+import { useLocale } from '../i18n/useLocale'
+import { formatTemplate } from '../data/personLocalization'
+
 function FamilyTreeNode({ person, position, selected, connected, dimmed, onSelect }) {
+  const { localeSection } = useLocale()
+  const ui = localeSection('familyTree').ui
+  const branches = localeSection('people').branches
   const initials = person.title.split(/\s|\//).filter(Boolean).slice(0, 2).map((word) => word[0]).join('')
 
   return (
@@ -7,15 +13,15 @@ function FamilyTreeNode({ person, position, selected, connected, dimmed, onSelec
       className={`family-tree-node branch-${person.dynasticBranch?.toLowerCase() ?? 'founding'}${selected ? ' is-selected' : ''}${connected ? ' is-connected' : ''}${dimmed ? ' is-dimmed' : ''}`}
       style={{ left: position.x, top: position.y }}
       aria-pressed={selected}
-      aria-label={`View ${person.title} in the family tree`}
+      aria-label={formatTemplate(ui.viewNode, { name:person.title })}
       onClick={() => onSelect(person.id)}
     >
-      <span className="family-tree-portrait" aria-hidden="true"><i>{initials}</i><small>No verified likeness</small></span>
+      <span className="family-tree-portrait" aria-hidden="true"><i>{initials}</i><small>{ui.noLikeness}</small></span>
       <span className="family-tree-node-copy">
         <strong>{person.title}</strong>
-        <small>{person.periodDisplay ?? person.period ?? 'Dates not securely established'}</small>
+        <small>{person.periodDisplay ?? person.period ?? ui.datesUnknown}</small>
         <span>{person.role}</span>
-        <em>{person.dynasticBranch ? `${person.dynasticBranch} branch` : 'Founding generation'}</em>
+        <em>{person.dynasticBranch ? branches[person.dynasticBranch] : ui.founding}</em>
       </span>
     </button>
   )

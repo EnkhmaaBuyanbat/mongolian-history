@@ -1,12 +1,14 @@
 import ConfidenceBadge from './ConfidenceBadge'
+import { useLocale } from '../i18n/useLocale'
 
 function PersonStorySection({ section }) {
+  const { localeSection } = useLocale()
   if (section.sourceAccount) {
     return (
       <section id={section.id} className="person-story-section person-source-section">
         <div className="person-readable-column">
           <p className="person-section-number">{section.number}</p>
-          <p className="section-label">Ancient Source Account</p>
+          <p className="section-label">{localeSection('people').ancientSourceAccount}</p>
           <h2>{section.title}</h2>
           {section.subtitle ? <p className="person-section-subtitle">{section.subtitle}</p> : null}
           {section.lead ? <p className="person-section-lead">{section.lead}</p> : null}

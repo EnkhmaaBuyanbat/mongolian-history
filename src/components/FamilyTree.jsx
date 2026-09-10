@@ -7,6 +7,8 @@ import FamilyTreeDetails from './FamilyTreeDetails'
 import FamilyTreeNode from './FamilyTreeNode'
 import { branchGroups, coreTreePersonIds, familyTreePersonIds as treePersonIds, householdGroups, laterFamilyGroups } from '../data/familyTreePeople'
 import { getPersonSlug } from '../data/entityRoutes'
+import { useLocale } from '../i18n/useLocale'
+import { getLocalizedPerson, getParentChildIds } from '../data/personLocalization'
 const treeEras = eras.filter((era) => ['II','III','IV','V'].includes(era.numeral))
 
 const positions = {
@@ -22,28 +24,31 @@ function relationshipKind(relationship) {
 }
 
 function getFamily(person, familyEdges, treePeople) {
-  const isNamedParent = (edge) => edge.personId === person.id && ['Father', 'Mother'].includes(edge.label)
   const parentEdges = familyEdges.filter((edge) => edge.kind === 'parent')
-  const parents = parentEdges.filter((edge) => edge.relatedPersonId === person.id || isNamedParent(edge))
-    .map((edge) => treePeople.find((item) => item.id === (edge.personId === person.id ? edge.relatedPersonId : edge.personId))).filter(Boolean)
-  const children = parentEdges.filter((edge) => (edge.personId === person.id || edge.relatedPersonId === person.id) && !parents.some((parent) => parent.id === (edge.personId === person.id ? edge.relatedPersonId : edge.personId)))
-    .map((edge) => treePeople.find((item) => item.id === (edge.personId === person.id ? edge.relatedPersonId : edge.personId))).filter(Boolean)
+  const parents = parentEdges.map(getParentChildIds).filter((pair) => pair?.childId === person.id)
+    .map((pair) => treePeople.find((item) => item.id === pair.parentId)).filter(Boolean)
+  const children = parentEdges.map(getParentChildIds).filter((pair) => pair?.parentId === person.id)
+    .map((pair) => treePeople.find((item) => item.id === pair.childId)).filter(Boolean)
   const spouses = familyEdges.filter((edge) => edge.kind === 'spouse' && (edge.personId === person.id || edge.relatedPersonId === person.id))
     .map((edge) => treePeople.find((item) => item.id === (edge.personId === person.id ? edge.relatedPersonId : edge.personId))).filter(Boolean)
   return { parents, spouses, children }
 }
 
 function FamilyTree() {
-  const treePeople = useMemo(() => treePersonIds.map((id) => people.find((person) => person.id === id)).filter(Boolean), [])
+  const { localeSection } = useLocale()
+  const peopleLocale = localeSection('people')
+  const familyLocale = localeSection('familyTree')
+  const ui = familyLocale.ui
+  const treePeople = useMemo(() => treePersonIds.map((id) => people.find((person) => person.id === id)).filter(Boolean).map((person) => getLocalizedPerson(person, peopleLocale)), [peopleLocale])
   const familyEdges = useMemo(() => personRelationships.map((relationship) => ({ ...relationship, kind:relationshipKind(relationship) })).filter((relationship) => relationship.kind && treePersonIds.includes(relationship.personId) && treePersonIds.includes(relationship.relatedPersonId)), [])
   const coreFamilyEdges = familyEdges.filter((edge) => coreTreePersonIds.includes(edge.personId) && coreTreePersonIds.includes(edge.relatedPersonId))
   const parentEdges = coreFamilyEdges.filter((edge) => edge.kind === 'parent')
   const familyUnits = coreFamilyEdges.filter((edge) => edge.kind === 'spouse').map((couple) => ({
     couple,
-    children:coreTreePersonIds.filter((childId) => parentEdges.some((edge) => edge.personId === couple.personId && edge.relatedPersonId === childId) && parentEdges.some((edge) => edge.personId === couple.relatedPersonId && edge.relatedPersonId === childId)),
+    children:coreTreePersonIds.filter((childId) => parentEdges.some((edge) => { const pair=getParentChildIds(edge); return pair?.parentId===couple.personId && pair.childId===childId }) && parentEdges.some((edge) => { const pair=getParentChildIds(edge); return pair?.parentId===couple.relatedPersonId && pair.childId===childId })),
   }))
   const coveredParentEdges = new Set(familyUnits.flatMap((unit) => unit.children.flatMap((childId) => [`${unit.couple.personId}-${childId}`,`${unit.couple.relatedPersonId}-${childId}`])))
-  const singleParentEdges = parentEdges.filter((edge) => !coveredParentEdges.has(`${edge.personId}-${edge.relatedPersonId}`))
+  const singleParentEdges = parentEdges.filter((edge) => { const pair=getParentChildIds(edge); return !coveredParentEdges.has(`${pair.parentId}-${pair.childId}`) })
   const getUrlSelection = () => {
     const slug = new URLSearchParams(window.location.search).get('person')
     return treePeople.find((person) => getPersonSlug(person) === slug)?.id ?? 'person-sorghaghtani-beki'
@@ -88,29 +93,29 @@ function FamilyTree() {
   return (
     <div className="family-tree-exhibit">
       <div className="family-tree-main">
-        <nav className="family-tree-era-scope" aria-label="Filter family tree by era">
-          <button type="button" aria-pressed={eraScope==='all'} onClick={() => selectEraScope('all')}>All</button>
-          {treeEras.map((era) => <button key={era.id} type="button" aria-pressed={eraScope===era.id} onClick={() => selectEraScope(era.id)}>Era {era.numeral}</button>)}
+        <nav className="family-tree-era-scope" aria-label={ui.filterEra}>
+          <button type="button" aria-pressed={eraScope==='all'} onClick={() => selectEraScope('all')}>{ui.all}</button>
+          {treeEras.map((era) => <button key={era.id} type="button" aria-pressed={eraScope===era.id} onClick={() => selectEraScope(era.id)}>{peopleLocale.ui.era} {era.numeral}</button>)}
         </nav>
         <div className="family-tree-household">
-          <p className="section-label">Chinggis Khan’s Household</p>
-          <details open><summary>Principal household</summary>{roster('principal')}</details>
-          <details><summary>Other wives / consorts</summary>{roster('otherConsorts')}</details>
-          <details><summary>Children</summary><h3>Sons</h3>{roster('sons')}<h3>Daughters</h3>{roster('daughters')}</details>
-          <p className="family-tree-incomplete-note">This is a curated historical genealogy. Some relationships, dates and descendants remain uncertain or are omitted pending stronger source support.</p>
+          <p className="section-label">{ui.household}</p>
+          <details open><summary>{ui.principalHousehold}</summary>{roster('principal')}</details>
+          <details><summary>{ui.otherConsorts}</summary>{roster('otherConsorts')}</details>
+          <details><summary>{ui.children}</summary><h3>{ui.sons}</h3>{roster('sons')}<h3>{ui.daughters}</h3>{roster('daughters')}</details>
+          <p className="family-tree-incomplete-note">{ui.incomplete}</p>
           <div className="family-tree-branches">
-            <h3>Explore a dynastic branch</h3>
+            <h3>{ui.exploreBranch}</h3>
             <div className="family-tree-branch-controls">
-              {Object.keys(branchGroups).map((branch) => <button key={branch} type="button" aria-expanded={expandedBranch===branch} onClick={() => setExpandedBranch((current) => current===branch ? null : branch)}><strong>{branch.slice(0,-1)}</strong><span>{expandedBranch===branch ? 'Collapse branch' : 'Expand branch'}</span></button>)}
+              {Object.keys(branchGroups).map((branch) => <button key={branch} type="button" aria-expanded={expandedBranch===branch} onClick={() => setExpandedBranch((current) => current===branch ? null : branch)}><strong>{peopleLocale.branches[branch] ?? branch}</strong><span>{expandedBranch===branch ? ui.collapse : ui.expand}</span></button>)}
             </div>
             {expandedBranch ? <div className="family-tree-branch-members" aria-live="polite">{branchGroups[expandedBranch].map((id) => treePeople.find((person) => person.id===id)).filter((person) => person && belongsToScope(person)).map((person) => <button key={person.id} type="button" aria-pressed={person.id===selectedId} onClick={() => selectPerson(person.id)}><strong>{person.title}</strong><span>{person.role}</span></button>)}</div> : null}
           </div>
         </div>
-        <div className="family-tree-scroll" tabIndex="0" aria-label="Scrollable Chinggisid family tree">
+        <div className="family-tree-scroll" tabIndex="0" aria-label={ui.scrollLabel}>
           <div className="family-tree-canvas">
-          <div className="family-tree-generation generation-one">Generation I</div>
-          <div className="family-tree-generation generation-two">Generation II</div>
-          <div className="family-tree-generation generation-three">Generation III</div>
+          <div className="family-tree-generation generation-one">{ui.generation} I</div>
+          <div className="family-tree-generation generation-two">{ui.generation} II</div>
+          <div className="family-tree-generation generation-three">{ui.generation} III</div>
           <svg className="family-tree-connectors" viewBox="0 0 1640 960" aria-hidden="true">
             {familyUnits.map(({ couple, children }) => {
               const first=positions[couple.personId], second=positions[couple.relatedPersonId]
@@ -121,7 +126,7 @@ function FamilyTree() {
               return <g key={`${couple.personId}-${couple.relatedPersonId}`} className={active?'is-active':''}><path className="spouse" d={`M ${first.x+180} ${first.y+95} H ${second.x}`} />{children.length ? <><path d={`M ${parentMid} ${first.y+95} V ${siblingY} M ${Math.min(...childCenters)} ${siblingY} H ${Math.max(...childCenters)}`} />{children.map((childId) => <path key={childId} d={`M ${positions[childId].x+90} ${siblingY} V ${positions[childId].y}`} />)}</> : null}</g>
             })}
             {singleParentEdges.map((edge) => {
-              const from=positions[edge.personId], to=positions[edge.relatedPersonId]
+              const pair=getParentChildIds(edge), from=positions[pair.parentId], to=positions[pair.childId]
               return <path key={`${edge.personId}-${edge.relatedPersonId}`} className={edge.personId===selectedId||edge.relatedPersonId===selectedId?'is-active':''} d={`M ${from.x+90} ${from.y+190} V ${to.y-45} H ${to.x+90} V ${to.y}`} />
             })}
           </svg>
@@ -129,11 +134,12 @@ function FamilyTree() {
           </div>
         </div>
         {scopedLaterGroups.length ? <section className="family-tree-later" aria-labelledby="later-continuity-title">
-          <div><p className="section-label">Cross-Era Genealogy</p><h3 id="later-continuity-title">Family Foundations &amp; Later Continuity</h3><p>Only source-supported relationships currently represented in the canonical genealogy appear here.</p></div>
-          {eraScope === 'northern-yuan' || eraScope === 'all' ? <aside className="family-tree-gap"><strong>Genealogical Gap</strong><span>Chinggisid descent — intermediate generations not yet represented.</span><p>Source-supported dynastic descent is known, but the intermediate genealogical chain to Dayan Khan has not yet been added to this educational tree.</p></aside> : null}
+          <div><p className="section-label">{ui.crossEra}</p><h3 id="later-continuity-title">{ui.continuity}</h3><p>{ui.supportedOnly}</p></div>
+          {eraScope === 'northern-yuan' || eraScope === 'all' ? <aside className="family-tree-gap"><strong>{ui.gap}</strong><span>{ui.gapLine}</span><p>{ui.gapText}</p></aside> : null}
           <div className="family-tree-later-groups">{scopedLaterGroups.map((group) => {
             const groupEra = eras.find((era) => era.id === group.eraId)
-            return <article key={group.id}><header><span>Era {groupEra?.numeral}</span><h4>{group.label}</h4><p>{group.relationship}</p></header><div>{group.personIds.map((id) => treePeople.find((person) => person.id===id)).filter(Boolean).map((person) => <button key={person.id} type="button" aria-pressed={person.id===selectedId} onClick={() => selectPerson(person.id)}><strong>{person.title}</strong><span>{person.role}</span></button>)}</div></article>
+            const groupCopy = familyLocale.groups[group.id] ?? group
+            return <article key={group.id}><header><span>{peopleLocale.ui.era} {groupEra?.numeral}</span><h4>{groupCopy.label}</h4><p>{groupCopy.relationship}</p></header><div>{group.personIds.map((id) => treePeople.find((person) => person.id===id)).filter(Boolean).map((person) => <button key={person.id} type="button" aria-pressed={person.id===selectedId} onClick={() => selectPerson(person.id)}><strong>{person.title}</strong><span>{person.role}</span></button>)}</div></article>
           })}</div>
         </section> : null}
       </div>

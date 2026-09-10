@@ -4192,6 +4192,15 @@
 .family-tree-gap { margin: 1rem 0; padding: .85rem 1rem; border: 1px dashed var(--bronze); background: rgba(183,138,58,.06); }
 .family-tree-gap strong,.family-tree-gap span { display: block; text-transform: uppercase; }
 .family-tree-gap strong { color: var(--gold); font-size: .62rem; letter-spacing: .16em; }
+.people-index-page:lang(mn) .section-label,
+.people-index-page:lang(mn) button,
+.family-tree-page:lang(mn) .section-label,
+.family-tree-page:lang(mn) button,
+.family-tree-page:lang(mn) summary,
+.family-tree-page:lang(mn) .family-tree-generation { letter-spacing: .04em; }
+.people-index-page:lang(mn) h1,
+.family-tree-page:lang(mn) h1,
+.family-tree-page:lang(mn) strong { overflow-wrap: anywhere; }
 .family-tree-gap span { margin-top: .35rem; color: var(--parchment); font-family: var(--serif); font-size: .82rem; letter-spacing: .07em; }
 .family-tree-gap p { margin: .45rem 0 0; color: var(--muted); font-size: .7rem; line-height: 1.5; }
 .family-tree-canvas { position: relative; width: 1640px; height: 960px; background-image: linear-gradient(rgba(183,138,58,.035) 1px, transparent 1px); background-size: 100% 330px; }

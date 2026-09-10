@@ -71,9 +71,9 @@ export function getProfileDepth(person) {
 
 export function getEvidenceState(person) {
   const directMedia = media.filter((record) => record.approved && record.reviewStatus === 'APPROVED' && record.relatedPersonIds?.includes(person.id))
-  if (directMedia.length) return { label: directMedia[0].evidenceType.replaceAll('_', ' '), media: directMedia }
-  if (person.portrait?.status === 'NO_RELIABLE_PORTRAIT') return { label: 'NO RELIABLE PORTRAIT', media: [] }
-  return { label: 'NO RELIABLE PORTRAIT', media: [] }
+  if (directMedia.length) return { code: directMedia[0].evidenceType, label: directMedia[0].evidenceType.replaceAll('_', ' '), media: directMedia }
+  if (person.portrait?.status === 'NO_RELIABLE_PORTRAIT') return { code: 'NO_RELIABLE_PORTRAIT', label: 'NO RELIABLE PORTRAIT', media: [] }
+  return { code: 'NO_RELIABLE_PORTRAIT', label: 'NO RELIABLE PORTRAIT', media: [] }
 }
 
 export function getPersonPresentation(person) {
