@@ -19,6 +19,7 @@ function compatibleShape(base, translated, path, errors) {
   if (!isObject(translated)) return
   Object.entries(translated).forEach(([key, value]) => {
     if ((path === 'mn.chapters' || path === 'mn.people') && key === 'records') return
+    if (path === 'mn.events' && ['records','types'].includes(key)) return
     if (path === 'mn.people' && ['events','stories','politicalContexts'].includes(key)) return
     if (path === 'mn.personRelationships' && key === 'labels') return
     const baseValue = base?.[key]
@@ -28,7 +29,7 @@ function compatibleShape(base, translated, path, errors) {
   })
 }
 
-export function validateLocalization({ bundles, supportedLocales, cultureTopicIds, eraIds, chapters, evidenceCodes, terminology, people, dossierPersonIds, familyTreePersonIds, personRelationships, getPersonHref, eraI_IIDossierPersonIds, eraIII_IVDossierPersonIds, moduChanyuStory }) {
+export function validateLocalization({ bundles, supportedLocales, cultureTopicIds, eraIds, chapters, evidenceCodes, terminology, people, dossierPersonIds, familyTreePersonIds, personRelationships, getPersonHref, eraI_IIDossierPersonIds, eraIII_IVDossierPersonIds, moduChanyuStory, events, eventIdsEraI_II, eventIdsEraIII_IV, eventIdsEraV_VI, eventIdsEraVII_VIII }) {
   const errors = []
   const requiredCommon = ['navigation.home', 'navigation.eras', 'navigation.timeline', 'navigation.people', 'navigation.familyTree', 'navigation.culture', 'languages.english', 'languages.mongolian', 'accessibility.primaryNavigation', 'metadata.title']
   const requiredPersonPageUi = ['historicalBiography','referenceProfile','sourceBacked','researched','alsoKnownAs','shortHistory','lifeRole','whoWas','familyDynasty','dynasticRelationships','historicalContext','politicalWorldChapter','timeline','datedRecords','connectedPeople','familyChangingRelationships','connectedHistory','referenceRecords','sources','furtherReading','noPortraitExplanation']
@@ -41,6 +42,47 @@ export function validateLocalization({ bundles, supportedLocales, cultureTopicId
     inspectValues(bundle, locale, errors)
   })
   compatibleShape(bundles.en, bundles.mn, 'mn', errors)
+  const localizedEvents = bundles.mn?.events?.records ?? {}
+  const eraOneEvents = events.filter((event) => event.eraId === 'ancient-steppe' && ['researched','verified'].includes(event.status))
+  const eraTwoEvents = events.filter((event) => event.eraId === 'before-chinggis' && ['researched','verified'].includes(event.status))
+  const targetEvents = [...eraOneEvents, ...eraTwoEvents]
+  const eraThreeEvents = events.filter((event) => event.eraId === 'rise-empire' && ['researched','verified'].includes(event.status))
+  const eraFourEvents = events.filter((event) => event.eraId === 'mongol-world' && ['researched','verified'].includes(event.status))
+  const batchTwoEvents = [...eraThreeEvents, ...eraFourEvents]
+  const eraFiveEvents = events.filter((event) => event.eraId === 'northern-yuan' && ['researched','verified'].includes(event.status))
+  const eraSixEvents = events.filter((event) => event.eraId === 'qing-rule' && ['researched','verified'].includes(event.status))
+  const batchThreeEvents = [...eraFiveEvents, ...eraSixEvents]
+  const eraSevenEvents = events.filter((event) => event.eraId === 'revolution-socialist' && ['researched','verified'].includes(event.status))
+  const eraEightEvents = events.filter((event) => event.eraId === 'modern' && ['researched','verified'].includes(event.status))
+  const batchFourEvents = [...eraSevenEvents, ...eraEightEvents]
+  const publicEvents = events.filter((event) => ['researched','verified'].includes(event.status))
+  if (events.length !== 155) errors.push(`Expected 155 canonical events; found ${events.length}.`)
+  if (eraOneEvents.length !== 22) errors.push(`Expected 22 Era I events; found ${eraOneEvents.length}.`)
+  if (eraTwoEvents.length !== 9) errors.push(`Expected 9 Era II events; found ${eraTwoEvents.length}.`)
+  if (eraThreeEvents.length !== 33) errors.push(`Expected 33 Era III events; found ${eraThreeEvents.length}.`)
+  if (eraFourEvents.length !== 10) errors.push(`Expected 10 Era IV events; found ${eraFourEvents.length}.`)
+  if (eraFiveEvents.length !== 16) errors.push(`Expected 16 Era V events; found ${eraFiveEvents.length}.`)
+  if (eraSixEvents.length !== 13) errors.push(`Expected 13 Era VI events; found ${eraSixEvents.length}.`)
+  if (eraSevenEvents.length !== 28) errors.push(`Expected 28 Era VII events; found ${eraSevenEvents.length}.`)
+  if (eraEightEvents.length !== 23) errors.push(`Expected 23 Era VIII events; found ${eraEightEvents.length}.`)
+  if (eventIdsEraI_II.length !== 31 || new Set(eventIdsEraI_II).size !== 31 || targetEvents.some((event) => !eventIdsEraI_II.includes(event.id)) || eventIdsEraI_II.some((id) => !targetEvents.some((event) => event.id === id))) errors.push('Era I/II event localization target set does not match canonical events.')
+  if (eventIdsEraIII_IV.length !== 43 || new Set(eventIdsEraIII_IV).size !== 43 || batchTwoEvents.some((event) => !eventIdsEraIII_IV.includes(event.id)) || eventIdsEraIII_IV.some((id) => !batchTwoEvents.some((event) => event.id === id))) errors.push('Era III/IV event localization target set does not match canonical events.')
+  if (eventIdsEraV_VI.length !== 29 || new Set(eventIdsEraV_VI).size !== 29 || batchThreeEvents.some((event) => !eventIdsEraV_VI.includes(event.id)) || eventIdsEraV_VI.some((id) => !batchThreeEvents.some((event) => event.id === id))) errors.push('Era V/VI event localization target set does not match canonical events.')
+  if (eventIdsEraVII_VIII.length !== 51 || new Set(eventIdsEraVII_VIII).size !== 51 || batchFourEvents.some((event) => !eventIdsEraVII_VIII.includes(event.id)) || eventIdsEraVII_VIII.some((id) => !batchFourEvents.some((event) => event.id === id))) errors.push('Era VII/VIII event localization target set does not match canonical events.')
+  const allBatchEventIds = [...eventIdsEraI_II,...eventIdsEraIII_IV,...eventIdsEraV_VI,...eventIdsEraVII_VIII]
+  if (new Set(allBatchEventIds).size !== allBatchEventIds.length) errors.push('Duplicate Event ID across MN event locale batch modules.')
+  const forbiddenEventLocaleKeys = ['id','slug','eraId','eraIds','year','startYear','endYear','people','places','sites','objects','polities','relatedEvents','mapAvailable','experience3dAvailable','sources','sourceRefs','status','importance','type','confidence']
+  Object.entries(localizedEvents).forEach(([id, record]) => {
+    if (!events.some((event) => event.id === id)) errors.push(`Unknown localized Event ID: ${id}`)
+    forbiddenEventLocaleKeys.forEach((field) => { if (field in record) errors.push(`Forbidden canonical field in MN event locale: ${id}.${field}`) })
+  })
+  targetEvents.forEach((event) => ['title','dateDisplay','summary'].forEach((field) => { if (event[field] && !localizedEvents[event.id]?.[field]?.trim()) errors.push(`Missing MN Era I/II event ${field}: ${event.id}`) }))
+  batchTwoEvents.forEach((event) => ['title','dateDisplay','summary'].forEach((field) => { if (event[field] && !localizedEvents[event.id]?.[field]?.trim()) errors.push(`Missing MN Era III/IV event ${field}: ${event.id}`) }))
+  batchThreeEvents.forEach((event) => ['title','dateDisplay','summary'].forEach((field) => { if (event[field] && !localizedEvents[event.id]?.[field]?.trim()) errors.push(`Missing MN Era V/VI event ${field}: ${event.id}`) }))
+  batchFourEvents.forEach((event) => ['title','dateDisplay','summary'].forEach((field) => { if (event[field] && !localizedEvents[event.id]?.[field]?.trim()) errors.push(`Missing MN Era VII/VIII event ${field}: ${event.id}`) }))
+  publicEvents.forEach((event) => ['title','dateDisplay','summary'].forEach((field) => { if (event[field] && !localizedEvents[event.id]?.[field]?.trim()) errors.push(`Missing MN public event ${field}: ${event.id}`) }))
+  if (publicEvents.length !== 154) errors.push(`Expected 154 researched/verified canonical events; found ${publicEvents.length}.`)
+  if (Object.keys(localizedEvents).length !== 154) errors.push(`Expected 154 cumulative localized MN public events; found ${Object.keys(localizedEvents).length}.`)
   const localizedCultureTopics = bundles.mn?.culture?.topics ?? {}
   const localizedCultureIds = Object.keys(localizedCultureTopics)
   if (cultureTopicIds.length !== 5 || new Set(cultureTopicIds).size !== 5) errors.push('Expected exactly five unique canonical Culture topic IDs.')

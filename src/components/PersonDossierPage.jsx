@@ -15,8 +15,8 @@ import PersonRelationshipVisual from './PersonRelationshipVisual'
 import PersonStorySection from './PersonStorySection'
 import { MeanderLine } from './Ornament'
 import { useLocale } from '../i18n/useLocale'
-import { mergeLocaleValues } from '../i18n/locale'
 import { getLocalizedPerson, getLocalizedPersonStory } from '../data/personLocalization'
+import { getLocalizedEvent } from '../data/eventLocalization'
 
 function unique(records) {
   return [...new Map(records.map((record) => [record.id, record])).values()]
@@ -33,7 +33,7 @@ function PersonDossierPage({ person }) {
   const displayPerson = getLocalizedPerson(person, peopleLocale)
   const presentation = getPersonPresentation(displayPerson)
   const relatedIds = person.relatedEntityIds ?? []
-  const personEvents = sortChronologically(events.filter((event) => event.people?.includes(person.id) || person.eventIds?.includes(event.id) || relatedIds.includes(event.id))).map((event) => mergeLocaleValues(event, peopleLocale.events?.[event.id]))
+  const personEvents = sortChronologically(events.filter((event) => event.people?.includes(person.id) || person.eventIds?.includes(event.id) || relatedIds.includes(event.id))).map((event) => getLocalizedEvent(event, localeSection('events')))
   const relationships = personRelationships.filter((record) => record.personId === person.id || record.relatedPersonId === person.id).map((record) => ({
     ...record,
     person: people.find((candidate) => candidate.id === (record.personId === person.id ? record.relatedPersonId : record.personId)),

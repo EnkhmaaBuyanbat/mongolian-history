@@ -16,6 +16,8 @@ import { chapters } from '../data/chapters'
 import { terminologyMn } from '../data/locales/mn/terminology'
 import { peopleEn } from '../data/locales/en/people'
 import { peopleMn } from '../data/locales/mn/people'
+import { eventsEn } from '../data/locales/en/events'
+import { eventsMn } from '../data/locales/mn/events'
 import { familyTreeEn } from '../data/locales/en/familyTree'
 import { familyTreeMn } from '../data/locales/mn/familyTree'
 import { personRelationshipsEn } from '../data/locales/en/personRelationships'
@@ -28,12 +30,17 @@ import { getPersonHref } from '../data/entityRoutes'
 import { eraI_IIDossierPersonIds } from '../data/locales/mn/peopleDossiersEraI-II'
 import { moduChanyuStory } from '../data/personStories/moduChanyu'
 import { eraIII_IVDossierPersonIds } from '../data/locales/mn/peopleDossiersEraIII-IV'
+import { events } from '../data/events'
+import { eventIdsEraI_II } from '../data/locales/mn/eventsEraI-II'
+import { eventIdsEraIII_IV } from '../data/locales/mn/eventsEraIII-IV'
+import { eventIdsEraV_VI } from '../data/locales/mn/eventsEraV-VI'
+import { eventIdsEraVII_VIII } from '../data/locales/mn/eventsEraVII-VIII'
 import { SUPPORTED_LOCALES } from './locale'
 import { validateLocalization } from './validation'
 
 export const translations = {
-  en: { common: commonEn, home: homeEn, culture: cultureEn, eras: erasEn, chapters: chaptersEn, evidence: evidenceEn, people: peopleEn, familyTree: familyTreeEn, personRelationships: personRelationshipsEn },
-  mn: { common: commonMn, home: homeMn, culture: cultureMn, eras: erasMn, chapters: chaptersMn, evidence: evidenceMn, people: peopleMn, familyTree: familyTreeMn, personRelationships: personRelationshipsMn },
+  en: { common: commonEn, home: homeEn, culture: cultureEn, eras: erasEn, chapters: chaptersEn, events:eventsEn, evidence: evidenceEn, people: peopleEn, familyTree: familyTreeEn, personRelationships: personRelationshipsEn },
+  mn: { common: commonMn, home: homeMn, culture: cultureMn, eras: erasMn, chapters: chaptersMn, events:eventsMn, evidence: evidenceMn, people: peopleMn, familyTree: familyTreeMn, personRelationships: personRelationshipsMn },
 }
 
 const errors = validateLocalization({
@@ -52,6 +59,11 @@ const errors = validateLocalization({
   eraI_IIDossierPersonIds,
   moduChanyuStory,
   eraIII_IVDossierPersonIds,
+  events,
+  eventIdsEraI_II,
+  eventIdsEraIII_IV,
+  eventIdsEraV_VI,
+  eventIdsEraVII_VIII,
 })
 
 if (errors.length) throw new Error(`Localization validation failed:\n${errors.join('\n')}`)

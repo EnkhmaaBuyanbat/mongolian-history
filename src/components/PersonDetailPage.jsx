@@ -19,6 +19,7 @@ import { getPersonHeaderVisual } from '../data/pageVisualResolvers'
 import CinematicPageHeader from './CinematicPageHeader'
 import { getLocalizedPerson, getLocalizedRelationship, getParentChildIds } from '../data/personLocalization'
 import { useLocale } from '../i18n/useLocale'
+import { getLocalizedEvent } from '../data/eventLocalization'
 
 function uniqueRecords(records) {
   return [...new Map(records.map((record) => [record.id, record])).values()]
@@ -44,7 +45,7 @@ function PersonDetailPage({ person }) {
   const relatedIds = person.relatedEntityIds ?? []
   const personEvents = sortChronologically(events.filter(
     (event) => event.people?.includes(person.id) || relatedIds.includes(event.id),
-  ))
+  )).map((event) => getLocalizedEvent(event, localeSection('events')))
   const personPolities = uniqueRecords([
     ...polities.filter((polity) => person.polityIds?.includes(polity.id) || relatedIds.includes(polity.id)),
     ...polities.filter((polity) => personEvents.some((event) => event.polities?.includes(polity.id))),

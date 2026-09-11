@@ -16,6 +16,7 @@ import { getEraWorld } from '../data/eraWorlds'
 import { getReconstructionById } from '../data/reconstructionResolvers'
 import ReconstructionInfo from './ReconstructionInfo'
 import { useLocale } from '../i18n/useLocale'
+import { getLocalizedEvent } from '../data/eventLocalization'
 
 const entityGroups = [
   { key: 'polities', labelKey: 'politicalWorlds', records: polities },
@@ -37,6 +38,7 @@ function isResearched(record) {
 function EraDetailPage({ era }) {
   const { localeSection, localizedRecord } = useLocale()
   const { ui } = localeSection('eras')
+  const eventLocale = localeSection('events')
   const presentation = localizedRecord('eras', era.id, era)
   const recordsByGroup = useMemo(
     () =>
@@ -57,7 +59,7 @@ function EraDetailPage({ era }) {
     .map((chapterId) => chapters.find((chapter) => chapter.id === chapterId))
     .filter(Boolean)
 
-  const eraEvents = recordsByGroup.events
+  const eraEvents = recordsByGroup.events.map((event) => getLocalizedEvent(event, eventLocale))
     .filter((event) => event.importance === 'major')
   const eraIndex = eras.findIndex((item) => item.id === era.id)
   const previousEra = eras[eraIndex - 1]

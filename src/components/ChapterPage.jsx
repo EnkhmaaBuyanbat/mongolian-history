@@ -25,6 +25,7 @@ import { getEraWorld } from '../data/eraWorlds'
 import { getChapterPrimaryVisual } from '../data/chapterVisuals'
 import ChapterEducationalVisual from './ChapterEducationalVisual'
 import { useLocale } from '../i18n/useLocale'
+import { getLocalizedEvent } from '../data/eventLocalization'
 import { mergeLocaleValues } from '../i18n/locale'
 
 const sectionLabels = {
@@ -66,6 +67,7 @@ function resolveRecords(chapter) {
 function ChapterPage({ chapter }) {
   const { localeSection, localizedRecord } = useLocale()
   const { ui } = localeSection('chapters')
+  const eventLocale = localeSection('events')
   const presentation = localizedRecord('chapters', chapter.id, chapter)
   const [selectedSiteId, setSelectedSiteId] = useState(
     chapter.sections?.find((section) => section.mapSlot?.siteIds?.length)?.mapSlot.siteIds[0],
@@ -180,7 +182,8 @@ function ChapterPage({ chapter }) {
                   <div key={group.key} className="chapter-record-group">
                     <h3>{ui[group.labelKey]}</h3>
                     <div className="chapter-record-grid">
-                      {groupRecords.map((record) => {
+                      {groupRecords.map((canonicalRecord) => {
+                        const record = group.key === 'events' ? getLocalizedEvent(canonicalRecord, eventLocale) : canonicalRecord
                         const href = getEntityHref(record)
                         const card = (
                           <article className="chapter-record-card">
