@@ -14,9 +14,6 @@ function ChapterEducationalVisual({ assignment }) {
   if (!assignment || assignment.status !== 'READY') return null
   const media = assignment.mediaId ? getMediaById(assignment.mediaId) : null
   const canonicalReconstruction = assignment.reconstructionId ? getReconstructionById(assignment.reconstructionId) : null
-  const reconstruction = canonicalReconstruction
-    ? mergeLocaleValues(canonicalReconstruction, assignment.reconstructionPresentation)
-    : null
   const canonicalDiagram = assignment.diagramId ? getEducationalDiagram(assignment.diagramId) : null
   const diagram = canonicalDiagram
     ? mergeLocaleValues(canonicalDiagram, assignment.diagramPresentation)
@@ -37,10 +34,10 @@ function ChapterEducationalVisual({ assignment }) {
         </div>
       ) : null}
       {diagram ? <EducationalVisual {...diagram} ariaDescription={assignment.alt} /> : null}
-      {isApprovedReconstruction(reconstruction) ? (
+      {isApprovedReconstruction(canonicalReconstruction) ? (
         <div className="chapter-primary-reconstruction">
-          <img src={reconstruction.asset.largePath ?? reconstruction.asset.mediumPath} alt={assignment.alt} loading="lazy" />
-          <ReconstructionInfo reconstruction={reconstruction} />
+          <img src={canonicalReconstruction.asset.largePath ?? canonicalReconstruction.asset.mediumPath} alt={assignment.alt} loading="lazy" />
+          <ReconstructionInfo reconstruction={canonicalReconstruction} presentation={assignment.reconstructionPresentation} />
         </div>
       ) : null}
       <small className="chapter-primary-visual-sources">{assignment.evidenceLabel}</small>

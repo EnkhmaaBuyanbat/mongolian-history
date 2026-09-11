@@ -6,8 +6,10 @@ import { heroScenes } from '../data/heroScenes'
 import { MeanderLine } from './Ornament'
 import { useLocale } from '../i18n/useLocale'
 import { toEvidenceCode } from '../i18n/locale'
+import { getLocalizedHeroScene, getLocalizedReconstruction } from '../data/visualLocalization'
 
-function resolveScene(scene) {
+function resolveScene(canonicalScene, heroLocale, reconstructionLocale) {
+  const scene = getLocalizedHeroScene(canonicalScene, heroLocale)
   if (!scene || Boolean(scene.mediaId) === Boolean(scene.reconstructionId)) return null
 
   if (scene.mediaId) {
@@ -25,8 +27,9 @@ function resolveScene(scene) {
     }
   }
 
-  const reconstruction = getReconstructionById(scene.reconstructionId)
-  if (!scene.approved || !isApprovedReconstruction(reconstruction)) return null
+  const canonicalReconstruction = getReconstructionById(scene.reconstructionId)
+  if (!scene.approved || !isApprovedReconstruction(canonicalReconstruction)) return null
+  const reconstruction = getLocalizedReconstruction(canonicalReconstruction, reconstructionLocale)
   return {
     scene,
     asset: reconstruction.asset,
@@ -40,11 +43,16 @@ function resolveScene(scene) {
 }
 
 function Hero() {
-  const { t } = useLocale()
+  const { t, localeSection } = useLocale()
   const copy = t('home.hero')
+  const heroLocale = localeSection('heroScenes')
+  const reconstructionLocale = localeSection('reconstructions')
   const heroRef = useRef(null)
   const { layerStyle, reduced } = useHeroParallax(heroRef)
-  const availableScenes = useMemo(() => heroScenes.filter((scene) => scene.homepageEnabled).map(resolveScene).filter(Boolean), [])
+  const availableScenes = useMemo(
+    () => heroScenes.filter((scene) => scene.homepageEnabled).map((scene) => resolveScene(scene, heroLocale, reconstructionLocale)).filter(Boolean),
+    [heroLocale, reconstructionLocale],
+  )
   const [sceneIndex, setSceneIndex] = useState(0)
   const activeVisual = availableScenes[sceneIndex] ?? availableScenes[0]
   const activeScene = activeVisual?.scene

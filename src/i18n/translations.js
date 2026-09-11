@@ -48,10 +48,20 @@ import { eventIdsEraV_VI } from '../data/locales/mn/eventsEraV-VI'
 import { eventIdsEraVII_VIII } from '../data/locales/mn/eventsEraVII-VIII'
 import { SUPPORTED_LOCALES } from './locale'
 import { validateLocalization } from './validation'
+import { reconstructionsEn } from '../data/locales/en/reconstructions'
+import { reconstructionsMn } from '../data/locales/mn/reconstructions'
+import { eraWorldsEn } from '../data/locales/en/eraWorlds'
+import { eraWorldsMn } from '../data/locales/mn/eraWorlds'
+import { heroScenesEn } from '../data/locales/en/heroScenes'
+import { heroScenesMn } from '../data/locales/mn/heroScenes'
+import { reconstructions } from '../data/reconstructions'
+import { eraWorlds } from '../data/eraWorlds'
+import { heroScenes } from '../data/heroScenes'
+import { getLocalizedReconstruction, getLocalizedEraWorld, getLocalizedHeroScene } from '../data/visualLocalization'
 
 export const translations = {
-  en: { common: commonEn, home: homeEn, culture: cultureEn, eras: erasEn, chapters: chaptersEn, events:eventsEn, entities:entitiesEn, evidence: evidenceEn, people: peopleEn, familyTree: familyTreeEn, personRelationships: personRelationshipsEn },
-  mn: { common: commonMn, home: homeMn, culture: cultureMn, eras: erasMn, chapters: chaptersMn, events:eventsMn, entities:entitiesMn, evidence: evidenceMn, people: peopleMn, familyTree: familyTreeMn, personRelationships: personRelationshipsMn },
+  en: { common: commonEn, home: homeEn, culture: cultureEn, eras: erasEn, chapters: chaptersEn, events:eventsEn, entities:entitiesEn, reconstructions:reconstructionsEn, eraWorlds:eraWorldsEn, heroScenes:heroScenesEn, evidence: evidenceEn, people: peopleEn, familyTree: familyTreeEn, personRelationships: personRelationshipsEn },
+  mn: { common: commonMn, home: homeMn, culture: cultureMn, eras: erasMn, chapters: chaptersMn, events:eventsMn, entities:entitiesMn, reconstructions:reconstructionsMn, eraWorlds:eraWorldsMn, heroScenes:heroScenesMn, evidence: evidenceMn, people: peopleMn, familyTree: familyTreeMn, personRelationships: personRelationshipsMn },
 }
 
 const errors = validateLocalization({
@@ -84,6 +94,12 @@ const errors = validateLocalization({
   sites,
   objects,
   getLocalizedEntity,
+  reconstructions,
+  eraWorlds,
+  heroScenes,
+  getLocalizedReconstruction,
+  getLocalizedEraWorld,
+  getLocalizedHeroScene,
 })
 
 if (errors.length) throw new Error(`Localization validation failed:\n${errors.join('\n')}`)

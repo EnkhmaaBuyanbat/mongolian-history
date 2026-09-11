@@ -1,5 +1,6 @@
 import { toEvidenceCode } from '../i18n/locale'
 import { useLocale } from '../i18n/useLocale'
+import { getLocalizedReconstructionVisual } from '../data/visualLocalization'
 
 function CinematicPageHeader({
   variant,
@@ -21,7 +22,8 @@ function CinematicPageHeader({
   children,
   dataAttributes = {},
 }) {
-  const { t } = useLocale()
+  const { t, localeSection } = useLocale()
+  const displayVisual = getLocalizedReconstructionVisual(visual, localeSection('reconstructions'))
   const assetPath = visual?.asset?.mediumPath ?? visual?.asset?.largePath ?? visual?.asset?.mobilePath
 
   return (
@@ -62,8 +64,8 @@ function CinematicPageHeader({
       </div>
       {visual ? (
         <div className="cinematic-page-header-visual-record">
-          <span>{t(`evidence.${toEvidenceCode(visual.label)}`) || visual.label}</span>
-          <small>{visual.caption}</small>
+          <span>{t(`evidence.${toEvidenceCode(visual.label)}`) || displayVisual.label}</span>
+          <small>{displayVisual.caption}</small>
           {visual.sourceUrl ? <a href={visual.sourceUrl} target="_blank" rel="noopener noreferrer">{visual.attribution}</a> : null}
         </div>
       ) : null}

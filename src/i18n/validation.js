@@ -21,6 +21,7 @@ function compatibleShape(base, translated, path, errors) {
     if ((path === 'mn.chapters' || path === 'mn.people') && key === 'records') return
     if (path === 'mn.events' && ['records','types'].includes(key)) return
     if (path === 'mn.entities' && ['records','types'].includes(key)) return
+    if (['mn.reconstructions','mn.eraWorlds','mn.heroScenes'].includes(path) && key === 'records') return
     if (path === 'mn.people' && ['events','stories','politicalContexts'].includes(key)) return
     if (path === 'mn.personRelationships' && key === 'labels') return
     const baseValue = base?.[key]
@@ -30,7 +31,7 @@ function compatibleShape(base, translated, path, errors) {
   })
 }
 
-export function validateLocalization({ bundles, supportedLocales, cultureTopicIds, eraIds, chapters, evidenceCodes, terminology, people, dossierPersonIds, familyTreePersonIds, personRelationships, getPersonHref, eraI_IIDossierPersonIds, eraIII_IVDossierPersonIds, moduChanyuStory, events, eventIdsEraI_II, eventIdsEraIII_IV, eventIdsEraV_VI, eventIdsEraVII_VIII, politiesMn, polities, placesMn, places, sitesMn, objectsMn, sites, objects, getLocalizedEntity }) {
+export function validateLocalization({ bundles, supportedLocales, cultureTopicIds, eraIds, chapters, evidenceCodes, terminology, people, dossierPersonIds, familyTreePersonIds, personRelationships, getPersonHref, eraI_IIDossierPersonIds, eraIII_IVDossierPersonIds, moduChanyuStory, events, eventIdsEraI_II, eventIdsEraIII_IV, eventIdsEraV_VI, eventIdsEraVII_VIII, politiesMn, polities, placesMn, places, sitesMn, objectsMn, sites, objects, getLocalizedEntity, reconstructions, eraWorlds, heroScenes, getLocalizedReconstruction, getLocalizedEraWorld, getLocalizedHeroScene }) {
   const errors = []
   const requiredCommon = ['navigation.home', 'navigation.eras', 'navigation.timeline', 'navigation.people', 'navigation.familyTree', 'navigation.culture', 'languages.english', 'languages.mongolian', 'accessibility.primaryNavigation', 'metadata.title']
   const requiredPersonPageUi = ['historicalBiography','referenceProfile','sourceBacked','researched','alsoKnownAs','shortHistory','lifeRole','whoWas','familyDynasty','dynasticRelationships','historicalContext','politicalWorldChapter','timeline','datedRecords','connectedPeople','familyChangingRelationships','connectedHistory','referenceRecords','sources','furtherReading','noPortraitExplanation']
@@ -122,6 +123,30 @@ export function validateLocalization({ bundles, supportedLocales, cultureTopicId
     })
     if (resolved?.sourceRefs !== canonical.sourceRefs || resolved?.relatedEntityIds !== canonical.relatedEntityIds) errors.push(`Entity resolver changed canonical references: ${canonical.id}`)
   })
+  const forbiddenVisualFields = ['id','slug','eraId','chapterIds','personIds','eventIds','placeIds','mediaId','mediaRefs','reconstructionId','asset','image','sourceRefs','createdWith','creationDate','editorialStatus','approved','homepageEnabled','position','mobilePosition','desktopPosition','overlay','overlayStrength','fallbackStyle','visualStatus','worldType','depthProfile','future3dExperienceId']
+  const validateVisualRecords = (name, canonicalRecords, localeBundle, resolver, requiredFields) => {
+    const records = localeBundle?.records ?? {}
+    if (Object.keys(records).length !== canonicalRecords.length) errors.push(`Expected ${canonicalRecords.length} localized MN ${name}; found ${Object.keys(records).length}.`)
+    Object.entries(records).forEach(([id, presentation]) => {
+      const canonical = canonicalRecords.find((record) => record.id === id)
+      if (!canonical) errors.push(`Unknown localized ${name} ID: ${id}`)
+      forbiddenVisualFields.forEach((field) => { if (field in presentation) errors.push(`Forbidden MN ${name} locale field: ${id}.${field}`) })
+      inspectValues(presentation, `mn.${name}.records.${id}`, errors)
+      requiredFields.filter((field) => canonical?.[field] != null).forEach((field) => {
+        const value = presentation[field]
+        if (Array.isArray(canonical[field]) ? (!Array.isArray(value) || value.length !== canonical[field].length || value.some((item) => !item?.trim())) : !value?.trim()) errors.push(`Missing MN ${name} ${field}: ${id}`)
+      })
+      if (canonical) {
+        const resolved = resolver?.(canonical, localeBundle)
+        if (resolved?.title !== (presentation.title ?? canonical.title)) errors.push(`${name} resolver did not apply MN presentation: ${id}`)
+        ;['id','eraId','mediaId','reconstructionId','approved'].forEach((field) => { if (resolved?.[field] !== canonical[field]) errors.push(`${name} resolver changed canonical ${field}: ${id}`) })
+        if (resolved?.asset !== canonical.asset || resolved?.sourceRefs !== canonical.sourceRefs) errors.push(`${name} resolver changed canonical asset/source references: ${id}`)
+      }
+    })
+  }
+  validateVisualRecords('reconstructions', reconstructions, bundles.mn.reconstructions, getLocalizedReconstruction, ['title','period','dateDisplay','summary','historicalBasis','knownEvidence','uncertainElements','scenePromptSummary','evidenceLabel','historicalCaution'])
+  validateVisualRecords('eraWorlds', eraWorlds, bundles.mn.eraWorlds, getLocalizedEraWorld, ['evidenceLabel','shortDescription','historicalBasis','knownEvidence','uncertainElements','promptBrief'])
+  validateVisualRecords('heroScenes', heroScenes, bundles.mn.heroScenes, getLocalizedHeroScene, ['title','subtitle','caption','evidenceLabel'])
   const localizedEvents = bundles.mn?.events?.records ?? {}
   const eraOneEvents = events.filter((event) => event.eraId === 'ancient-steppe' && ['researched','verified'].includes(event.status))
   const eraTwoEvents = events.filter((event) => event.eraId === 'before-chinggis' && ['researched','verified'].includes(event.status))

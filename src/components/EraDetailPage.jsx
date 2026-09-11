@@ -19,6 +19,7 @@ import { useLocale } from '../i18n/useLocale'
 import { getLocalizedEvent } from '../data/eventLocalization'
 import { getLocalizedEntity } from '../data/entityLocalization'
 import { getLocalizedPerson } from '../data/personLocalization'
+import { getLocalizedEraWorld } from '../data/visualLocalization'
 
 const entityGroups = [
   { key: 'polities', labelKey: 'politicalWorlds', records: polities },
@@ -70,7 +71,7 @@ function EraDetailPage({ era }) {
   const nextEra = eras[eraIndex + 1]
   const eraHref = (item) => `/eras/${item.slug ?? item.id}`
   const headerVisual = getEraHeaderVisual(era.id)
-  const eraWorld = getEraWorld(era.id)
+  const eraWorld = getLocalizedEraWorld(getEraWorld(era.id), localeSection('eraWorlds'))
   const eraReconstruction = getReconstructionById(eraWorld?.reconstructionId)
   const firstChapter = eraChapters[0]
   const headerActions = [
