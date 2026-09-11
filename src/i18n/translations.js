@@ -64,10 +64,16 @@ import { media } from '../data/media'
 import { getLocalizedMedia } from '../data/mediaLocalization'
 import { chapterVisualAssignments, educationalDiagrams } from '../data/chapterVisuals'
 import { getLocalizedEducationalVisual } from '../data/educationalVisualLocalization'
+import { supportingEn } from '../data/locales/en/supporting'
+import { supportingMn } from '../data/locales/mn/supporting'
+import { campaigns } from '../data/campaigns'
+import { organizations } from '../data/organizations'
+import { companies } from '../data/companies'
+import { getLocalizedCampaign, getLocalizedOrganization, getLocalizedCompany } from '../data/supportingLocalization'
 
 export const translations = {
-  en: { common: commonEn, home: homeEn, culture: cultureEn, eras: erasEn, chapters: chaptersEn, events:eventsEn, entities:entitiesEn, reconstructions:reconstructionsEn, eraWorlds:eraWorldsEn, heroScenes:heroScenesEn, media:mediaEn, evidence: evidenceEn, people: peopleEn, familyTree: familyTreeEn, personRelationships: personRelationshipsEn },
-  mn: { common: commonMn, home: homeMn, culture: cultureMn, eras: erasMn, chapters: chaptersMn, events:eventsMn, entities:entitiesMn, reconstructions:reconstructionsMn, eraWorlds:eraWorldsMn, heroScenes:heroScenesMn, media:mediaMn, evidence: evidenceMn, people: peopleMn, familyTree: familyTreeMn, personRelationships: personRelationshipsMn },
+  en: { common: commonEn, home: homeEn, culture: cultureEn, eras: erasEn, chapters: chaptersEn, events:eventsEn, entities:entitiesEn, reconstructions:reconstructionsEn, eraWorlds:eraWorldsEn, heroScenes:heroScenesEn, media:mediaEn, evidence:evidenceEn, people:peopleEn, familyTree:familyTreeEn, personRelationships:personRelationshipsEn, supporting:supportingEn },
+  mn: { common: commonMn, home: homeMn, culture: cultureMn, eras: erasMn, chapters: chaptersMn, events:eventsMn, entities:entitiesMn, reconstructions:reconstructionsMn, eraWorlds:eraWorldsMn, heroScenes:heroScenesMn, media:mediaMn, evidence:evidenceMn, people:peopleMn, familyTree:familyTreeMn, personRelationships:personRelationshipsMn, supporting:supportingMn },
 }
 
 const errors = validateLocalization({
@@ -111,6 +117,12 @@ const errors = validateLocalization({
   chapterVisualAssignments,
   educationalDiagrams,
   getLocalizedEducationalVisual,
+  campaigns,
+  organizations,
+  companies,
+  getLocalizedCampaign,
+  getLocalizedOrganization,
+  getLocalizedCompany,
 })
 
 if (errors.length) throw new Error(`Localization validation failed:\n${errors.join('\n')}`)

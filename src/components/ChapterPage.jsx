@@ -30,6 +30,7 @@ import { mergeLocaleValues } from '../i18n/locale'
 import { getLocalizedEntity } from '../data/entityLocalization'
 import { getLocalizedPerson } from '../data/personLocalization'
 import { getLocalizedEducationalVisual } from '../data/educationalVisualLocalization'
+import { getLocalizedCampaign, getLocalizedOrganization, getLocalizedCompany } from '../data/supportingLocalization'
 
 const sectionLabels = {
   'origins-and-context': 'Origins and Context',
@@ -73,6 +74,7 @@ function ChapterPage({ chapter }) {
   const eventLocale = localeSection('events')
   const entityLocale = localeSection('entities')
   const peopleLocale = localeSection('people')
+  const supportingLocale = localeSection('supporting')
   const presentation = localizedRecord('chapters', chapter.id, chapter)
   const [selectedSiteId, setSelectedSiteId] = useState(
     chapter.sections?.find((section) => section.mapSlot?.siteIds?.length)?.mapSlot.siteIds[0],
@@ -98,7 +100,9 @@ function ChapterPage({ chapter }) {
         paragraphs: [],
       }))
   const chapterSources = sources.filter((source) => chapter.sourceIds?.includes(source.id))
-  const chapterCampaigns = campaigns.filter((campaign) => chapter.campaignIds?.includes(campaign.id))
+  const chapterCampaigns = campaigns
+    .filter((campaign) => chapter.campaignIds?.includes(campaign.id))
+    .map((campaign) => getLocalizedCampaign(campaign, supportingLocale))
   const canonicalPrimaryVisual = getChapterPrimaryVisual(chapter.id)
   const primaryVisual = canonicalPrimaryVisual
     ? mergeLocaleValues(canonicalPrimaryVisual, presentation.primaryVisualPresentation)
@@ -159,7 +163,7 @@ function ChapterPage({ chapter }) {
               <section className="chapter-related">
                 <div className="chapter-section-heading"><p className="section-label">{ui.campaignContext}</p><h2>{ui.connectedCampaigns}</h2></div>
                 <div className="chapter-record-grid">
-                  {chapterCampaigns.map((campaign) => <article key={campaign.id} className="chapter-record-card"><small>{campaign.dateDisplay} · {campaign.routeConfidence} ROUTE</small><strong>{campaign.title}</strong><p>{campaign.summary}</p>{campaign.stages?.length ? <ol>{campaign.stages.map((stage) => <li key={stage.title}><b>{stage.title}:</b> {stage.text}</li>)}</ol> : null}<p>{campaign.caution}</p></article>)}
+                  {chapterCampaigns.map((campaign) => <article key={campaign.id} className="chapter-record-card"><small>{campaign.dateDisplay} · {campaign.routeConfidence} {supportingLocale.ui.route}</small><strong>{campaign.title}</strong><p>{campaign.summary}</p>{campaign.stages?.length ? <ol>{campaign.stages.map((stage, index) => <li key={`${campaign.id}-stage-${index}`}><b>{stage.title}:</b> {stage.text}</li>)}</ol> : null}<p>{campaign.caution}</p></article>)}
                 </div>
               </section>
             ) : null}
@@ -202,12 +206,16 @@ function ChapterPage({ chapter }) {
                             ? getLocalizedPerson(canonicalRecord, peopleLocale)
                             : ['polities', 'sites', 'places', 'objects'].includes(group.key)
                               ? getLocalizedEntity(canonicalRecord, entityLocale)
-                              : canonicalRecord
+                              : group.key === 'organizations'
+                                ? getLocalizedOrganization(canonicalRecord, supportingLocale)
+                                : group.key === 'companies'
+                                  ? getLocalizedCompany(canonicalRecord, supportingLocale)
+                                  : canonicalRecord
                         const href = getEntityHref(record)
                         const card = (
                           <article className="chapter-record-card">
                           <strong>{record.title}</strong>
-                          {record.type ? <small>{record.type}</small> : null}
+                          {(record.type ?? record.companyType) ? <small>{record.type ?? record.companyType}</small> : null}
                           {!href ? <small>{ui.referenceOnly}</small> : null}
                           </article>
                         )

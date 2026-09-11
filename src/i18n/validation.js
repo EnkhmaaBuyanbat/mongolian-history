@@ -21,6 +21,7 @@ function compatibleShape(base, translated, path, errors) {
     if ((path === 'mn.chapters' || path === 'mn.people') && key === 'records') return
     if (path === 'mn.events' && ['records','types'].includes(key)) return
     if (path === 'mn.entities' && ['records','types'].includes(key)) return
+    if (path.startsWith('mn.supporting.') && ['records','types','routeConfidence','treatments'].includes(key)) return
     if (['mn.reconstructions','mn.eraWorlds','mn.heroScenes','mn.media'].includes(path) && key === 'records') return
     if (path === 'mn.people' && ['events','stories','politicalContexts'].includes(key)) return
     if (path === 'mn.personRelationships' && key === 'labels') return
@@ -31,7 +32,7 @@ function compatibleShape(base, translated, path, errors) {
   })
 }
 
-export function validateLocalization({ bundles, supportedLocales, cultureTopicIds, eraIds, chapters, evidenceCodes, terminology, people, dossierPersonIds, familyTreePersonIds, personRelationships, getPersonHref, eraI_IIDossierPersonIds, eraIII_IVDossierPersonIds, moduChanyuStory, events, eventIdsEraI_II, eventIdsEraIII_IV, eventIdsEraV_VI, eventIdsEraVII_VIII, politiesMn, polities, placesMn, places, sitesMn, objectsMn, sites, objects, getLocalizedEntity, reconstructions, eraWorlds, heroScenes, getLocalizedReconstruction, getLocalizedEraWorld, getLocalizedHeroScene, media, getLocalizedMedia, chapterVisualAssignments, educationalDiagrams, getLocalizedEducationalVisual }) {
+export function validateLocalization({ bundles, supportedLocales, cultureTopicIds, eraIds, chapters, evidenceCodes, terminology, people, dossierPersonIds, familyTreePersonIds, personRelationships, getPersonHref, eraI_IIDossierPersonIds, eraIII_IVDossierPersonIds, moduChanyuStory, events, eventIdsEraI_II, eventIdsEraIII_IV, eventIdsEraV_VI, eventIdsEraVII_VIII, politiesMn, polities, placesMn, places, sitesMn, objectsMn, sites, objects, getLocalizedEntity, reconstructions, eraWorlds, heroScenes, getLocalizedReconstruction, getLocalizedEraWorld, getLocalizedHeroScene, media, getLocalizedMedia, chapterVisualAssignments, educationalDiagrams, getLocalizedEducationalVisual, campaigns, organizations, companies, getLocalizedCampaign, getLocalizedOrganization, getLocalizedCompany }) {
   const errors = []
   const requiredCommon = ['navigation.home', 'navigation.eras', 'navigation.timeline', 'navigation.people', 'navigation.familyTree', 'navigation.culture', 'languages.english', 'languages.mongolian', 'accessibility.primaryNavigation', 'metadata.title']
   const requiredPersonPageUi = ['historicalBiography','referenceProfile','sourceBacked','researched','alsoKnownAs','shortHistory','lifeRole','whoWas','familyDynasty','dynasticRelationships','historicalContext','politicalWorldChapter','timeline','datedRecords','connectedPeople','familyChangingRelationships','connectedHistory','referenceRecords','sources','furtherReading','noPortraitExplanation']
@@ -44,6 +45,52 @@ export function validateLocalization({ bundles, supportedLocales, cultureTopicId
     inspectValues(bundle, locale, errors)
   })
   compatibleShape(bundles.en, bundles.mn, 'mn', errors)
+  const supporting = bundles.mn?.supporting
+  const campaignPresentations = supporting?.campaigns?.records ?? {}
+  const organizationPresentations = supporting?.organizations?.records ?? {}
+  const companyPresentations = supporting?.companies?.records ?? {}
+  const publicOrganizations = organizations.filter((record) => ['researched','verified'].includes(record.status))
+  const publicCompanies = companies.filter((record) => ['researched','verified'].includes(record.status))
+  const forbiddenCampaignFields = ['id','slug','startYear','endYear','politicalActors','commanders','places','events','sourceIds','status','routeConfidence','treatment','coordinates','geometry','path']
+  const forbiddenOrganizationFields = ['id','slug','alternativeNames','type','startYear','endYear','eraIds','status','predecessorIds','successorIds','leaderIds','memberIds','relatedEventIds','relatedClaimIds','relatedPlaceIds','sourceRefs','detailAvailable','timelineAvailable']
+  const forbiddenCompanyFields = ['id','slug','alternativeNames','companyType','foundedYear','endYear','eraIds','status','predecessorIds','successorIds','relatedPersonIds','relatedCompanyIds','relatedEventIds','relatedClaimIds','relatedPlaceIds','relatedOrganizationIds','sourceRefs','detailAvailable','timelineAvailable']
+  if (campaigns.length !== 7 || Object.keys(campaignPresentations).length !== 7) errors.push(`Expected 7 canonical/public campaigns and 7 MN presentations; found ${campaigns.length}/${Object.keys(campaignPresentations).length}.`)
+  if (organizations.length !== 16 || publicOrganizations.length !== 15) errors.push(`Expected 16 canonical organizations and 15 public organizations; found ${organizations.length}/${publicOrganizations.length}.`)
+  if (Object.keys(organizationPresentations).length !== 16) errors.push(`Expected MN presentations for 15 public organizations plus the security research umbrella; found ${Object.keys(organizationPresentations).length}.`)
+  if (companies.length !== 7 || publicCompanies.length !== 7 || Object.keys(companyPresentations).length !== 7) errors.push(`Expected 7 canonical/public companies and 7 MN presentations; found ${companies.length}/${publicCompanies.length}/${Object.keys(companyPresentations).length}.`)
+  Object.entries(campaignPresentations).forEach(([id, presentation]) => {
+    const canonical = campaigns.find((record) => record.id === id)
+    if (!canonical) errors.push(`Unknown localized campaign ID: ${id}`)
+    forbiddenCampaignFields.forEach((field) => { if (field in presentation) errors.push(`Forbidden MN campaign locale field: ${id}.${field}`) })
+    ;['title','dateDisplay','theater','summary','caution'].forEach((field) => { if (canonical?.[field] && !presentation[field]?.trim()) errors.push(`Missing MN campaign ${field}: ${id}`) })
+    if (canonical?.stages?.length !== presentation.stages?.length) errors.push(`Incomplete MN campaign stages: ${id}`)
+    canonical?.stages?.forEach((stage, index) => ['title','text'].forEach((field) => { if (stage[field] && !presentation.stages?.[index]?.[field]?.trim()) errors.push(`Missing MN campaign stage ${field}: ${id}[${index}]`) }))
+    const resolved = canonical && getLocalizedCampaign?.(canonical, supporting)
+    ;['id','startYear','endYear','politicalActors','commanders','places','events','sourceIds'].forEach((field) => { if (resolved?.[field] !== canonical?.[field]) errors.push(`Campaign resolver changed canonical ${field}: ${id}`) })
+  })
+  Object.entries(organizationPresentations).forEach(([id, presentation]) => {
+    const canonical = organizations.find((record) => record.id === id)
+    if (!canonical) errors.push(`Unknown localized organization ID: ${id}`)
+    forbiddenOrganizationFields.forEach((field) => { if (field in presentation) errors.push(`Forbidden MN organization locale field: ${id}.${field}`) })
+    ;['title','period','summary','evidenceCaution'].forEach((field) => { if (canonical?.[field] && !presentation[field]?.trim()) errors.push(`Missing MN organization ${field}: ${id}`) })
+    if (canonical?.nameHistory?.length && canonical.nameHistory.length !== presentation.nameHistory?.length) errors.push(`Incomplete MN organization name history: ${id}`)
+    canonical?.nameHistory?.forEach((item, index) => ['title','context'].forEach((field) => { if (item[field] && !presentation.nameHistory?.[index]?.[field]?.trim()) errors.push(`Missing MN organization name-history ${field}: ${id}[${index}]`) }))
+    const resolved = canonical && getLocalizedOrganization?.(canonical, supporting)
+    ;['id','slug','startYear','endYear','eraIds','status','predecessorIds','successorIds','leaderIds','memberIds','relatedEventIds','relatedClaimIds','relatedPlaceIds','sourceRefs'].forEach((field) => { if (resolved?.[field] !== canonical?.[field]) errors.push(`Organization resolver changed canonical ${field}: ${id}`) })
+    canonical?.nameHistory?.forEach((item, index) => ['startYear','endYear'].forEach((field) => { if (resolved?.nameHistory?.[index]?.[field] !== item[field]) errors.push(`Organization resolver changed name-history ${field}: ${id}[${index}]`) }))
+  })
+  publicOrganizations.forEach((record) => { if (!organizationPresentations[record.id]) errors.push(`Missing MN public organization: ${record.id}`) })
+  Object.entries(companyPresentations).forEach(([id, presentation]) => {
+    const canonical = companies.find((record) => record.id === id)
+    if (!canonical) errors.push(`Unknown localized company ID: ${id}`)
+    forbiddenCompanyFields.forEach((field) => { if (field in presentation) errors.push(`Forbidden MN company locale field: ${id}.${field}`) })
+    ;['title','period','summary','evidenceCaution'].forEach((field) => { if (canonical?.[field] && !presentation[field]?.trim()) errors.push(`Missing MN company ${field}: ${id}`) })
+    if (canonical?.ownershipHistory?.length !== presentation.ownershipHistory?.length) errors.push(`Incomplete MN company ownership history: ${id}`)
+    canonical?.ownershipHistory?.forEach((item, index) => ['period','description'].forEach((field) => { if (item[field] && !presentation.ownershipHistory?.[index]?.[field]?.trim()) errors.push(`Missing MN company ownership-history ${field}: ${id}[${index}]`) }))
+    const resolved = canonical && getLocalizedCompany?.(canonical, supporting)
+    ;['id','slug','foundedYear','endYear','eraIds','status','predecessorIds','successorIds','relatedPersonIds','relatedCompanyIds','relatedEventIds','relatedClaimIds','relatedPlaceIds','relatedOrganizationIds','sourceRefs'].forEach((field) => { if (resolved?.[field] !== canonical?.[field]) errors.push(`Company resolver changed canonical ${field}: ${id}`) })
+  })
+  publicCompanies.forEach((record) => { if (!companyPresentations[record.id]) errors.push(`Missing MN public company: ${record.id}`) })
   const forbiddenPolityLocaleKeys = ['id','slug','eraId','eraIds','startYear','endYear','relatedEntityIds','sourceIds','sourceRefs','status','confidence','mediaId','mapAvailable','coordinates','geometry']
   if (polities.length !== 47) errors.push(`Expected 47 canonical polities; found ${polities.length}.`)
   if (polities.filter((polity) => ['researched','verified'].includes(polity.status)).length !== 47) errors.push('Expected 47 public canonical polities.')
