@@ -11,13 +11,17 @@ export function getParentChildIds(record) {
 }
 export function getLocalizedPerson(person, localeBundle = {}) {
   const translated = localeBundle.records?.[person.id] ?? {}
-  const { biographySections:sectionPresentation, ...translatedFields } = translated
+  const { biographySections:sectionPresentation, characterAndReputation:reputationPresentation, ...translatedFields } = translated
   const localized = mergeLocaleValues(person, translatedFields)
   const biographySections = person.biographySections?.map((section) => mergeLocaleValues(section, sectionPresentation?.[section.id]))
+  const characterAndReputation = person.characterAndReputation ? {
+    ...mergeLocaleValues(person.characterAndReputation, { ...reputationPresentation, traits:undefined }),
+    traits:person.characterAndReputation.traits.map((trait,index) => mergeLocaleValues(trait,reputationPresentation?.traits?.[index])),
+  } : undefined
   const displayName = translated.displayName?.trim() || person.title
   const localizedAliases = translated.alternativeNames?.filter((name) => name?.trim()) ?? []
   const canonicalAliases = person.alternativeNames ?? []
-  return { ...localized, ...(biographySections ? { biographySections } : {}), canonicalName: person.title, displayName, title: displayName, localizedAlternativeNames: localizedAliases, canonicalAlternativeNames: canonicalAliases, searchableNames: [...new Set([displayName, ...localizedAliases, person.title, ...canonicalAliases, ...(person.nameVariants ?? [])])] }
+  return { ...localized, ...(biographySections ? { biographySections } : {}), ...(characterAndReputation ? { characterAndReputation } : {}), canonicalName: person.title, displayName, title: displayName, localizedAlternativeNames: localizedAliases, canonicalAlternativeNames: canonicalAliases, searchableNames: [...new Set([displayName, ...localizedAliases, person.title, ...canonicalAliases, ...(person.nameVariants ?? [])])] }
 }
 export function getLocalizedPersonStory(story, presentation = {}) {
   const { sections:sectionPresentation, ...translatedFields } = presentation

@@ -27,6 +27,7 @@ import { personRelationships } from '../data/personRelationships'
 import { getPersonHref } from '../data/entityRoutes'
 import { eraI_IIDossierPersonIds } from '../data/locales/mn/peopleDossiersEraI-II'
 import { moduChanyuStory } from '../data/personStories/moduChanyu'
+import { eraIII_IVDossierPersonIds } from '../data/locales/mn/peopleDossiersEraIII-IV'
 import { SUPPORTED_LOCALES } from './locale'
 import { validateLocalization } from './validation'
 
@@ -50,6 +51,7 @@ const errors = validateLocalization({
   getPersonHref,
   eraI_IIDossierPersonIds,
   moduChanyuStory,
+  eraIII_IVDossierPersonIds,
 })
 
 if (errors.length) throw new Error(`Localization validation failed:\n${errors.join('\n')}`)

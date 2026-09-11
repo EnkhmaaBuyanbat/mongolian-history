@@ -28,14 +28,16 @@ function compatibleShape(base, translated, path, errors) {
   })
 }
 
-export function validateLocalization({ bundles, supportedLocales, cultureTopicIds, eraIds, chapters, evidenceCodes, terminology, people, dossierPersonIds, familyTreePersonIds, personRelationships, getPersonHref, eraI_IIDossierPersonIds, moduChanyuStory }) {
+export function validateLocalization({ bundles, supportedLocales, cultureTopicIds, eraIds, chapters, evidenceCodes, terminology, people, dossierPersonIds, familyTreePersonIds, personRelationships, getPersonHref, eraI_IIDossierPersonIds, eraIII_IVDossierPersonIds, moduChanyuStory }) {
   const errors = []
   const requiredCommon = ['navigation.home', 'navigation.eras', 'navigation.timeline', 'navigation.people', 'navigation.familyTree', 'navigation.culture', 'languages.english', 'languages.mongolian', 'accessibility.primaryNavigation', 'metadata.title']
+  const requiredPersonPageUi = ['historicalBiography','referenceProfile','sourceBacked','researched','alsoKnownAs','shortHistory','lifeRole','whoWas','familyDynasty','dynasticRelationships','historicalContext','politicalWorldChapter','timeline','datedRecords','connectedPeople','familyChangingRelationships','connectedHistory','referenceRecords','sources','furtherReading','noPortraitExplanation']
   Object.keys(bundles).forEach((locale) => { if (!supportedLocales.includes(locale)) errors.push(`Unsupported locale bundle: ${locale}`) })
   supportedLocales.forEach((locale) => {
     const bundle = bundles[locale]
     if (!bundle) errors.push(`Missing locale bundle: ${locale}`)
     requiredCommon.forEach((path) => { if (!getPath(bundle?.common, path)) errors.push(`Missing required ${locale} key: common.${path}`) })
+    requiredPersonPageUi.forEach((key) => { if (!bundle?.people?.ui?.[key]) errors.push(`Missing required ${locale} person-page key: people.ui.${key}`) })
     inspectValues(bundle, locale, errors)
   })
   compatibleShape(bundles.en, bundles.mn, 'mn', errors)
@@ -92,6 +94,14 @@ export function validateLocalization({ bundles, supportedLocales, cultureTopicId
     if (canonical && getPersonHref(canonical) !== getPersonHref(mergeLocaleValues(canonical, record))) errors.push(`Localized person route changed: ${id}`)
   })
   publicPeople.forEach((person) => { if (!localizedPeople[person.id]) errors.push(`Missing MN public person: ${person.id}`) })
+  const forbiddenPersonLocaleKeys = ['id','slug','storyId','eraId','eraIds','polityIds','eventIds','relatedEntityIds','sourceRefs','dynasticBranch','profileType','status','portrait']
+  publicPeople.forEach((person) => {
+    const record = localizedPeople[person.id]
+    ;['role','summary','shortBio','period','periodDisplay'].forEach((field) => {
+      if (person[field] && !record?.[field]?.trim()) errors.push(`Missing MN public person ${field}: ${person.id}`)
+    })
+    forbiddenPersonLocaleKeys.forEach((field) => { if (field in (record ?? {})) errors.push(`Forbidden canonical field in MN person locale: ${person.id}.${field}`) })
+  })
   const canonicalTargets = people.filter((person) => dossierPersonIds.has(person.id) && ['ancient-steppe','before-chinggis'].includes(person.eraId))
   if (canonicalTargets.length !== 10 || canonicalTargets.some((person) => !eraI_IIDossierPersonIds.includes(person.id)) || eraI_IIDossierPersonIds.some((id) => !canonicalTargets.some((person) => person.id === id))) errors.push('Era I/II dossier localization target set does not match the canonical dossier allow-list.')
   canonicalTargets.forEach((person) => {
@@ -115,6 +125,21 @@ export function validateLocalization({ bundles, supportedLocales, cultureTopicId
   })
   const canonicalStorySectionIds = moduChanyuStory.sections.map((section) => section.id)
   Object.keys(localizedStory?.sections ?? {}).forEach((sectionId) => { if (!canonicalStorySectionIds.includes(sectionId)) errors.push(`Unknown Modu MN story section: ${sectionId}`) })
+  const batchTwoTargets = people.filter((person) => dossierPersonIds.has(person.id) && ['rise-empire','mongol-world'].includes(person.eraId))
+  if (batchTwoTargets.length !== 12 || batchTwoTargets.some((person) => !eraIII_IVDossierPersonIds.includes(person.id)) || eraIII_IVDossierPersonIds.some((id) => !batchTwoTargets.some((person) => person.id===id))) errors.push('Era III/IV dossier localization target set does not match the canonical dossier allow-list.')
+  batchTwoTargets.forEach((person) => {
+    const record = localizedPeople[person.id]
+    if (!record?.role?.trim()) errors.push(`Missing MN Era III/IV dossier role: ${person.id}`)
+    if (!(record?.summary ?? record?.shortBio)?.trim()) errors.push(`Missing MN Era III/IV dossier summary: ${person.id}`)
+    if (!(record?.periodDisplay ?? record?.period)?.trim()) errors.push(`Missing MN Era III/IV dossier period: ${person.id}`)
+    const canonicalSectionIds = (person.biographySections ?? []).map((section) => section.id)
+    Object.keys(record?.biographySections ?? {}).forEach((sectionId) => { if (!canonicalSectionIds.includes(sectionId)) errors.push(`Unknown MN Era III/IV dossier section: ${person.id}.${sectionId}`) })
+    if (person.characterAndReputation) {
+      const translated = record.characterAndReputation
+      if (!translated?.overview?.trim() || !translated?.caution?.trim() || translated?.traits?.length !== person.characterAndReputation.traits.length) errors.push(`Incomplete MN character and reputation presentation: ${person.id}`)
+      translated?.traits?.forEach((trait,index) => { if (!trait.label?.trim() || !trait.summary?.trim() || trait.sourceIds || trait.treatment) errors.push(`Invalid MN reputation trait presentation: ${person.id}[${index}]`) })
+    }
+  })
   personRelationships.forEach((relationship) => {
     if (!people.some((person) => person.id === relationship.personId) || !people.some((person) => person.id === relationship.relatedPersonId)) errors.push(`Dangling canonical relationship endpoint: ${relationship.personId}|${relationship.relatedPersonId}`)
   })
