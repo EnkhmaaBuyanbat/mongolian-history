@@ -62,6 +62,8 @@ import { mediaEn } from '../data/locales/en/media'
 import { mediaMn } from '../data/locales/mn/media'
 import { media } from '../data/media'
 import { getLocalizedMedia } from '../data/mediaLocalization'
+import { chapterVisualAssignments, educationalDiagrams } from '../data/chapterVisuals'
+import { getLocalizedEducationalVisual } from '../data/educationalVisualLocalization'
 
 export const translations = {
   en: { common: commonEn, home: homeEn, culture: cultureEn, eras: erasEn, chapters: chaptersEn, events:eventsEn, entities:entitiesEn, reconstructions:reconstructionsEn, eraWorlds:eraWorldsEn, heroScenes:heroScenesEn, media:mediaEn, evidence: evidenceEn, people: peopleEn, familyTree: familyTreeEn, personRelationships: personRelationshipsEn },
@@ -106,6 +108,9 @@ const errors = validateLocalization({
   getLocalizedHeroScene,
   media,
   getLocalizedMedia,
+  chapterVisualAssignments,
+  educationalDiagrams,
+  getLocalizedEducationalVisual,
 })
 
 if (errors.length) throw new Error(`Localization validation failed:\n${errors.join('\n')}`)

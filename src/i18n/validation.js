@@ -31,7 +31,7 @@ function compatibleShape(base, translated, path, errors) {
   })
 }
 
-export function validateLocalization({ bundles, supportedLocales, cultureTopicIds, eraIds, chapters, evidenceCodes, terminology, people, dossierPersonIds, familyTreePersonIds, personRelationships, getPersonHref, eraI_IIDossierPersonIds, eraIII_IVDossierPersonIds, moduChanyuStory, events, eventIdsEraI_II, eventIdsEraIII_IV, eventIdsEraV_VI, eventIdsEraVII_VIII, politiesMn, polities, placesMn, places, sitesMn, objectsMn, sites, objects, getLocalizedEntity, reconstructions, eraWorlds, heroScenes, getLocalizedReconstruction, getLocalizedEraWorld, getLocalizedHeroScene, media, getLocalizedMedia }) {
+export function validateLocalization({ bundles, supportedLocales, cultureTopicIds, eraIds, chapters, evidenceCodes, terminology, people, dossierPersonIds, familyTreePersonIds, personRelationships, getPersonHref, eraI_IIDossierPersonIds, eraIII_IVDossierPersonIds, moduChanyuStory, events, eventIdsEraI_II, eventIdsEraIII_IV, eventIdsEraV_VI, eventIdsEraVII_VIII, politiesMn, polities, placesMn, places, sitesMn, objectsMn, sites, objects, getLocalizedEntity, reconstructions, eraWorlds, heroScenes, getLocalizedReconstruction, getLocalizedEraWorld, getLocalizedHeroScene, media, getLocalizedMedia, chapterVisualAssignments, educationalDiagrams, getLocalizedEducationalVisual }) {
   const errors = []
   const requiredCommon = ['navigation.home', 'navigation.eras', 'navigation.timeline', 'navigation.people', 'navigation.familyTree', 'navigation.culture', 'languages.english', 'languages.mongolian', 'accessibility.primaryNavigation', 'metadata.title']
   const requiredPersonPageUi = ['historicalBiography','referenceProfile','sourceBacked','researched','alsoKnownAs','shortHistory','lifeRole','whoWas','familyDynasty','dynasticRelationships','historicalContext','politicalWorldChapter','timeline','datedRecords','connectedPeople','familyChangingRelationships','connectedHistory','referenceRecords','sources','furtherReading','noPortraitExplanation']
@@ -170,6 +170,43 @@ export function validateLocalization({ bundles, supportedLocales, cultureTopicId
   publicMedia.forEach((record) => { if (!mediaPresentations[record.id]) errors.push(`Missing MN public media record: ${record.id}`) })
   reconstructions.forEach((record) => { if (mediaPresentations[record.id]) errors.push(`Reconstruction ID incorrectly present in media locale: ${record.id}`) })
   media.forEach((record) => { if (bundles.mn.reconstructions.records[record.id]) errors.push(`Media ID incorrectly present in reconstruction locale: ${record.id}`) })
+  const localizedChaptersForVisuals = bundles.mn.chapters.records
+  const presentationFields = ['title','subtitle','summary','caption','note','evidenceLabel','caution','text','label']
+  const validateVisualPresentation = (canonical, presentation, path) => {
+    if (!presentation) return errors.push(`Missing MN educational visual presentation: ${path}`)
+    presentationFields.forEach((field) => { if (canonical?.[field] && !presentation[field]?.trim()) errors.push(`Missing MN educational visual ${field}: ${path}.${field}`) })
+    ;['id','personId','eventId','entityId','sourceRefs','chapterIds','from','to','kind','type','variant','layoutMode','x','y'].forEach((field) => { if (field in presentation) errors.push(`Structural field in MN educational visual presentation: ${path}.${field}`) })
+    ;['items','phases','edges','legend','nodes'].forEach((field) => {
+      if (!canonical?.[field]?.length) return
+      const hasVisitorPresentation = canonical[field].some((item) => presentationFields.some((key) => item?.[key]) || ['items','phases','edges','legend','nodes'].some((key) => item?.[key]?.length))
+      if (!hasVisitorPresentation) return
+      if (!Array.isArray(presentation[field]) || presentation[field].length !== canonical[field].length) return errors.push(`Incomplete MN educational visual ${field}: ${path}`)
+      canonical[field].forEach((item, index) => validateVisualPresentation(item, presentation[field][index], `${path}.${field}[${index}]`))
+    })
+  }
+  if (chapterVisualAssignments.length !== 14) errors.push(`Expected 14 assigned chapter visuals; found ${chapterVisualAssignments.length}.`)
+  if (educationalDiagrams.length !== 11) errors.push(`Expected 11 educational diagrams; found ${educationalDiagrams.length}.`)
+  chapterVisualAssignments.forEach((assignment) => {
+    const chapterPresentation = localizedChaptersForVisuals[assignment.chapterId]
+    const presentation = chapterPresentation?.primaryVisualPresentation
+    validateVisualPresentation(assignment, presentation, `chapterVisualAssignments.${assignment.id}`)
+    if (assignment.diagramId) {
+      const diagram = educationalDiagrams.find((record) => record.id === assignment.diagramId)
+      validateVisualPresentation(diagram, presentation?.diagramPresentation, `educationalDiagrams.${assignment.diagramId}`)
+      const resolved = getLocalizedEducationalVisual?.(diagram, presentation?.diagramPresentation)
+      ;(diagram.items ?? []).forEach((item, index) => {
+        if (resolved.items[index]?.id !== item.id || resolved.items[index]?.personId !== item.personId || resolved.items[index]?.kind !== item.kind) errors.push(`Educational visual resolver changed item topology: ${diagram.id}[${index}]`)
+      })
+      ;(diagram.edges ?? []).forEach((edge, index) => { if (resolved.edges[index]?.from !== edge.from || resolved.edges[index]?.to !== edge.to) errors.push(`Educational visual resolver changed connector topology: ${diagram.id}[${index}]`) })
+      ;(diagram.phases ?? []).forEach((phase, phaseIndex) => {
+        ;(phase.items ?? []).forEach((item, index) => { if (resolved.phases[phaseIndex].items[index]?.id !== item.id || resolved.phases[phaseIndex].items[index]?.personId !== item.personId) errors.push(`Educational visual resolver changed phase node topology: ${diagram.id}[${phaseIndex}][${index}]`) })
+        ;(phase.edges ?? []).forEach((edge, index) => { if (resolved.phases[phaseIndex].edges[index]?.from !== edge.from || resolved.phases[phaseIndex].edges[index]?.to !== edge.to || resolved.phases[phaseIndex].edges[index]?.kind !== edge.kind) errors.push(`Educational visual resolver changed phase connector topology: ${diagram.id}[${phaseIndex}][${index}]`) })
+      })
+    }
+  })
+  chapters.forEach((chapter) => (chapter.sections ?? []).forEach((section) => {
+    if (section.educationalVisual) validateVisualPresentation(section.educationalVisual, localizedChaptersForVisuals[chapter.id]?.sectionPresentation?.[section.id]?.educationalVisual, `chapters.${chapter.id}.${section.id}.educationalVisual`)
+  }))
   const localizedEvents = bundles.mn?.events?.records ?? {}
   const eraOneEvents = events.filter((event) => event.eraId === 'ancient-steppe' && ['researched','verified'].includes(event.status))
   const eraTwoEvents = events.filter((event) => event.eraId === 'before-chinggis' && ['researched','verified'].includes(event.status))

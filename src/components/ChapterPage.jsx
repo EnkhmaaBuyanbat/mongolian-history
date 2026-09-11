@@ -29,6 +29,7 @@ import { getLocalizedEvent } from '../data/eventLocalization'
 import { mergeLocaleValues } from '../i18n/locale'
 import { getLocalizedEntity } from '../data/entityLocalization'
 import { getLocalizedPerson } from '../data/personLocalization'
+import { getLocalizedEducationalVisual } from '../data/educationalVisualLocalization'
 
 const sectionLabels = {
   'origins-and-context': 'Origins and Context',
@@ -81,7 +82,14 @@ function ChapterPage({ chapter }) {
   const polity = polities.find((item) => chapter.relatedPolityIds?.includes(item.id))
   const polityPresentation = getLocalizedEntity(polity, entityLocale)
   const chapterSections = chapter.sections?.length
-    ? chapter.sections.map((section) => mergeLocaleValues(section, presentation.sectionPresentation?.[section.id]))
+    ? chapter.sections.map((section) => {
+        const sectionPresentation = presentation.sectionPresentation?.[section.id]
+        const localized = mergeLocaleValues(section, sectionPresentation)
+        return section.educationalVisual ? {
+          ...localized,
+          educationalVisual: getLocalizedEducationalVisual(section.educationalVisual, sectionPresentation?.educationalVisual),
+        } : localized
+      })
     : (chapter.sectionIds ?? []).map((id, index) => ({
         id,
         number: String(index + 1).padStart(2, '0'),
