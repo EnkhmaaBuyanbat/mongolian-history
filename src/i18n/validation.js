@@ -20,6 +20,7 @@ function compatibleShape(base, translated, path, errors) {
   Object.entries(translated).forEach(([key, value]) => {
     if ((path === 'mn.chapters' || path === 'mn.people') && key === 'records') return
     if (path === 'mn.events' && ['records','types'].includes(key)) return
+    if (path === 'mn.entities' && ['records','types'].includes(key)) return
     if (path === 'mn.people' && ['events','stories','politicalContexts'].includes(key)) return
     if (path === 'mn.personRelationships' && key === 'labels') return
     const baseValue = base?.[key]
@@ -29,7 +30,7 @@ function compatibleShape(base, translated, path, errors) {
   })
 }
 
-export function validateLocalization({ bundles, supportedLocales, cultureTopicIds, eraIds, chapters, evidenceCodes, terminology, people, dossierPersonIds, familyTreePersonIds, personRelationships, getPersonHref, eraI_IIDossierPersonIds, eraIII_IVDossierPersonIds, moduChanyuStory, events, eventIdsEraI_II, eventIdsEraIII_IV, eventIdsEraV_VI, eventIdsEraVII_VIII }) {
+export function validateLocalization({ bundles, supportedLocales, cultureTopicIds, eraIds, chapters, evidenceCodes, terminology, people, dossierPersonIds, familyTreePersonIds, personRelationships, getPersonHref, eraI_IIDossierPersonIds, eraIII_IVDossierPersonIds, moduChanyuStory, events, eventIdsEraI_II, eventIdsEraIII_IV, eventIdsEraV_VI, eventIdsEraVII_VIII, politiesMn, polities, placesMn, places, sitesMn, objectsMn, sites, objects, getLocalizedEntity }) {
   const errors = []
   const requiredCommon = ['navigation.home', 'navigation.eras', 'navigation.timeline', 'navigation.people', 'navigation.familyTree', 'navigation.culture', 'languages.english', 'languages.mongolian', 'accessibility.primaryNavigation', 'metadata.title']
   const requiredPersonPageUi = ['historicalBiography','referenceProfile','sourceBacked','researched','alsoKnownAs','shortHistory','lifeRole','whoWas','familyDynasty','dynasticRelationships','historicalContext','politicalWorldChapter','timeline','datedRecords','connectedPeople','familyChangingRelationships','connectedHistory','referenceRecords','sources','furtherReading','noPortraitExplanation']
@@ -42,6 +43,85 @@ export function validateLocalization({ bundles, supportedLocales, cultureTopicId
     inspectValues(bundle, locale, errors)
   })
   compatibleShape(bundles.en, bundles.mn, 'mn', errors)
+  const forbiddenPolityLocaleKeys = ['id','slug','eraId','eraIds','startYear','endYear','relatedEntityIds','sourceIds','sourceRefs','status','confidence','mediaId','mapAvailable','coordinates','geometry']
+  if (polities.length !== 47) errors.push(`Expected 47 canonical polities; found ${polities.length}.`)
+  if (polities.filter((polity) => ['researched','verified'].includes(polity.status)).length !== 47) errors.push('Expected 47 public canonical polities.')
+  if (Object.keys(politiesMn ?? {}).length !== 47) errors.push(`Expected 47 localized MN polities; found ${Object.keys(politiesMn ?? {}).length}.`)
+  Object.entries(politiesMn ?? {}).forEach(([id, record]) => {
+    const canonical = polities.find((polity) => polity.id === id)
+    if (!canonical) errors.push(`Unknown localized polity ID: ${id}`)
+    forbiddenPolityLocaleKeys.forEach((field) => { if (field in record) errors.push(`Forbidden MN polity locale field: ${id}.${field}`) })
+    ;['title','pathwayLabel','type','period','summary'].forEach((field) => { if (!record[field]?.trim()) errors.push(`Missing MN polity ${field}: ${id}`) })
+    if (canonical?.caution && !record.caution?.trim()) errors.push(`Missing MN polity caution: ${id}`)
+  })
+  polities.forEach((polity) => { if (!politiesMn?.[polity.id]) errors.push(`Missing MN polity record: ${polity.id}`) })
+  const forbiddenPlaceLocaleKeys = ['id','slug','eraId','eraIds','alternativeNames','relatedEntityIds','sourceIds','sourceRefs','status','confidence','mapAvailable','experience3dAvailable','coordinates','geometry','campaignIds','claimIds','companyIds']
+  if (places.length !== 29 || places.filter((place) => ['researched','verified'].includes(place.status)).length !== 29) errors.push('Expected 29 canonical/public places.')
+  if (Object.keys(placesMn ?? {}).length !== 29) errors.push(`Expected 29 localized MN places; found ${Object.keys(placesMn ?? {}).length}.`)
+  Object.entries(placesMn ?? {}).forEach(([id, record]) => {
+    const canonical = places.find((place) => place.id === id)
+    if (!canonical) errors.push(`Unknown localized place ID: ${id}`)
+    forbiddenPlaceLocaleKeys.forEach((field) => { if (field in record) errors.push(`Forbidden MN place locale field: ${id}.${field}`) })
+    ;['title','type','summary'].forEach((field) => { if (!record[field]?.trim()) errors.push(`Missing MN place ${field}: ${id}`) })
+    if (canonical?.period && !record.period?.trim()) errors.push(`Missing MN place period: ${id}`)
+    if (canonical?.caution && !record.caution?.trim()) errors.push(`Missing MN place caution: ${id}`)
+    Object.entries(record.evidenceSections ?? {}).forEach(([sectionId, section]) => {
+      const canonicalSection = canonical?.evidenceSections?.find((item) => item.id === sectionId)
+      if (!canonicalSection) errors.push(`Unknown MN place evidence section: ${id}.${sectionId}`)
+      inspectValues(section, `mn.entities.records.${id}.evidenceSections.${sectionId}`, errors)
+      if (canonicalSection) Object.keys(canonicalSection).filter((field) => !['id','sourceIds'].includes(field)).forEach((field) => {
+        const value = section[field]
+        if (Array.isArray(canonicalSection[field]) ? (!Array.isArray(value) || value.length !== canonicalSection[field].length || value.some((item) => !item?.trim())) : !value?.trim()) errors.push(`Missing MN place evidence field: ${id}.${sectionId}.${field}`)
+      })
+    })
+    canonical?.evidenceSections?.forEach((section) => { if (!record.evidenceSections?.[section.id]) errors.push(`Missing MN place evidence section: ${id}.${section.id}`) })
+  })
+  places.forEach((place) => { if (!placesMn?.[place.id]) errors.push(`Missing MN place record: ${place.id}`) })
+  const forbiddenEntityLocaleKeys = ['id','slug','eraId','eraIds','alternativeNames','relatedEntityIds','sourceIds','sourceRefs','status','confidence','mapAvailable','experience3dAvailable','coordinates','geometry','mediaIds']
+  if (sites.length !== 13 || sites.filter((site) => ['researched','verified'].includes(site.status)).length !== 13) errors.push('Expected 13 canonical/public sites.')
+  if (Object.keys(sitesMn ?? {}).length !== 13) errors.push(`Expected 13 localized MN sites; found ${Object.keys(sitesMn ?? {}).length}.`)
+  Object.entries(sitesMn ?? {}).forEach(([id, record]) => {
+    const canonical = sites.find((site) => site.id === id)
+    if (!canonical) errors.push(`Unknown localized site ID: ${id}`)
+    forbiddenEntityLocaleKeys.forEach((field) => { if (field in record) errors.push(`Forbidden MN site locale field: ${id}.${field}`) })
+    ;['title','type','period','summary'].forEach((field) => { if (!record[field]?.trim()) errors.push(`Missing MN site ${field}: ${id}`) })
+    if (canonical?.caution && !record.caution?.trim()) errors.push(`Missing MN site caution: ${id}`)
+    Object.entries(record.evidenceSections ?? {}).forEach(([sectionId, section]) => {
+      const canonicalSection = canonical?.evidenceSections?.find((item) => item.id === sectionId)
+      if (!canonicalSection) errors.push(`Unknown MN site evidence section: ${id}.${sectionId}`)
+      if (canonicalSection) Object.keys(canonicalSection).filter((field) => !['id','sourceIds'].includes(field)).forEach((field) => {
+        const value = section[field]
+        if (Array.isArray(canonicalSection[field]) ? (!Array.isArray(value) || value.length !== canonicalSection[field].length || value.some((item) => !item?.trim())) : !value?.trim()) errors.push(`Missing MN site evidence field: ${id}.${sectionId}.${field}`)
+      })
+    })
+    canonical?.evidenceSections?.forEach((section) => { if (!record.evidenceSections?.[section.id]) errors.push(`Missing MN site evidence section: ${id}.${section.id}`) })
+  })
+  sites.forEach((site) => { if (!sitesMn?.[site.id]) errors.push(`Missing MN site record: ${site.id}`) })
+  const publicObjects = objects.filter((object) => ['researched','verified'].includes(object.status))
+  if (objects.length !== 5 || publicObjects.length !== 4) errors.push('Expected 5 canonical objects and 4 public objects.')
+  if (Object.keys(objectsMn ?? {}).length !== 4) errors.push(`Expected 4 localized MN public objects; found ${Object.keys(objectsMn ?? {}).length}.`)
+  Object.entries(objectsMn ?? {}).forEach(([id, record]) => {
+    const canonical = publicObjects.find((object) => object.id === id)
+    if (!canonical) errors.push(`Unknown or non-public localized object ID: ${id}`)
+    forbiddenEntityLocaleKeys.forEach((field) => { if (field in record) errors.push(`Forbidden MN object locale field: ${id}.${field}`) })
+    ;['title','type'].forEach((field) => { if (!record[field]?.trim()) errors.push(`Missing MN object ${field}: ${id}`) })
+    if (canonical?.period && !record.period?.trim()) errors.push(`Missing MN object period: ${id}`)
+    if (canonical?.summary && !record.summary?.trim()) errors.push(`Missing MN object summary: ${id}`)
+  })
+  publicObjects.forEach((object) => { if (!objectsMn?.[object.id]) errors.push(`Missing MN public object record: ${object.id}`) })
+  if (objectsMn?.['demo-object-001']) errors.push('Draft demo object must not have public MN presentation.')
+  const entityLocaleIds = [...Object.keys(politiesMn ?? {}),...Object.keys(placesMn ?? {}),...Object.keys(sitesMn ?? {}),...Object.keys(objectsMn ?? {})]
+  if (new Set(entityLocaleIds).size !== entityLocaleIds.length) errors.push('Duplicate ID across MN entity locale collections.')
+  const publicEntities = [...polities, ...places, ...sites, ...publicObjects]
+  publicEntities.forEach((canonical) => {
+    const resolved = getLocalizedEntity?.(canonical, bundles.mn.entities)
+    const localeRecord = bundles.mn.entities.records[canonical.id]
+    if (!resolved || resolved.title !== localeRecord?.title) errors.push(`Entity resolver did not apply MN presentation: ${canonical.id}`)
+    ;['id','status','eraId'].forEach((field) => {
+      if (resolved?.[field] !== canonical[field]) errors.push(`Entity resolver changed canonical ${field}: ${canonical.id}`)
+    })
+    if (resolved?.sourceRefs !== canonical.sourceRefs || resolved?.relatedEntityIds !== canonical.relatedEntityIds) errors.push(`Entity resolver changed canonical references: ${canonical.id}`)
+  })
   const localizedEvents = bundles.mn?.events?.records ?? {}
   const eraOneEvents = events.filter((event) => event.eraId === 'ancient-steppe' && ['researched','verified'].includes(event.status))
   const eraTwoEvents = events.filter((event) => event.eraId === 'before-chinggis' && ['researched','verified'].includes(event.status))

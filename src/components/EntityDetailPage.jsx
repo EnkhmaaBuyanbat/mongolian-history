@@ -7,6 +7,10 @@ import { events } from '../data/events'
 import { sources } from '../data/sources'
 import { MeanderLine } from './Ornament'
 import { getEntityHref, getPersonHref } from '../data/entityRoutes'
+import { getLocalizedEntity, getLocalizedPolity } from '../data/entityLocalization'
+import { getLocalizedEvent } from '../data/eventLocalization'
+import { getLocalizedPerson } from '../data/personLocalization'
+import { useLocale } from '../i18n/useLocale'
 
 const placeholderCards = [
   'Timeline',
@@ -32,31 +36,31 @@ function resolveRelatedEntities(entity) {
   for (const relatedId of entity.relatedEntityIds) {
     const place = places.find((item) => item.id === relatedId)
     if (place) {
-      related.push({ type: 'Place', label: place.title, id: place.id })
+      related.push({ type: 'Place', record: place, id: place.id })
       continue
     }
 
     const site = sites.find((item) => item.id === relatedId)
     if (site) {
-      related.push({ type: 'Site', label: site.title, id: site.id })
+      related.push({ type: 'Site', record: site, id: site.id })
       continue
     }
 
     const polity = polities.find((item) => item.id === relatedId)
     if (polity) {
-      related.push({ type: 'Polity', label: polity.title, id: polity.id })
+      related.push({ type: 'Polity', record: polity, id: polity.id })
       continue
     }
 
     const person = people.find((item) => item.id === relatedId)
     if (person) {
-      related.push({ type: 'Person', label: person.title, id: person.id })
+      related.push({ type: 'Person', record: person, id: person.id })
       continue
     }
 
     const event = events.find((item) => item.id === relatedId)
     if (event) {
-      related.push({ type: 'Event', label: event.title, id: event.id })
+      related.push({ type: 'Event', record: event, id: event.id })
     }
   }
 
@@ -64,6 +68,12 @@ function resolveRelatedEntities(entity) {
 }
 
 function HistoricalEntityPage({ entity }) {
+  const { localeSection, localizedRecord } = useLocale()
+  const entityLocale = localeSection('entities')
+  const eventLocale = localeSection('events')
+  const peopleLocale = localeSection('people')
+  const { ui } = entityLocale
+
   const sourcesForEntity = useMemo(
     () => resolveSourceList(entity?.sourceRefs ?? []),
     [entity],
@@ -73,6 +83,10 @@ function HistoricalEntityPage({ entity }) {
     () => resolveRelatedEntities(entity),
     [entity],
   )
+
+  if (!entity) return null
+
+  const displayEntity = getLocalizedPolity(entity, entityLocale)
 
   const relatedPeople = relatedEntities.filter((item) => item.type === 'Person')
   const relatedEvents = relatedEntities.filter((item) => item.type === 'Event')
@@ -87,7 +101,7 @@ function HistoricalEntityPage({ entity }) {
   const linkedMaterial = relatedEntities.filter(
     (item) => !dedicatedEntityIds.has(item.id),
   )
-  const pathwayLabel = entity.pathwayLabel ?? entity.title
+  const pathwayLabel = displayEntity.pathwayLabel ?? displayEntity.title
   const pathwayTargets = {
     Timeline: relatedEvents.length ? '#timeline' : null,
     People: relatedPeople.length ? '#people' : null,
@@ -96,35 +110,32 @@ function HistoricalEntityPage({ entity }) {
     'Historical Map': '#map-context',
   }
 
-  if (!entity) {
-    return null
-  }
-
-  const eraLabel = entity.eraId === 'ancient-steppe' ? 'ANCIENT STEPPE WORLDS' : entity.eraId
+  const canonicalEra = entity.eraId ? localizedRecord('eras', entity.eraId, { id: entity.eraId, title: entity.eraId }) : null
+  const eraLabel = canonicalEra?.title ?? entity.eraId
 
   return (
     <article className="entity-detail-page">
       <header className="entity-header">
         <div className="section-inner entity-header-inner">
           <p className="section-label entity-kicker">{eraLabel}</p>
-          <h1>{entity.title}</h1>
-          <p className="entity-period">{entity.period}</p>
+          <h1>{displayEntity.title}</h1>
+          <p className="entity-period">{displayEntity.period}</p>
           <div className="entity-status-row">
-            <span className="entity-status-badge">{entity.status === 'verified' ? 'source-backed' : entity.status}</span>
+            <span className="entity-status-badge">{entity.status === 'verified' ? ui.sourceBacked : (ui[entity.status] ?? entity.status)}</span>
           </div>
           <MeanderLine className="entity-meander" />
-          <p className="entity-summary">{entity.summary}</p>
+          <p className="entity-summary">{displayEntity.summary}</p>
         </div>
       </header>
 
-      {entity.overview ? (
+      {displayEntity.overview ? (
         <section className="entity-section">
           <div className="section-inner">
             <div className="entity-section-heading">
-              <p className="section-label">Overview</p>
-              <h2>Historical summary</h2>
+              <p className="section-label">{ui.overview}</p>
+              <h2>{ui.historicalSummary}</h2>
             </div>
-            <p className="entity-copy">{entity.overview}</p>
+            <p className="entity-copy">{displayEntity.overview}</p>
           </div>
         </section>
       ) : null}
@@ -132,18 +143,18 @@ function HistoricalEntityPage({ entity }) {
       <section className="entity-section entity-section-alt">
         <div className="section-inner">
           <div className="entity-section-heading">
-            <p className="section-label">Explore the {pathwayLabel} World</p>
-            <h2>Curated pathways</h2>
+            <p className="section-label">{ui.exploreWorld.replace('{name}', pathwayLabel)}</p>
+            <h2>{ui.curatedPathways}</h2>
           </div>
 
-          <div className="entity-cards" aria-label={`${pathwayLabel} exploration pathways`}>
+          <div className="entity-cards" aria-label={ui.explorationPathways.replace('{name}', pathwayLabel)}>
             {placeholderCards.map((card) => {
               const target = pathwayTargets[card]
               if (!target) return null
 
               return (
                 <a key={card} href={target} className="entity-card placeholder-card">
-                  <span>{card}</span>
+                  <span>{ui[{ Timeline: 'timeline', People: 'people', Places: 'places', Archaeology: 'archaeology', 'Historical Map': 'historicalMap' }[card]]}</span>
                 </a>
               )
             })}
@@ -155,12 +166,12 @@ function HistoricalEntityPage({ entity }) {
         <section id="timeline" className="entity-section">
           <div className="section-inner">
             <div className="entity-section-heading">
-              <p className="section-label">Timeline</p>
-              <h2>Related chronology</h2>
+              <p className="section-label">{ui.timeline}</p>
+              <h2>{ui.relatedChronology}</h2>
             </div>
             <ul className="related-list">
               {relatedEvents.map((item) => {
-                const event = events.find((record) => record.id === item.id)
+                const event = getLocalizedEvent(item.record, eventLocale)
                 return (
                   <li key={item.id} className="timeline-record">
                     <span className="timeline-record-date">{event.dateDisplay}</span>
@@ -180,12 +191,12 @@ function HistoricalEntityPage({ entity }) {
         <section id="people" className="entity-section entity-section-alt">
           <div className="section-inner">
             <div className="entity-section-heading">
-              <p className="section-label">People</p>
-              <h2>Related figures</h2>
+              <p className="section-label">{ui.people}</p>
+              <h2>{ui.relatedFigures}</h2>
             </div>
             <ul className="related-list">
               {relatedPeople.map((item) => {
-                const person = people.find((record) => record.id === item.id)
+                const person = getLocalizedPerson(item.record, peopleLocale)
                 return (
                   <li key={item.id} className="timeline-record">
                     <a href={getPersonHref(person)} className="entity-person-link">
@@ -204,12 +215,12 @@ function HistoricalEntityPage({ entity }) {
       <section id="map-context" className="entity-section">
         <div className="section-inner">
           <div className="entity-section-heading">
-            <p className="section-label">Historical Map</p>
-            <h2>Map context</h2>
+            <p className="section-label">{ui.historicalMap}</p>
+            <h2>{ui.mapContext}</h2>
           </div>
 
-          <div className="map-placeholder" aria-label="Historical map placeholder">
-            <span>Interactive historical map — coming later</span>
+          <div className="map-placeholder" aria-label={ui.mapPlaceholder}>
+            <span>{ui.mapComingLater}</span>
           </div>
         </div>
       </section>
@@ -218,15 +229,15 @@ function HistoricalEntityPage({ entity }) {
         <section id="archaeology" className="entity-section">
           <div className="section-inner">
             <div className="entity-section-heading">
-              <p className="section-label">Archaeology</p>
-              <h2>Related sites</h2>
+              <p className="section-label">{ui.archaeology}</p>
+              <h2>{ui.relatedSites}</h2>
             </div>
             <ul className="related-list">
               {relatedSites.map((item) => (
                 <li key={item.id} className="timeline-record">
                   <a href={getEntityHref(sites.find((site) => site.id === item.id))} className="entity-person-link">
-                    <strong>{item.label}</strong>
-                    <p>{item.type}</p>
+                    <strong>{getLocalizedEntity(item.record, entityLocale).title}</strong>
+                    <p>{getLocalizedEntity(item.record, entityLocale).type}</p>
                   </a>
                 </li>
               ))}
@@ -239,14 +250,14 @@ function HistoricalEntityPage({ entity }) {
         <section id="places" className="entity-section entity-section-alt">
           <div className="section-inner">
             <div className="entity-section-heading">
-              <h2>Places</h2>
+              <h2>{ui.places}</h2>
             </div>
             <ul className="related-list">
               {relatedPlaces.map((item) => (
                 <li key={item.id} className="timeline-record">
                   <a href={getEntityHref(places.find((place) => place.id === item.id))} className="entity-person-link">
-                    <strong>{item.label}</strong>
-                    <p>{item.type}</p>
+                    <strong>{getLocalizedEntity(item.record, entityLocale).title}</strong>
+                    <p>{getLocalizedEntity(item.record, entityLocale).type}</p>
                   </a>
                 </li>
               ))}
@@ -259,15 +270,15 @@ function HistoricalEntityPage({ entity }) {
         <section className="entity-section entity-section-alt">
           <div className="section-inner">
             <div className="entity-section-heading">
-              <p className="section-label">Related History</p>
-              <h2>Linked material</h2>
+              <p className="section-label">{ui.relatedHistory}</p>
+              <h2>{ui.linkedMaterial}</h2>
             </div>
             <ul className="related-list">
               {linkedMaterial.map((item) => (
                 <li key={item.id}>
                   <button type="button" className="related-item related-item-button">
-                    <strong>{item.type}</strong>
-                    <span>{item.label}</span>
+                    <strong>{ui.polity}</strong>
+                    <span>{getLocalizedEntity(item.record, entityLocale).title}</span>
                   </button>
                 </li>
               ))}
@@ -279,8 +290,8 @@ function HistoricalEntityPage({ entity }) {
       <section className="entity-section">
         <div className="section-inner">
           <div className="entity-section-heading">
-            <p className="section-label">Sources</p>
-            <h2>Reference list</h2>
+            <p className="section-label">{ui.sources}</p>
+            <h2>{ui.referenceList}</h2>
           </div>
 
           {sourcesForEntity.length ? (
@@ -293,14 +304,14 @@ function HistoricalEntityPage({ entity }) {
                   </div>
                   {source.url ? (
                     <a href={source.url} target="_blank" rel="noreferrer">
-                      Open source
+                      {ui.openSource}
                     </a>
                   ) : null}
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="entity-empty-state">No source references linked to this record.</p>
+            <p className="entity-empty-state">{ui.noSources}</p>
           )}
         </div>
       </section>

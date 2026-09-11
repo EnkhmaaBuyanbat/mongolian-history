@@ -15,6 +15,7 @@ import PersonRelationshipVisual from './PersonRelationshipVisual'
 import PersonStorySection from './PersonStorySection'
 import { MeanderLine } from './Ornament'
 import { useLocale } from '../i18n/useLocale'
+import { getLocalizedEntity } from '../data/entityLocalization'
 import { getLocalizedPerson, getLocalizedPersonStory } from '../data/personLocalization'
 import { getLocalizedEvent } from '../data/eventLocalization'
 
@@ -29,6 +30,7 @@ function Section({ number, label, title, children, alt = false }) {
 function PersonDossierPage({ person }) {
   const { localeSection, localizedRecord } = useLocale()
   const peopleLocale = localeSection('people')
+  const entityLocale = localeSection('entities')
   const ui = peopleLocale.ui
   const displayPerson = getLocalizedPerson(person, peopleLocale)
   const presentation = getPersonPresentation(displayPerson)
@@ -60,7 +62,7 @@ function PersonDossierPage({ person }) {
         {displayPerson.biographySections?.length ? <div className="person-dossier-narrative">{displayPerson.biographySections.map((section) => <article key={section.id}><h3>{section.title}</h3>{section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}{section.callout ? <aside><ConfidenceBadge label={section.callout.confidence} /><strong>{section.callout.label}</strong><p>{section.callout.text}</p></aside> : null}</article>)}</div> : null}
       </Section>
 
-      {(presentation.eras.length || presentation.polities.length || personChapters.length) ? <Section number="02" label={ui.historicalContext} title={ui.worldAround} alt><div className="person-dossier-links">{presentation.eras.map((era) => { const localized=localizedRecord('eras',era.id,era); return <a key={era.id} href={`/eras/${era.slug ?? era.id}`}><span>{ui.era} {era.numeral}</span><strong>{localized.title}</strong></a> })}{presentation.polities.map((polity) => <a key={polity.id} href={getEntityHref(polity)}><span>{ui.politicalWorld}</span><strong>{peopleLocale.politicalContexts?.[polity.id] ?? polity.title}</strong></a>)}{personChapters.slice(0, 4).map((chapter) => { const localized=localizedRecord('chapters',chapter.id,chapter); return <a key={chapter.id} href={getChapterHref(chapter)}><span>{ui.chapter} {chapter.number}</span><strong>{localized.title}</strong></a> })}</div></Section> : null}
+      {(presentation.eras.length || presentation.polities.length || personChapters.length) ? <Section number="02" label={ui.historicalContext} title={ui.worldAround} alt><div className="person-dossier-links">{presentation.eras.map((era) => { const localized=localizedRecord('eras',era.id,era); return <a key={era.id} href={`/eras/${era.slug ?? era.id}`}><span>{ui.era} {era.numeral}</span><strong>{localized.title}</strong></a> })}{presentation.polities.map((polity) => <a key={polity.id} href={getEntityHref(polity)}><span>{ui.politicalWorld}</span><strong>{getLocalizedEntity(polity, entityLocale).title}</strong></a>)}{personChapters.slice(0, 4).map((chapter) => { const localized=localizedRecord('chapters',chapter.id,chapter); return <a key={chapter.id} href={getChapterHref(chapter)}><span>{ui.chapter} {chapter.number}</span><strong>{localized.title}</strong></a> })}</div></Section> : null}
 
       {personEvents.length ? <Section number="03" label={ui.lifeTimeline} title={ui.datedRecords}><ol className="era-event-list">{personEvents.map((event) => <li key={event.id} className="era-event-record"><time>{event.dateDisplay}</time><div><strong>{event.title}</strong><p>{event.summary}</p></div></li>)}</ol></Section> : null}
 

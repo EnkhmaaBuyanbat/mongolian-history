@@ -17,6 +17,8 @@ import { getReconstructionById } from '../data/reconstructionResolvers'
 import ReconstructionInfo from './ReconstructionInfo'
 import { useLocale } from '../i18n/useLocale'
 import { getLocalizedEvent } from '../data/eventLocalization'
+import { getLocalizedEntity } from '../data/entityLocalization'
+import { getLocalizedPerson } from '../data/personLocalization'
 
 const entityGroups = [
   { key: 'polities', labelKey: 'politicalWorlds', records: polities },
@@ -39,6 +41,8 @@ function EraDetailPage({ era }) {
   const { localeSection, localizedRecord } = useLocale()
   const { ui } = localeSection('eras')
   const eventLocale = localeSection('events')
+  const entityLocale = localeSection('entities')
+  const peopleLocale = localeSection('people')
   const presentation = localizedRecord('eras', era.id, era)
   const recordsByGroup = useMemo(
     () =>
@@ -184,11 +188,14 @@ function EraDetailPage({ era }) {
                 </div>
                 <div className="era-entity-grid">
                   {records.map((record) => {
+                    const displayRecord = group.key === 'people'
+                      ? getLocalizedPerson(record, peopleLocale)
+                      : getLocalizedEntity(record, entityLocale)
                     const href = getEntityHref(record)
                     const card = (
                       <span className={`era-entity-card${href ? ' is-link' : ''}`}>
-                        <strong>{record.title}</strong>
-                        {record.type ? <small>{record.type}</small> : null}
+                        <strong>{displayRecord.title}</strong>
+                        {displayRecord.type ? <small>{displayRecord.type}</small> : null}
                       </span>
                     )
 

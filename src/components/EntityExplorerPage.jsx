@@ -13,6 +13,11 @@ import { getChapterHref, getEntityHref } from '../data/entityRoutes'
 import { MeanderLine } from './Ornament'
 import CompareSources from './CompareSources'
 import SourcePerspective from './SourcePerspective'
+import { getLocalizedEntity } from '../data/entityLocalization'
+import { getLocalizedEvent } from '../data/eventLocalization'
+import { getLocalizedPerson } from '../data/personLocalization'
+import { useLocale } from '../i18n/useLocale'
+import { mergeLocaleValues } from '../i18n/locale'
 
 const entityCollections = [
   { label: 'People', records: people },
@@ -35,24 +40,37 @@ function references(record, entityId) {
   return fields.some((ids) => ids?.includes(entityId))
 }
 
-function getEntityLabel(entity) {
-  if (entity.id.startsWith('place-')) return 'Place'
-  if (entity.type?.includes('inscription')) return 'Inscription'
-  if (entity.id.startsWith('object-')) return 'Object / Monument'
-  return entity.type?.includes('archaeological') ? 'Archaeological Site' : 'Site'
+function getEntityLabel(entity, ui) {
+  if (entity.id.startsWith('place-')) return ui.place
+  if (entity.type?.includes('inscription')) return ui.inscription
+  if (entity.id.startsWith('object-')) return ui.objectMonument
+  return entity.type?.includes('archaeological') ? ui.archaeologicalSite : ui.site
 }
 
 function EntityExplorerPage({ entity }) {
+  const { localeSection, localizedRecord } = useLocale()
+  const entityLocale = localeSection('entities')
+  const eventLocale = localeSection('events')
+  const peopleLocale = localeSection('people')
+  const { ui } = entityLocale
+
   if (!entity) {
     return (
       <article className="explorer-page">
         <div className="section-inner explorer-empty">
-          <p className="section-label">Entity Explorer</p>
-          <h1>Entity not found</h1>
-          <a href="/eras/ancient-steppe">Return to Ancient Steppe Worlds</a>
+          <p className="section-label">{ui.entityExplorer}</p>
+          <h1>{ui.entityNotFound}</h1>
+          <a href="/eras/ancient-steppe">{ui.returnToAncientSteppe}</a>
         </div>
       </article>
     )
+  }
+
+  const displayEntity = getLocalizedEntity(entity, entityLocale)
+  const localizeRelated = (record) => {
+    if (record.id.startsWith('person-')) return getLocalizedPerson(record, peopleLocale)
+    if (record.id.startsWith('event-')) return getLocalizedEvent(record, eventLocale)
+    return getLocalizedEntity(record, entityLocale)
   }
 
   const directIds = new Set(entity.relatedEntityIds ?? [])
@@ -82,7 +100,10 @@ function EntityExplorerPage({ entity }) {
     return fields.some((ids) => ids?.includes(entity.id))
       || chapter.sections?.some((section) => section.relatedEntityIds?.includes(entity.id))
   })
-  const evidenceCases = chapters.flatMap((chapter) => chapter.sections ?? [])
+  const evidenceCases = chapters.flatMap((chapter) => {
+    const chapterPresentation = localizedRecord('chapters', chapter.id, chapter)
+    return (chapter.sections ?? []).map((section) => mergeLocaleValues(section, chapterPresentation.sectionPresentation?.[section.id]))
+  })
     .flatMap((section) => section.evidenceCases ?? [])
     .filter((item) => item.evidenceObjectId === entity.id)
   const sourceIds = new Set([
@@ -110,42 +131,42 @@ function EntityExplorerPage({ entity }) {
     <article className="explorer-page">
       <header className="entity-header explorer-header">
         <div className="section-inner entity-header-inner">
-          <p className="section-label">{getEntityLabel(entity)}</p>
-          <h1>{entity.title}</h1>
-          {entity.type ? <p className="entity-period">{entity.type}</p> : null}
-          {entity.period ? <p className="entity-period">{entity.period}</p> : null}
-          <div className="entity-status-row"><span className="entity-status-badge">{entity.status === 'verified' ? 'source-backed' : entity.status}</span></div>
+          <p className="section-label">{getEntityLabel(entity, ui)}</p>
+          <h1>{displayEntity.title}</h1>
+          {displayEntity.type ? <p className="entity-period">{displayEntity.type}</p> : null}
+          {displayEntity.period ? <p className="entity-period">{displayEntity.period}</p> : null}
+          <div className="entity-status-row"><span className="entity-status-badge">{entity.status === 'verified' ? ui.sourceBacked : (ui[entity.status] ?? entity.status)}</span></div>
           <MeanderLine className="entity-meander" />
         </div>
       </header>
 
-      {entity.summary ? (
+      {displayEntity.summary ? (
         <section className="entity-section">
           <div className="section-inner explorer-inner">
-            <div className="entity-section-heading"><p className="section-label">01</p><h2>{isPlace ? 'Why this place matters' : isSite ? 'What is this site?' : 'What is it?'}</h2></div>
-            <p className="entity-copy">{entity.summary}</p>
+            <div className="entity-section-heading"><p className="section-label">01</p><h2>{isPlace ? ui.whyPlaceMatters : isSite ? ui.whatIsSite : ui.whatIsIt}</h2></div>
+            <p className="entity-copy">{displayEntity.summary}</p>
           </div>
         </section>
       ) : null}
 
-      {entity.caution ? (
+      {displayEntity.caution ? (
         <section className="entity-section entity-section-alt">
           <div className="section-inner explorer-inner">
-            <div className="entity-section-heading"><p className="section-label">Evidence Limit</p><h2>What this record does not establish</h2></div>
-            <p className="entity-copy">{entity.caution}</p>
+            <div className="entity-section-heading"><p className="section-label">{ui.evidenceLimit}</p><h2>{ui.notEstablish}</h2></div>
+            <p className="entity-copy">{displayEntity.caution}</p>
           </div>
         </section>
       ) : null}
 
-      {entity.evidenceSections?.map((section) => (
+      {displayEntity.evidenceSections?.map((section) => (
         <section key={section.id} className="entity-section">
           <div className="section-inner explorer-inner">
-            <div className="entity-section-heading"><p className="section-label">Evidence</p><h2>{section.title}</h2></div>
+            <div className="entity-section-heading"><p className="section-label">{ui.evidence}</p><h2>{section.title}</h2></div>
             {section.paragraphs?.map((paragraph) => <p key={paragraph} className="entity-copy">{paragraph}</p>)}
-            {section.sourceReports ? <aside className="chapter-callout"><p className="chapter-callout-label">What the sources report</p><p className="chapter-callout-text">{section.sourceReports}</p></aside> : null}
-            {section.remainsInterpretive ? <aside className="chapter-callout"><p className="chapter-callout-label">What remains interpretive</p><p className="chapter-callout-text">{section.remainsInterpretive}</p></aside> : null}
-            {section.canTell ? <aside className="chapter-callout"><p className="chapter-callout-label">What this evidence can tell us</p><p className="chapter-callout-text">{section.canTell}</p></aside> : null}
-            {section.cannotProve ? <aside className="chapter-callout"><p className="chapter-callout-label">What this evidence does not prove</p><p className="chapter-callout-text">{section.cannotProve}</p></aside> : null}
+            {section.sourceReports ? <aside className="chapter-callout"><p className="chapter-callout-label">{ui.sourcesReport}</p><p className="chapter-callout-text">{section.sourceReports}</p></aside> : null}
+            {section.remainsInterpretive ? <aside className="chapter-callout"><p className="chapter-callout-label">{ui.remainsInterpretive}</p><p className="chapter-callout-text">{section.remainsInterpretive}</p></aside> : null}
+            {section.canTell ? <aside className="chapter-callout"><p className="chapter-callout-label">{ui.canTell}</p><p className="chapter-callout-text">{section.canTell}</p></aside> : null}
+            {section.cannotProve ? <aside className="chapter-callout"><p className="chapter-callout-label">{ui.cannotProve}</p><p className="chapter-callout-text">{section.cannotProve}</p></aside> : null}
           </div>
         </section>
       ))}
@@ -153,8 +174,8 @@ function EntityExplorerPage({ entity }) {
       {entityCampaigns.length ? (
         <section className="entity-section entity-section-alt">
           <div className="section-inner explorer-inner">
-            <div className="entity-section-heading"><p className="section-label">Campaign Context</p><h2>Connected campaigns</h2></div>
-            <div className="chapter-record-grid">{entityCampaigns.map((campaign) => <article key={campaign.id} className="chapter-record-card"><small>{campaign.dateDisplay} · {campaign.routeConfidence} ROUTE</small><strong>{campaign.title}</strong><p>{campaign.summary}</p>{campaign.stages?.length ? <ol>{campaign.stages.map((stage) => <li key={stage.title}><b>{stage.title}:</b> {stage.text}</li>)}</ol> : null}{campaign.caution ? <p>{campaign.caution}</p> : null}</article>)}</div>
+            <div className="entity-section-heading"><p className="section-label">{ui.campaignContext}</p><h2>{ui.connectedCampaigns}</h2></div>
+            <div className="chapter-record-grid">{entityCampaigns.map((campaign) => <article key={campaign.id} className="chapter-record-card"><small>{campaign.dateDisplay} · {campaign.routeConfidence} {ui.route}</small><strong>{campaign.title}</strong><p>{campaign.summary}</p>{campaign.stages?.length ? <ol>{campaign.stages.map((stage) => <li key={stage.title}><b>{stage.title}:</b> {stage.text}</li>)}</ol> : null}{campaign.caution ? <p>{campaign.caution}</p> : null}</article>)}</div>
           </div>
         </section>
       ) : null}
@@ -164,11 +185,11 @@ function EntityExplorerPage({ entity }) {
       {hasContext ? (
         <section className="entity-section entity-section-alt">
           <div className="section-inner explorer-inner">
-            <div className="entity-section-heading"><p className="section-label">Historical Context</p><h2>Era, chapters and political worlds</h2></div>
+            <div className="entity-section-heading"><p className="section-label">{ui.historicalContext}</p><h2>{ui.eraChaptersWorlds}</h2></div>
             <div className="explorer-link-grid">
-              {era ? <a href={`/eras/${era.id}`}><span>Era</span><strong>{era.title}</strong></a> : null}
-              {relatedChapters.map((chapter) => <a key={chapter.id} href={getChapterHref(chapter)}><span>Chapter {chapter.number}</span><strong>{chapter.title}</strong></a>)}
-              {relatedGroups.filter((group) => group.label === 'Political Worlds').flatMap((group) => group.records).map((record) => <a key={record.id} href={getEntityHref(record)}><span>Political World</span><strong>{record.title}</strong></a>)}
+              {era ? <a href={`/eras/${era.id}`}><span>{ui.era}</span><strong>{localizedRecord('eras', era.id, era).title}</strong></a> : null}
+              {relatedChapters.map((chapter) => <a key={chapter.id} href={getChapterHref(chapter)}><span>{ui.chapter} {chapter.number}</span><strong>{localizedRecord('chapters', chapter.id, chapter).title}</strong></a>)}
+              {relatedGroups.filter((group) => group.label === 'Political Worlds').flatMap((group) => group.records).map((record) => <a key={record.id} href={getEntityHref(record)}><span>{ui.politicalWorld}</span><strong>{getLocalizedEntity(record, entityLocale).title}</strong></a>)}
             </div>
           </div>
         </section>
@@ -177,8 +198,8 @@ function EntityExplorerPage({ entity }) {
       {isPlace && entity.eraIds?.length > 1 ? (
         <section className="entity-section">
           <div className="section-inner explorer-inner">
-            <div className="entity-section-heading"><p className="section-label">History Across Time</p><h2>Same landscape, different political worlds</h2></div>
-            <p className="entity-copy">The reuse of this landscape in different periods does not by itself establish political, ethnic or cultural continuity between the communities associated with it.</p>
+            <div className="entity-section-heading"><p className="section-label">{ui.historyAcrossTime}</p><h2>{ui.sameLandscape}</h2></div>
+            <p className="entity-copy">{ui.continuityCaution}</p>
           </div>
         </section>
       ) : null}
@@ -186,10 +207,10 @@ function EntityExplorerPage({ entity }) {
       {evidenceCases.map((item) => (
         <section key={item.id} className="entity-section">
           <div className="section-inner explorer-inner">
-            <div className="entity-section-heading"><p className="section-label">Material Evidence</p><h2>{item.evidenceTitle}</h2></div>
+            <div className="entity-section-heading"><p className="section-label">{ui.materialEvidence}</p><h2>{item.evidenceTitle}</h2></div>
             {item.evidenceSummary ? <p className="entity-copy">{item.evidenceSummary}</p> : null}
-            {item.interpretation ? <aside className="chapter-callout"><p className="chapter-callout-label">What it tells us</p><p className="chapter-callout-text">{item.interpretation}</p></aside> : null}
-            {item.caution ? <aside className="chapter-callout"><p className="chapter-callout-label">What it does not prove alone</p><p className="chapter-callout-text">{item.caution}</p></aside> : null}
+            {item.interpretation ? <aside className="chapter-callout"><p className="chapter-callout-label">{ui.tellsUs}</p><p className="chapter-callout-text">{item.interpretation}</p></aside> : null}
+            {item.caution ? <aside className="chapter-callout"><p className="chapter-callout-label">{ui.notProveAlone}</p><p className="chapter-callout-text">{item.caution}</p></aside> : null}
           </div>
         </section>
       ))}
@@ -197,9 +218,9 @@ function EntityExplorerPage({ entity }) {
       {isInscription ? (
         <section className="entity-section">
           <div className="section-inner explorer-inner">
-            <div className="entity-section-heading"><p className="section-label">Source Character</p><h2>Commemorative · Political · Inscriptional</h2></div>
-            <p className="entity-copy">The inscription is important historical evidence created within a political and commemorative context. It is not a neutral modern account or a complete history of every community within Türk political power.</p>
-            <aside className="chapter-callout"><p className="chapter-callout-label">Evidence Limit</p><p className="chapter-callout-text">No translation or quotation is supplied because the current project data does not contain a verified passage for reproduction.</p></aside>
+            <div className="entity-section-heading"><p className="section-label">{ui.sourceCharacter}</p><h2>{ui.inscriptionCharacter}</h2></div>
+            <p className="entity-copy">{ui.inscriptionExplanation}</p>
+            <aside className="chapter-callout"><p className="chapter-callout-label">{ui.evidenceLimit}</p><p className="chapter-callout-text">{ui.noVerifiedPassage}</p></aside>
           </div>
         </section>
       ) : null}
@@ -207,8 +228,8 @@ function EntityExplorerPage({ entity }) {
       {isSite ? (
         <section className="entity-section entity-section-alt">
           <div className="section-inner explorer-inner">
-            <div className="entity-section-heading"><p className="section-label">Evidence Caution</p><h2>What archaeology cannot prove alone</h2></div>
-            <p className="entity-copy">A site’s date, location or material remains do not automatically establish the language, ethnic identity or complete political affiliation of the people associated with it.</p>
+            <div className="entity-section-heading"><p className="section-label">{ui.evidenceCaution}</p><h2>{ui.archaeologyCannotProve}</h2></div>
+            <p className="entity-copy">{ui.archaeologyCaution}</p>
           </div>
         </section>
       ) : null}
@@ -216,14 +237,15 @@ function EntityExplorerPage({ entity }) {
       {relatedGroups.length ? (
         <section className="entity-section entity-section-alt">
           <div className="section-inner explorer-inner">
-            <div className="entity-section-heading"><p className="section-label">Connected History</p><h2>Related records</h2></div>
+            <div className="entity-section-heading"><p className="section-label">{ui.connectedHistory}</p><h2>{ui.relatedRecords}</h2></div>
             {relatedGroups.map((group) => (
               <div key={group.label} className="explorer-related-group">
-                <h3>{group.label}</h3>
+                <h3>{ui[{ People: 'people', 'Political Worlds': 'politicalWorlds', Places: 'places', Sites: 'sites', 'Objects / Monuments': 'objectsMonuments', Events: 'events' }[group.label]]}</h3>
                 <div className="chapter-record-grid">
                   {group.records.map((record) => {
+                    const localized = localizeRelated(record)
                     const href = getEntityHref(record)
-                    const card = <article className="chapter-record-card"><strong>{record.title}</strong>{!href ? <small>Reference only</small> : null}</article>
+                    const card = <article className="chapter-record-card"><strong>{localized.title}</strong>{!href ? <small>{ui.referenceOnly}</small> : null}</article>
                     return href ? <a key={record.id} href={href} className="chapter-record-link">{card}</a> : <div key={record.id}>{card}</div>
                   })}
                 </div>
@@ -236,7 +258,7 @@ function EntityExplorerPage({ entity }) {
       {entitySources.length ? (
         <section className="entity-section">
           <div className="section-inner explorer-inner">
-            <div className="entity-section-heading"><p className="section-label">Sources</p><h2>Further reading</h2></div>
+            <div className="entity-section-heading"><p className="section-label">{ui.sources}</p><h2>{ui.furtherReading}</h2></div>
             <ul className="chapter-source-list">{entitySources.map((source) => <li key={source.id}><strong>{source.title}</strong><span>{source.institution}</span></li>)}</ul>
           </div>
         </section>
@@ -245,7 +267,7 @@ function EntityExplorerPage({ entity }) {
       {entitySources.some((source) => source.perspective || source.temporalRelationship) ? (
         <section className="entity-section entity-section-alt">
           <div className="section-inner explorer-inner">
-            <div className="entity-section-heading"><p className="section-label">Source Perspectives</p><h2>Who produced this evidence?</h2></div>
+            <div className="entity-section-heading"><p className="section-label">{ui.sourcePerspectives}</p><h2>{ui.whoProduced}</h2></div>
             <div className="chapter-record-grid">{entitySources.filter((source) => source.perspective || source.temporalRelationship).map((source) => <SourcePerspective key={source.id} source={source} />)}</div>
           </div>
         </section>

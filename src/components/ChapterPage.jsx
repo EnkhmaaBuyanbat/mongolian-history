@@ -27,6 +27,8 @@ import ChapterEducationalVisual from './ChapterEducationalVisual'
 import { useLocale } from '../i18n/useLocale'
 import { getLocalizedEvent } from '../data/eventLocalization'
 import { mergeLocaleValues } from '../i18n/locale'
+import { getLocalizedEntity } from '../data/entityLocalization'
+import { getLocalizedPerson } from '../data/personLocalization'
 
 const sectionLabels = {
   'origins-and-context': 'Origins and Context',
@@ -68,6 +70,8 @@ function ChapterPage({ chapter }) {
   const { localeSection, localizedRecord } = useLocale()
   const { ui } = localeSection('chapters')
   const eventLocale = localeSection('events')
+  const entityLocale = localeSection('entities')
+  const peopleLocale = localeSection('people')
   const presentation = localizedRecord('chapters', chapter.id, chapter)
   const [selectedSiteId, setSelectedSiteId] = useState(
     chapter.sections?.find((section) => section.mapSlot?.siteIds?.length)?.mapSlot.siteIds[0],
@@ -75,6 +79,7 @@ function ChapterPage({ chapter }) {
   const records = useMemo(() => resolveRecords(chapter), [chapter])
   const era = eras.find((item) => item.id === chapter.eraId)
   const polity = polities.find((item) => chapter.relatedPolityIds?.includes(item.id))
+  const polityPresentation = getLocalizedEntity(polity, entityLocale)
   const chapterSections = chapter.sections?.length
     ? chapter.sections.map((section) => mergeLocaleValues(section, presentation.sectionPresentation?.[section.id]))
     : (chapter.sectionIds ?? []).map((id, index) => ({
@@ -134,8 +139,8 @@ function ChapterPage({ chapter }) {
           <div className="chapter-content">
             <section className="chapter-introduction">
               <p className="section-label">{ui.introduction}</p>
-              <h2>{presentation.introTitle ?? polity?.title ?? presentation.title}</h2>
-              <p>{presentation.intro || presentation.summary || polity?.summary || 'Historical narrative in research.'}</p>
+              <h2>{presentation.introTitle ?? polityPresentation?.title ?? presentation.title}</h2>
+              <p>{presentation.intro || presentation.summary || polityPresentation?.summary || 'Historical narrative in research.'}</p>
             </section>
 
             <ChapterEducationalVisual assignment={primaryVisual} />
@@ -183,7 +188,13 @@ function ChapterPage({ chapter }) {
                     <h3>{ui[group.labelKey]}</h3>
                     <div className="chapter-record-grid">
                       {groupRecords.map((canonicalRecord) => {
-                        const record = group.key === 'events' ? getLocalizedEvent(canonicalRecord, eventLocale) : canonicalRecord
+                        const record = group.key === 'events'
+                          ? getLocalizedEvent(canonicalRecord, eventLocale)
+                          : group.key === 'people'
+                            ? getLocalizedPerson(canonicalRecord, peopleLocale)
+                            : ['polities', 'sites', 'places', 'objects'].includes(group.key)
+                              ? getLocalizedEntity(canonicalRecord, entityLocale)
+                              : canonicalRecord
                         const href = getEntityHref(record)
                         const card = (
                           <article className="chapter-record-card">

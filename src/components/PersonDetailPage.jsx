@@ -19,6 +19,7 @@ import { getPersonHeaderVisual } from '../data/pageVisualResolvers'
 import CinematicPageHeader from './CinematicPageHeader'
 import { getLocalizedPerson, getLocalizedRelationship, getParentChildIds } from '../data/personLocalization'
 import { useLocale } from '../i18n/useLocale'
+import { getLocalizedEntity } from '../data/entityLocalization'
 import { getLocalizedEvent } from '../data/eventLocalization'
 
 function uniqueRecords(records) {
@@ -28,6 +29,7 @@ function uniqueRecords(records) {
 function PersonDetailPage({ person }) {
   const { localeSection, localizedRecord } = useLocale()
   const peopleLocale = localeSection('people')
+  const entityLocale = localeSection('entities')
   const ui = peopleLocale.ui
   if (!person) {
     return (
@@ -118,7 +120,7 @@ function PersonDetailPage({ person }) {
         dataAttributes={{ 'data-era-id': person.eraId, 'data-person-id': person.id }}
       >
           {person.alternativeNames?.length ? <p className="person-profile-aliases">{ui.alsoKnownAs} {person.alternativeNames.join(', ')}</p> : null}
-          {personPolities.length ? <p className="person-profile-affiliation">{personPolities.map((polity) => peopleLocale.politicalContexts?.[polity.id] ?? polity.title).join(' / ')}</p> : null}
+          {personPolities.length ? <p className="person-profile-affiliation">{personPolities.map((polity) => getLocalizedEntity(polity, entityLocale).title).join(' / ')}</p> : null}
           <MeanderLine className="entity-meander" />
       </CinematicPageHeader>
 
@@ -211,7 +213,7 @@ function PersonDetailPage({ person }) {
             <div className="entity-section-heading"><p className="section-label">{ui.historicalContext}</p><h2>{ui.politicalWorldChapter}</h2></div>
             <div className="person-profile-links">
               {era ? <a href={`/eras/${era.id}`}><span>{ui.era}</span><strong>{displayEra.title}</strong></a> : null}
-              {personPolities.map((polity) => <a key={polity.id} href={`/polities/${polity.id.replace('polity-', '')}`}><span>{ui.politicalWorld}</span><strong>{peopleLocale.politicalContexts?.[polity.id] ?? polity.title}</strong></a>)}
+              {personPolities.map((polity) => <a key={polity.id} href={`/polities/${polity.id.replace('polity-', '')}`}><span>{ui.politicalWorld}</span><strong>{getLocalizedEntity(polity, entityLocale).title}</strong></a>)}
               {personChapters.map((chapter) => { const displayChapter=localizedRecord('chapters',chapter.id,chapter); return <a key={chapter.id} href={getChapterHref(chapter)}><span>{ui.chapter} {chapter.number}</span><strong>{displayChapter.title}</strong></a> })}
             </div>
           </div>
