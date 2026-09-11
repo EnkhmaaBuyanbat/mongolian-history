@@ -58,10 +58,14 @@ import { reconstructions } from '../data/reconstructions'
 import { eraWorlds } from '../data/eraWorlds'
 import { heroScenes } from '../data/heroScenes'
 import { getLocalizedReconstruction, getLocalizedEraWorld, getLocalizedHeroScene } from '../data/visualLocalization'
+import { mediaEn } from '../data/locales/en/media'
+import { mediaMn } from '../data/locales/mn/media'
+import { media } from '../data/media'
+import { getLocalizedMedia } from '../data/mediaLocalization'
 
 export const translations = {
-  en: { common: commonEn, home: homeEn, culture: cultureEn, eras: erasEn, chapters: chaptersEn, events:eventsEn, entities:entitiesEn, reconstructions:reconstructionsEn, eraWorlds:eraWorldsEn, heroScenes:heroScenesEn, evidence: evidenceEn, people: peopleEn, familyTree: familyTreeEn, personRelationships: personRelationshipsEn },
-  mn: { common: commonMn, home: homeMn, culture: cultureMn, eras: erasMn, chapters: chaptersMn, events:eventsMn, entities:entitiesMn, reconstructions:reconstructionsMn, eraWorlds:eraWorldsMn, heroScenes:heroScenesMn, evidence: evidenceMn, people: peopleMn, familyTree: familyTreeMn, personRelationships: personRelationshipsMn },
+  en: { common: commonEn, home: homeEn, culture: cultureEn, eras: erasEn, chapters: chaptersEn, events:eventsEn, entities:entitiesEn, reconstructions:reconstructionsEn, eraWorlds:eraWorldsEn, heroScenes:heroScenesEn, media:mediaEn, evidence: evidenceEn, people: peopleEn, familyTree: familyTreeEn, personRelationships: personRelationshipsEn },
+  mn: { common: commonMn, home: homeMn, culture: cultureMn, eras: erasMn, chapters: chaptersMn, events:eventsMn, entities:entitiesMn, reconstructions:reconstructionsMn, eraWorlds:eraWorldsMn, heroScenes:heroScenesMn, media:mediaMn, evidence: evidenceMn, people: peopleMn, familyTree: familyTreeMn, personRelationships: personRelationshipsMn },
 }
 
 const errors = validateLocalization({
@@ -100,6 +104,8 @@ const errors = validateLocalization({
   getLocalizedReconstruction,
   getLocalizedEraWorld,
   getLocalizedHeroScene,
+  media,
+  getLocalizedMedia,
 })
 
 if (errors.length) throw new Error(`Localization validation failed:\n${errors.join('\n')}`)

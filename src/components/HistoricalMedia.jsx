@@ -1,13 +1,15 @@
 import { useLocale } from '../i18n/useLocale'
 import { toEvidenceCode } from '../i18n/locale'
+import { getLocalizedMedia } from '../data/mediaLocalization'
 
 function formatLabel(value) {
   return value?.replaceAll('_', ' ')
 }
 
 function HistoricalMedia({ media, status, note, heading, lazy = true, decorative = false }) {
-  const { t } = useLocale()
+  const { t, localeSection } = useLocale()
   const labels = t('common.sourceInterface')
+  const displayMedia = getLocalizedMedia(media, localeSection('media'))
   const assetPath = media?.asset?.largePath ?? media?.asset?.mediumPath ?? media?.asset?.originalPath
   const mediumWidth = Math.min(media?.asset?.width ?? 900, 900)
   const largeWidth = Math.min(media?.asset?.width ?? 1600, 1600)
@@ -34,7 +36,7 @@ function HistoricalMedia({ media, status, note, heading, lazy = true, decorative
           src={assetPath}
           srcSet={srcSet || undefined}
           sizes={srcSet ? '(max-width: 760px) 100vw, 672px' : undefined}
-          alt={decorative ? '' : media.alt ?? ''}
+          alt={decorative ? '' : displayMedia.alt ?? ''}
           aria-hidden={decorative || undefined}
           width={media.asset.width ?? undefined}
           height={media.asset.height ?? undefined}
@@ -48,17 +50,17 @@ function HistoricalMedia({ media, status, note, heading, lazy = true, decorative
       )}
 
       <figcaption>
-        {media?.caption ? <p>{media.caption}</p> : null}
+        {displayMedia?.caption ? <p>{displayMedia.caption}</p> : null}
         {note ? <p>{note}</p> : null}
         {media?.objectDate || media?.imageDate || media?.subjectDate ? (
           <dl className="historical-media-metadata">
-            {media.objectDate ? <><dt>{labels.objectDate}</dt><dd>{media.objectDate}</dd></> : null}
-            {media.imageDate ? <><dt>{labels.imageDate}</dt><dd>{media.imageDate}</dd></> : null}
-            {media.subjectDate ? <><dt>{labels.subjectDate}</dt><dd>{media.subjectDate}</dd></> : null}
+            {displayMedia.objectDate ? <><dt>{labels.objectDate}</dt><dd>{displayMedia.objectDate}</dd></> : null}
+            {displayMedia.imageDate ? <><dt>{labels.imageDate}</dt><dd>{displayMedia.imageDate}</dd></> : null}
+            {displayMedia.subjectDate ? <><dt>{labels.subjectDate}</dt><dd>{displayMedia.subjectDate}</dd></> : null}
           </dl>
         ) : null}
-        {media?.historicalContext ? <div className="historical-media-context"><strong>{labels.whyMatters}</strong><p>{media.historicalContext}</p></div> : null}
-        {media?.evidenceCaution ? <p className="historical-media-caution">{media.evidenceCaution}</p> : null}
+        {displayMedia?.historicalContext ? <div className="historical-media-context"><strong>{labels.whyMatters}</strong><p>{displayMedia.historicalContext}</p></div> : null}
+        {displayMedia?.evidenceCaution ? <p className="historical-media-caution">{displayMedia.evidenceCaution}</p> : null}
         {media?.institution || media?.collection ? <small>{labels.collection}: {[media.institution, media.collection].filter(Boolean).join(' · ')}</small> : null}
         {media?.attribution ? <small>{labels.attribution}: {media.attribution}</small> : null}
         {media?.license || media?.reuseRestrictions ? <small>{labels.license}: {media.license ?? media.reuseRestrictions}</small> : null}

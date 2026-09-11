@@ -21,7 +21,7 @@ function compatibleShape(base, translated, path, errors) {
     if ((path === 'mn.chapters' || path === 'mn.people') && key === 'records') return
     if (path === 'mn.events' && ['records','types'].includes(key)) return
     if (path === 'mn.entities' && ['records','types'].includes(key)) return
-    if (['mn.reconstructions','mn.eraWorlds','mn.heroScenes'].includes(path) && key === 'records') return
+    if (['mn.reconstructions','mn.eraWorlds','mn.heroScenes','mn.media'].includes(path) && key === 'records') return
     if (path === 'mn.people' && ['events','stories','politicalContexts'].includes(key)) return
     if (path === 'mn.personRelationships' && key === 'labels') return
     const baseValue = base?.[key]
@@ -31,7 +31,7 @@ function compatibleShape(base, translated, path, errors) {
   })
 }
 
-export function validateLocalization({ bundles, supportedLocales, cultureTopicIds, eraIds, chapters, evidenceCodes, terminology, people, dossierPersonIds, familyTreePersonIds, personRelationships, getPersonHref, eraI_IIDossierPersonIds, eraIII_IVDossierPersonIds, moduChanyuStory, events, eventIdsEraI_II, eventIdsEraIII_IV, eventIdsEraV_VI, eventIdsEraVII_VIII, politiesMn, polities, placesMn, places, sitesMn, objectsMn, sites, objects, getLocalizedEntity, reconstructions, eraWorlds, heroScenes, getLocalizedReconstruction, getLocalizedEraWorld, getLocalizedHeroScene }) {
+export function validateLocalization({ bundles, supportedLocales, cultureTopicIds, eraIds, chapters, evidenceCodes, terminology, people, dossierPersonIds, familyTreePersonIds, personRelationships, getPersonHref, eraI_IIDossierPersonIds, eraIII_IVDossierPersonIds, moduChanyuStory, events, eventIdsEraI_II, eventIdsEraIII_IV, eventIdsEraV_VI, eventIdsEraVII_VIII, politiesMn, polities, placesMn, places, sitesMn, objectsMn, sites, objects, getLocalizedEntity, reconstructions, eraWorlds, heroScenes, getLocalizedReconstruction, getLocalizedEraWorld, getLocalizedHeroScene, media, getLocalizedMedia }) {
   const errors = []
   const requiredCommon = ['navigation.home', 'navigation.eras', 'navigation.timeline', 'navigation.people', 'navigation.familyTree', 'navigation.culture', 'languages.english', 'languages.mongolian', 'accessibility.primaryNavigation', 'metadata.title']
   const requiredPersonPageUi = ['historicalBiography','referenceProfile','sourceBacked','researched','alsoKnownAs','shortHistory','lifeRole','whoWas','familyDynasty','dynasticRelationships','historicalContext','politicalWorldChapter','timeline','datedRecords','connectedPeople','familyChangingRelationships','connectedHistory','referenceRecords','sources','furtherReading','noPortraitExplanation']
@@ -147,6 +147,29 @@ export function validateLocalization({ bundles, supportedLocales, cultureTopicId
   validateVisualRecords('reconstructions', reconstructions, bundles.mn.reconstructions, getLocalizedReconstruction, ['title','period','dateDisplay','summary','historicalBasis','knownEvidence','uncertainElements','scenePromptSummary','evidenceLabel','historicalCaution'])
   validateVisualRecords('eraWorlds', eraWorlds, bundles.mn.eraWorlds, getLocalizedEraWorld, ['evidenceLabel','shortDescription','historicalBasis','knownEvidence','uncertainElements','promptBrief'])
   validateVisualRecords('heroScenes', heroScenes, bundles.mn.heroScenes, getLocalizedHeroScene, ['title','subtitle','caption','evidenceLabel'])
+  const publicMedia = media.filter((record) => record.approved && record.reviewStatus === 'APPROVED')
+  if (media.length !== 10) errors.push(`Expected 10 canonical media records; found ${media.length}.`)
+  if (publicMedia.length !== 7) errors.push(`Expected 7 approved public media records; found ${publicMedia.length}.`)
+  const mediaPresentations = bundles.mn.media?.records ?? {}
+  if (Object.keys(mediaPresentations).length !== publicMedia.length) errors.push(`Expected ${publicMedia.length} localized MN media records; found ${Object.keys(mediaPresentations).length}.`)
+  const forbiddenMediaFields = ['id','slug','mediaType','evidenceType','asset','sourceUrl','rightsHolder','license','publicDomain','reuseRestrictions','attribution','accessDate','institution','collection','approved','reviewStatus','priority','relatedEraIds','relatedChapterIds','relatedPersonIds','relatedEventIds','relatedPlaceIds','relatedSiteIds','relatedObjectIds','relatedOrganizationIds','relatedCompanyIds','relatedPolityIds','sourceRefs']
+  Object.entries(mediaPresentations).forEach(([id, presentation]) => {
+    const canonical = publicMedia.find((record) => record.id === id)
+    if (!canonical) errors.push(`Unknown or non-public localized media ID: ${id}`)
+    forbiddenMediaFields.forEach((field) => { if (field in presentation) errors.push(`Forbidden MN media locale field: ${id}.${field}`) })
+    inspectValues(presentation, `mn.media.records.${id}`, errors)
+    ;['title','description','caption','alt','creatorRole','subjectDate','historicalContext','evidenceCaution'].filter((field) => canonical?.[field]).forEach((field) => { if (!presentation[field]?.trim()) errors.push(`Missing MN media ${field}: ${id}`) })
+    ;['objectDate','imageDate'].filter((field) => canonical?.[field]).forEach((field) => { if (!presentation[field]?.trim()) errors.push(`Missing MN media ${field}: ${id}`) })
+    if (canonical) {
+      const resolved = getLocalizedMedia?.(canonical, bundles.mn.media)
+      if (resolved?.caption !== presentation.caption || resolved?.alt !== presentation.alt) errors.push(`Media resolver did not apply MN presentation: ${id}`)
+      ;['id','mediaType','evidenceType','approved','reviewStatus'].forEach((field) => { if (resolved?.[field] !== canonical[field]) errors.push(`Media resolver changed canonical ${field}: ${id}`) })
+      ;['asset','sourceRefs','sourceUrl','license','attribution'].forEach((field) => { if (resolved?.[field] !== canonical[field]) errors.push(`Media resolver changed canonical ${field}: ${id}`) })
+    }
+  })
+  publicMedia.forEach((record) => { if (!mediaPresentations[record.id]) errors.push(`Missing MN public media record: ${record.id}`) })
+  reconstructions.forEach((record) => { if (mediaPresentations[record.id]) errors.push(`Reconstruction ID incorrectly present in media locale: ${record.id}`) })
+  media.forEach((record) => { if (bundles.mn.reconstructions.records[record.id]) errors.push(`Media ID incorrectly present in reconstruction locale: ${record.id}`) })
   const localizedEvents = bundles.mn?.events?.records ?? {}
   const eraOneEvents = events.filter((event) => event.eraId === 'ancient-steppe' && ['researched','verified'].includes(event.status))
   const eraTwoEvents = events.filter((event) => event.eraId === 'before-chinggis' && ['researched','verified'].includes(event.status))
