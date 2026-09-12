@@ -16,6 +16,7 @@ import SourcePerspective from './SourcePerspective'
 import { getLocalizedEntity } from '../data/entityLocalization'
 import { getLocalizedEvent } from '../data/eventLocalization'
 import { getLocalizedPerson } from '../data/personLocalization'
+import { getLocalizedCampaign, getLocalizedClaim, mergePresentationList } from '../data/supportingLocalization'
 import { useLocale } from '../i18n/useLocale'
 import { mergeLocaleValues } from '../i18n/locale'
 
@@ -102,7 +103,15 @@ function EntityExplorerPage({ entity }) {
   })
   const evidenceCases = chapters.flatMap((chapter) => {
     const chapterPresentation = localizedRecord('chapters', chapter.id, chapter)
-    return (chapter.sections ?? []).map((section) => mergeLocaleValues(section, chapterPresentation.sectionPresentation?.[section.id]))
+    return (chapter.sections ?? []).map((section) => {
+      const sectionPresentation = chapterPresentation.sectionPresentation?.[section.id]
+      return {
+        ...mergeLocaleValues(section, { ...sectionPresentation, evidenceCases: undefined, relationsVisual: undefined }),
+        evidenceCases: section.evidenceCases
+          ? mergePresentationList(section.evidenceCases, sectionPresentation?.evidenceCases)
+          : section.evidenceCases,
+      }
+    })
   })
     .flatMap((section) => section.evidenceCases ?? [])
     .filter((item) => item.evidenceObjectId === entity.id)
@@ -116,11 +125,11 @@ function EntityExplorerPage({ entity }) {
     entity.campaignIds?.includes(campaign.id)
       || campaign.places?.includes(entity.id)
       || campaign.politicalActors?.includes(entity.id),
-  )
+  ).map((campaign) => getLocalizedCampaign(campaign, localeSection('supporting')))
   const entityClaims = claims.filter((claim) =>
     entity.claimIds?.includes(claim.id)
       || claim.relatedPlaces?.includes(entity.id),
-  )
+  ).map((claim) => getLocalizedClaim(claim, localeSection('supporting')))
   const era = eras.find((item) => item.id === entity.eraId || entity.eraIds?.includes(item.id))
   const isPlace = entity.id.startsWith('place-')
   const isSite = entity.id.startsWith('site-')

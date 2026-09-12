@@ -30,7 +30,7 @@ import { mergeLocaleValues } from '../i18n/locale'
 import { getLocalizedEntity } from '../data/entityLocalization'
 import { getLocalizedPerson } from '../data/personLocalization'
 import { getLocalizedEducationalVisual } from '../data/educationalVisualLocalization'
-import { getLocalizedCampaign, getLocalizedOrganization, getLocalizedCompany } from '../data/supportingLocalization'
+import { getLocalizedCampaign, getLocalizedOrganization, getLocalizedCompany, getLocalizedClaim, mergePresentationList } from '../data/supportingLocalization'
 
 const sectionLabels = {
   'origins-and-context': 'Origins and Context',
@@ -86,7 +86,18 @@ function ChapterPage({ chapter }) {
   const chapterSections = chapter.sections?.length
     ? chapter.sections.map((section) => {
         const sectionPresentation = presentation.sectionPresentation?.[section.id]
-        const localized = mergeLocaleValues(section, sectionPresentation)
+        const localized = {
+          ...mergeLocaleValues(section, { ...sectionPresentation, evidenceCases: undefined, relationsVisual: undefined }),
+          evidenceCases: section.evidenceCases
+            ? mergePresentationList(section.evidenceCases, sectionPresentation?.evidenceCases)
+            : section.evidenceCases,
+          relationsVisual: section.relationsVisual
+            ? {
+                ...mergeLocaleValues(section.relationsVisual, { ...sectionPresentation?.relationsVisual, nodes: undefined }),
+                nodes: mergePresentationList(section.relationsVisual.nodes, sectionPresentation?.relationsVisual?.nodes),
+              }
+            : section.relationsVisual,
+        }
         return section.educationalVisual ? {
           ...localized,
           educationalVisual: getLocalizedEducationalVisual(section.educationalVisual, sectionPresentation?.educationalVisual),
@@ -152,7 +163,7 @@ function ChapterPage({ chapter }) {
             <section className="chapter-introduction">
               <p className="section-label">{ui.introduction}</p>
               <h2>{presentation.introTitle ?? polityPresentation?.title ?? presentation.title}</h2>
-              <p>{presentation.intro || presentation.summary || polityPresentation?.summary || 'Historical narrative in research.'}</p>
+              <p>{presentation.intro || presentation.summary || polityPresentation?.summary || ui.narrativeInResearch}</p>
             </section>
 
             <ChapterEducationalVisual assignment={primaryVisual} />
@@ -210,6 +221,8 @@ function ChapterPage({ chapter }) {
                                 ? getLocalizedOrganization(canonicalRecord, supportingLocale)
                                 : group.key === 'companies'
                                   ? getLocalizedCompany(canonicalRecord, supportingLocale)
+                                  : group.key === 'claims'
+                                    ? getLocalizedClaim(canonicalRecord, supportingLocale)
                                   : canonicalRecord
                         const href = getEntityHref(record)
                         const card = (

@@ -21,6 +21,7 @@ import { getLocalizedPerson, getLocalizedRelationship, getParentChildIds } from 
 import { useLocale } from '../i18n/useLocale'
 import { getLocalizedEntity } from '../data/entityLocalization'
 import { getLocalizedEvent } from '../data/eventLocalization'
+import { getLocalizedCampaign } from '../data/supportingLocalization'
 
 function uniqueRecords(records) {
   return [...new Map(records.map((record) => [record.id, record])).values()]
@@ -86,7 +87,12 @@ function PersonDetailPage({ person }) {
     ]),
   ])
   const personSources = sources.filter((source) => sourceIds.has(source.id))
-  const personCampaigns = campaigns.filter((campaign) => campaign.commanders?.includes(person.id))
+  const personCampaigns = campaigns
+    .filter((campaign) => campaign.commanders?.includes(person.id))
+    .map((campaign) => getLocalizedCampaign(campaign, localeSection('supporting')))
+  const aliases = displayPerson.localizedAlternativeNames?.length
+    ? displayPerson.localizedAlternativeNames
+    : displayPerson.canonicalAlternativeNames
   const era = eras.find((item) => item.id === person.eraId)
   const referenceRecords = [
     ...personPlaces.map((record) => ({ ...record, kind: 'Place' })),
@@ -119,7 +125,7 @@ function PersonDetailPage({ person }) {
         portraitStatus={portraitLabel}
         dataAttributes={{ 'data-era-id': person.eraId, 'data-person-id': person.id }}
       >
-          {person.alternativeNames?.length ? <p className="person-profile-aliases">{ui.alsoKnownAs} {person.alternativeNames.join(', ')}</p> : null}
+          {aliases?.length ? <p className="person-profile-aliases">{ui.alsoKnownAs} {aliases.join(', ')}</p> : null}
           {personPolities.length ? <p className="person-profile-affiliation">{personPolities.map((polity) => getLocalizedEntity(polity, entityLocale).title).join(' / ')}</p> : null}
           <MeanderLine className="entity-meander" />
       </CinematicPageHeader>
@@ -263,7 +269,8 @@ function PersonDetailPage({ person }) {
             <div className="chapter-record-grid">
               {referenceRecords.map((record) => {
                 const href = getEntityHref(record)
-                const card = <article className="chapter-record-card"><small>{ui.recordKinds?.[record.kind] ?? record.kind}</small><strong>{record.title}</strong></article>
+                const localized = getLocalizedEntity(record, entityLocale)
+                const card = <article className="chapter-record-card"><small>{ui.recordKinds?.[record.kind] ?? record.kind}</small><strong>{localized.title}</strong></article>
                 return href ? <a key={record.id} href={href} className="chapter-record-link">{card}</a> : <div key={record.id}>{card}</div>
               })}
             </div>

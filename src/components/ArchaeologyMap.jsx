@@ -1,5 +1,8 @@
 import { useMemo, useState } from 'react'
 import { sites } from '../data/sites'
+import { getLocalizedEntity } from '../data/entityLocalization'
+import { formatTemplate } from '../data/personLocalization'
+import { useLocale } from '../i18n/useLocale'
 
 const MAP_WIDTH = 1000
 const MAP_HEIGHT = 600
@@ -41,14 +44,19 @@ function projectCoordinates(siteRecords) {
 }
 
 function ArchaeologyMap({ siteIds, selectedSiteId, onSiteSelect }) {
+  const { localeSection } = useLocale()
+  const ui = localeSection('chapters').ui
+  const entityUi = localeSection('entities').ui
+  const entityLocale = localeSection('entities')
   const [internalSelectedId, setInternalSelectedId] = useState(siteIds[0])
   const mapSites = useMemo(
     () => projectCoordinates(
       siteIds
         .map((siteId) => sites.find((site) => site.id === siteId))
-        .filter((site) => site?.coordinates),
+        .filter((site) => site?.coordinates)
+        .map((site) => getLocalizedEntity(site, entityLocale)),
     ),
-    [siteIds],
+    [siteIds, entityLocale],
   )
   const selectedId = selectedSiteId ?? internalSelectedId
   const selectedSite = mapSites.find((site) => site.id === selectedId) ?? mapSites[0]
@@ -62,12 +70,15 @@ function ArchaeologyMap({ siteIds, selectedSiteId, onSiteSelect }) {
     onSiteSelect?.(siteId)
   }
 
+  const selectedLabel = selectedSite.id === 'site-noyon-uul-noin-ula' ? ui.noyonUulSujigt : siteLabels[selectedSite.id]
+  const statusLabel = selectedSite.status === 'verified' ? entityUi.sourceBacked : (entityUi[selectedSite.status] ?? selectedSite.status)
+
   return (
     <div className="archaeology-map-module">
       <div className="archaeology-map-heading">
-        <p className="section-label">Geographic Context · Present-Day Mongolia</p>
-        <h3>Xiongnu Archaeological Landscape</h3>
-        <p>Selected elite cemetery complexes across present-day Mongolia</p>
+        <p className="section-label">{ui.archaeologyMapLabel}</p>
+        <h3>{ui.archaeologyMapTitle}</h3>
+        <p>{ui.archaeologyMapIntro}</p>
       </div>
 
       <div className="archaeology-map-layout">
@@ -76,7 +87,7 @@ function ArchaeologyMap({ siteIds, selectedSiteId, onSiteSelect }) {
             className="archaeology-map"
             viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
             role="img"
-            aria-label="Selected Xiongnu archaeological sites in present-day Mongolia"
+            aria-label={ui.archaeologyMapAria}
           >
             <defs>
               <pattern id="map-grid" width="80" height="80" patternUnits="userSpaceOnUse">
@@ -96,7 +107,7 @@ function ArchaeologyMap({ siteIds, selectedSiteId, onSiteSelect }) {
             />
             {mapSites.map((site) => {
               const isSelected = site.id === selectedSite.id
-              const markerLabel = site.id === 'site-noyon-uul-noin-ula' ? 'Noyon Uul — Sujigt' : siteLabels[site.id]
+              const markerLabel = site.id === 'site-noyon-uul-noin-ula' ? ui.noyonUulSujigt : siteLabels[site.id]
               const label = siteLabels[site.id]
               const offset = labelOffsets[site.id]
               return (
@@ -109,7 +120,7 @@ function ArchaeologyMap({ siteIds, selectedSiteId, onSiteSelect }) {
                     className="map-marker-hit"
                     tabIndex={0}
                     role="button"
-                    aria-label={`Select ${markerLabel}`}
+                    aria-label={formatTemplate(ui.selectSite, { name: markerLabel })}
                     onClick={() => selectSite(site.id)}
                     onKeyDown={(event) => {
                       if (event.key === 'Enter' || event.key === ' ') {
@@ -125,41 +136,41 @@ function ArchaeologyMap({ siteIds, selectedSiteId, onSiteSelect }) {
               )
             })}
           </svg>
-          <div className="archaeology-map-caption">Map context: present-day Mongolia</div>
+          <div className="archaeology-map-caption">{ui.mapContextPresentDay}</div>
         </div>
 
         <aside className="archaeology-map-panel" aria-live="polite">
-          <p className="section-label">Selected Archaeological Site</p>
-          <h4>{selectedSite.id === 'site-noyon-uul-noin-ula' ? 'Noyon Uul — Sujigt' : siteLabels[selectedSite.id]}</h4>
+          <p className="section-label">{ui.selectedArchaeologicalSite}</p>
+          <h4>{selectedLabel}</h4>
           {selectedSite.location ? <p className="map-panel-location">{selectedSite.location}</p> : null}
           <dl>
             <div>
-              <dt>Type</dt>
+              <dt>{ui.type}</dt>
               <dd>{selectedSite.type}</dd>
             </div>
             <div>
-              <dt>Status</dt>
-              <dd>{selectedSite.status}</dd>
+              <dt>{ui.status}</dt>
+              <dd>{statusLabel}</dd>
             </div>
             <div>
-              <dt>Coordinates</dt>
+              <dt>{ui.coordinates}</dt>
               <dd>{selectedSite.coordinates.lat.toFixed(6)}° N · {selectedSite.coordinates.lng.toFixed(6)}° E</dd>
             </div>
           </dl>
           <p className="map-panel-summary">{selectedSite.summary}</p>
           {selectedSite.id === 'site-noyon-uul-noin-ula' ? (
-            <p className="map-panel-note">Map marker represents the Sujigt component for geographic orientation. Noyon Uul includes multiple cemetery components.</p>
+            <p className="map-panel-note">{ui.noyonUulMapNote}</p>
           ) : null}
-          <p className="map-panel-action">Detailed site exploration — coming soon</p>
+          <p className="map-panel-action">{ui.detailedSiteComingSoon}</p>
         </aside>
       </div>
 
       <div className="archaeology-map-footer">
         <div className="map-legend">
-          <span><i className="legend-dot selected" /> Selected archaeological site</span>
-          <span><i className="legend-dot" /> Archaeological site</span>
+          <span><i className="legend-dot selected" /> {ui.legendSelectedSite}</span>
+          <span><i className="legend-dot" /> {ui.legendArchaeologicalSite}</span>
         </div>
-        <p>This visualization shows archaeological locations in present-day Mongolia, not reconstructed borders or routes.</p>
+        <p>{ui.archaeologyMapFooter}</p>
       </div>
     </div>
   )

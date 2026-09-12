@@ -1,9 +1,10 @@
 import { CornerFrame } from './Ornament'
 import { useLocale } from '../i18n/useLocale'
 
-function EraCard({ era, actionLabel = 'Explore' }) {
-  const { localizedRecord } = useLocale()
+function EraCard({ era, actionLabel }) {
+  const { localizedRecord, t } = useLocale()
   const presentation = localizedRecord('eras', era.id, era)
+  const exploreLabel = actionLabel ?? t('home.eras.explore')
   return (
     <article className="era-card">
       <CornerFrame />
@@ -16,9 +17,9 @@ function EraCard({ era, actionLabel = 'Explore' }) {
       <a
         href={`/eras/${era.id}`}
         className="era-explore"
-        aria-label={`${actionLabel} ${presentation.title}`}
+        aria-label={`${exploreLabel} ${presentation.title}`}
       >
-        {actionLabel}
+        {exploreLabel}
       </a>
     </article>
   )

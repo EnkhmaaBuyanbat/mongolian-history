@@ -2,9 +2,15 @@ import { useMemo, useState } from 'react'
 import { objects } from '../data/objects'
 import { sites } from '../data/sites'
 import { sources } from '../data/sources'
+import { getLocalizedEntity } from '../data/entityLocalization'
+import { formatTemplate } from '../data/personLocalization'
+import { useLocale } from '../i18n/useLocale'
 import ConfidenceBadge from './ConfidenceBadge'
 
 function EvidenceExplorer({ cases, selectedSiteId, onSiteSelect }) {
+  const { localeSection } = useLocale()
+  const ui = localeSection('chapters').ui
+  const entityLocale = localeSection('entities')
   const [internalCaseId, setInternalCaseId] = useState(cases[0]?.id)
   const selectedCase = cases.find((item) => item.siteId === selectedSiteId)
   const activeCaseId = selectedCase?.id ?? (cases.some((item) => item.id === internalCaseId)
@@ -12,7 +18,9 @@ function EvidenceExplorer({ cases, selectedSiteId, onSiteSelect }) {
     : cases[0]?.id)
   const activeCase = cases.find((item) => item.id === activeCaseId) ?? cases[0]
   const site = sites.find((item) => item.id === activeCase?.siteId)
+  const displaySite = site ? getLocalizedEntity(site, entityLocale) : null
   const object = objects.find((item) => item.id === activeCase?.evidenceObjectId)
+  const displayObject = object ? getLocalizedEntity(object, entityLocale) : null
   const caseSources = useMemo(
     () => sources.filter((source) => activeCase?.sourceIds?.includes(source.id)),
     [activeCase],
@@ -30,17 +38,16 @@ function EvidenceExplorer({ cases, selectedSiteId, onSiteSelect }) {
   return (
     <div className="evidence-explorer">
       <header className="evidence-explorer-heading">
-        <p className="section-label">Reading the Evidence</p>
-        <h3>What can archaeological objects actually tell us?</h3>
-        <p>
-          Archaeological objects can reveal connections, technologies and social contexts. But an object's presence does not automatically tell us the identity of its owner or the exact route by which it travelled.
-        </p>
+        <p className="section-label">{ui.readingTheEvidence}</p>
+        <h3>{ui.evidenceExplorerTitle}</h3>
+        <p>{ui.evidenceExplorerIntro}</p>
       </header>
 
       <div className="evidence-explorer-layout">
-        <div className="evidence-selector" role="tablist" aria-label="Evidence cases">
+        <div className="evidence-selector" role="tablist" aria-label={ui.evidenceCasesAria}>
           {cases.map((evidenceCase) => {
             const caseSite = sites.find((item) => item.id === evidenceCase.siteId)
+            const localizedSite = caseSite ? getLocalizedEntity(caseSite, entityLocale) : null
             const isSelected = evidenceCase.id === activeCase.id
             return (
               <button
@@ -51,7 +58,7 @@ function EvidenceExplorer({ cases, selectedSiteId, onSiteSelect }) {
                 className={`evidence-selector-item${isSelected ? ' is-selected' : ''}`}
                 onClick={() => selectCase(evidenceCase)}
               >
-                <span>{caseSite?.title.replace(' / Noin-Ula', '')}</span>
+                <span>{(localizedSite?.title ?? caseSite?.title ?? '').replace(' / Noin-Ula', '')}</span>
                 <strong>{evidenceCase.evidenceTitle}</strong>
               </button>
             )
@@ -60,29 +67,29 @@ function EvidenceExplorer({ cases, selectedSiteId, onSiteSelect }) {
 
         <article className="evidence-case" role="tabpanel">
           <div className="evidence-case-object">
-            <span className="evidence-case-number">Object {String(cases.indexOf(activeCase) + 1).padStart(2, '0')}</span>
+            <span className="evidence-case-number">{formatTemplate(ui.objectNumber, { n: String(cases.indexOf(activeCase) + 1).padStart(2, '0') })}</span>
             <strong>{activeCase.evidenceTitle}</strong>
-            <span>{site.title.replace(' / Noin-Ula', '')}</span>
-            <small>Archaeological object · Image record — to be added</small>
+            <span>{(displaySite.title ?? site.title).replace(' / Noin-Ula', '')}</span>
+            <small>{ui.archaeologicalObjectPending}</small>
           </div>
 
           <div className="evidence-case-flow">
             <section className="evidence-stage">
-              <p className="evidence-stage-label">Site</p>
-              <h4>{site.title}</h4>
+              <p className="evidence-stage-label">{ui.site}</p>
+              <h4>{displaySite.title}</h4>
               <p>{activeCase.evidenceSummary}</p>
             </section>
             <section className="evidence-stage">
-              <p className="evidence-stage-label">Evidence</p>
-              <h4>{object?.title ?? activeCase.evidenceTitle}</h4>
+              <p className="evidence-stage-label">{ui.evidence}</p>
+              <h4>{displayObject?.title ?? activeCase.evidenceTitle}</h4>
               <p>{activeCase.evidenceSummary}</p>
             </section>
             <section className="evidence-stage evidence-stage-interpretation">
-              <p className="evidence-stage-label">What It Tells Us</p>
+              <p className="evidence-stage-label">{ui.whatItTellsUs}</p>
               <p>{activeCase.interpretation || activeCase.evidenceSummary}</p>
             </section>
             <section className="evidence-stage evidence-stage-caution">
-              <p className="evidence-stage-label">What It Does Not Prove</p>
+              <p className="evidence-stage-label">{ui.whatItDoesNotProve}</p>
               <p>{activeCase.caution}</p>
               <ConfidenceBadge label={activeCase.confidence} />
             </section>
@@ -90,11 +97,11 @@ function EvidenceExplorer({ cases, selectedSiteId, onSiteSelect }) {
 
           {caseSources.length ? (
             <div className="evidence-sources">
-              <p className="evidence-stage-label">Sources</p>
+              <p className="evidence-stage-label">{ui.sources}</p>
               {caseSources.map((source) => (
                 <span key={source.id}>
                   {source.title}
-                  {source.url ? <a href={source.url}>View source</a> : null}
+                  {source.url ? <a href={source.url}>{ui.viewSource}</a> : null}
                 </span>
               ))}
             </div>

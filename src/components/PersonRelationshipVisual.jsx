@@ -1,6 +1,7 @@
 import { getPersonHref } from '../data/entityRoutes'
 import { useLocale } from '../i18n/useLocale'
 import { getLocalizedPerson, getLocalizedRelationship } from '../data/personLocalization'
+import { toEvidenceCode } from '../i18n/locale'
 
 function PersonRelationshipVisual({ person, relationships, label }) {
   const { localeSection } = useLocale()
@@ -17,7 +18,7 @@ function PersonRelationshipVisual({ person, relationships, label }) {
           const localized = getLocalizedRelationship(relationship, relationshipLocale)
           const relatedPerson = getLocalizedPerson(relationship.person, peopleLocale)
           return <a key={`${relationship.personId}-${relationship.relatedPersonId}-${relationship.type}`} href={getPersonHref(relationship.person)}>
-            <span>{localized.displayLabel}</span><strong>{relatedPerson.title}</strong><small>{localeSection('evidence')[relationship.confidence?.replaceAll(' ', '_')] ?? relationship.confidence?.replaceAll('_', ' ')}</small>
+            <span>{localized.displayLabel}</span><strong>{relatedPerson.title}</strong><small>{localeSection('evidence')[toEvidenceCode(relationship.confidence)] ?? relationship.confidence}</small>
           </a>
         })}
       </div>

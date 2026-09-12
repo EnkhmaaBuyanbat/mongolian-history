@@ -1,13 +1,19 @@
+import { getLocalizedSource } from '../data/supportingLocalization'
+import { useLocale } from '../i18n/useLocale'
+
 function SourcePerspective({ source, role, note }) {
-  if (!source) return null
+  const { localeSection } = useLocale()
+  const ui = localeSection('entities').ui
+  const displaySource = getLocalizedSource(source, localeSection('supporting'))
+  if (!displaySource) return null
 
   return (
     <article className="chapter-record-card source-perspective-card">
-      <small>{source.category ?? 'Historical source'}</small>
-      <strong>{source.title}</strong>
-      {source.perspective ? <p><b>Perspective / context:</b> {source.perspective}</p> : null}
-      {source.temporalRelationship ? <p><b>Temporal relationship:</b> {source.temporalRelationship}</p> : null}
-      {role ? <p><b>Role in this claim:</b> {role}</p> : null}
+      <small>{displaySource.category ?? ui.historicalSource}</small>
+      <strong>{displaySource.title}</strong>
+      {displaySource.perspective ? <p><b>{ui.perspectiveContext}</b> {displaySource.perspective}</p> : null}
+      {displaySource.temporalRelationship ? <p><b>{ui.temporalRelationship}</b> {displaySource.temporalRelationship}</p> : null}
+      {role ? <p><b>{ui.roleInThisClaim}</b> {role}</p> : null}
       {note ? <p>{note}</p> : null}
     </article>
   )

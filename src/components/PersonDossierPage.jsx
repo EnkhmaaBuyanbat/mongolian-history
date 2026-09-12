@@ -18,6 +18,7 @@ import { useLocale } from '../i18n/useLocale'
 import { getLocalizedEntity } from '../data/entityLocalization'
 import { getLocalizedPerson, getLocalizedPersonStory } from '../data/personLocalization'
 import { getLocalizedEvent } from '../data/eventLocalization'
+import { getLocalizedCampaign } from '../data/supportingLocalization'
 
 function unique(records) {
   return [...new Map(records.map((record) => [record.id, record])).values()]
@@ -44,7 +45,12 @@ function PersonDossierPage({ person }) {
   const political = relationships.filter((record) => record.type !== 'spouse' && record.type !== 'parent')
   const relatedPeople = unique(relatedIds.filter((id) => id.startsWith('person-')).map((id) => people.find((candidate) => candidate.id === id)).filter(Boolean)).filter((candidate) => !relationships.some((record) => record.person.id === candidate.id))
   const personChapters = chapters.filter((chapter) => chapter.relatedPeopleIds?.includes(person.id))
-  const personCampaigns = campaigns.filter((campaign) => campaign.commanders?.includes(person.id))
+  const personCampaigns = campaigns
+    .filter((campaign) => campaign.commanders?.includes(person.id))
+    .map((campaign) => getLocalizedCampaign(campaign, localeSection('supporting')))
+  const aliases = displayPerson.localizedAlternativeNames?.length
+    ? displayPerson.localizedAlternativeNames
+    : displayPerson.canonicalAlternativeNames
   const story = person.id === moduChanyuStory.personId ? getLocalizedPersonStory(moduChanyuStory, peopleLocale.stories?.[person.storyId]) : null
   const sourceIds = new Set([...(person.sourceRefs ?? []), ...(person.characterAndReputation?.traits ?? []).flatMap((trait) => trait.sourceIds ?? []), ...relationships.flatMap((record) => record.sourceIds ?? [])])
   const personSources = sources.filter((source) => sourceIds.has(source.id))
@@ -52,7 +58,7 @@ function PersonDossierPage({ person }) {
   return (
     <article className="person-profile-page person-dossier-page">
       <CinematicPageHeader variant="person" className="entity-header person-profile-header cinematic-context-header" innerClassName="entity-header-inner" visual={null} context={presentation.eras.map((era) => { const localized=localizedRecord('eras',era.id,era); return <a key={era.id} href={`/eras/${era.slug ?? era.id}`}>{ui.era} {era.numeral} · {localized.title}</a> })} label={ui[presentation.depth.key]} title={displayPerson.title} subtitle={displayPerson.role} period={presentation.periodEstablished ? presentation.period : ui.datesUnknown} summary={displayPerson.summary ?? displayPerson.shortBio} status={ui.sourceBacked} portraitStatus={localeSection('evidence')[presentation.evidence.code] ?? presentation.evidence.label} dataAttributes={{ 'data-era-id': person.eraId, 'data-person-id': person.id }}>
-        {person.alternativeNames?.length ? <p className="person-profile-aliases">{ui.alsoKnownAs} {person.alternativeNames.join(', ')}</p> : null}
+        {aliases?.length ? <p className="person-profile-aliases">{ui.alsoKnownAs} {aliases.join(', ')}</p> : null}
         <MeanderLine className="entity-meander" />
       </CinematicPageHeader>
 

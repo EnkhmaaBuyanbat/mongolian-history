@@ -1,6 +1,6 @@
 import { mergeLocaleValues } from '../i18n/locale'
 
-function mergePresentationList(canonical = [], presentation = []) {
+export function mergePresentationList(canonical = [], presentation = []) {
   return canonical.map((item, index) => mergeLocaleValues(item, presentation[index]))
 }
 
@@ -12,6 +12,28 @@ export function getLocalizedCampaign(campaign, localeBundle = {}) {
     stages: mergePresentationList(campaign.stages, presentation?.stages),
     treatment: localeBundle.campaigns?.treatments?.[campaign.treatment] ?? campaign.treatment,
     routeConfidence: localeBundle.campaigns?.routeConfidence?.[campaign.routeConfidence] ?? campaign.routeConfidence,
+  }
+}
+
+export function getLocalizedSource(source, localeBundle = {}) {
+  if (!source) return source
+  return mergeLocaleValues(source, localeBundle.sources?.records?.[source.id])
+}
+
+export function getLocalizedClaim(claim, localeBundle = {}) {
+  if (!claim) return claim
+  const presentation = localeBundle.claims?.records?.[claim.id]
+  const roleMap = localeBundle.claims?.roles ?? {}
+  return {
+    ...mergeLocaleValues(claim, { ...presentation, sourceSupport: undefined }),
+    sourceSupport: mergePresentationList(
+      claim.sourceSupport,
+      presentation?.sourceSupport,
+    ).map((item, index) => ({
+      ...item,
+      sourceId: claim.sourceSupport[index].sourceId,
+      role: roleMap[claim.sourceSupport[index].role] ?? claim.sourceSupport[index].role,
+    })),
   }
 }
 

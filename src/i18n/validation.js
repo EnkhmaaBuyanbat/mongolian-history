@@ -21,7 +21,7 @@ function compatibleShape(base, translated, path, errors) {
     if ((path === 'mn.chapters' || path === 'mn.people') && key === 'records') return
     if (path === 'mn.events' && ['records','types'].includes(key)) return
     if (path === 'mn.entities' && ['records','types'].includes(key)) return
-    if (path.startsWith('mn.supporting.') && ['records','types','routeConfidence','treatments'].includes(key)) return
+    if (path.startsWith('mn.supporting.') && ['records','types','routeConfidence','treatments','roles'].includes(key)) return
     if (['mn.reconstructions','mn.eraWorlds','mn.heroScenes','mn.media'].includes(path) && key === 'records') return
     if (path === 'mn.people' && ['events','stories','politicalContexts'].includes(key)) return
     if (path === 'mn.personRelationships' && key === 'labels') return
@@ -32,7 +32,7 @@ function compatibleShape(base, translated, path, errors) {
   })
 }
 
-export function validateLocalization({ bundles, supportedLocales, cultureTopicIds, eraIds, chapters, evidenceCodes, terminology, people, dossierPersonIds, familyTreePersonIds, personRelationships, getPersonHref, eraI_IIDossierPersonIds, eraIII_IVDossierPersonIds, moduChanyuStory, events, eventIdsEraI_II, eventIdsEraIII_IV, eventIdsEraV_VI, eventIdsEraVII_VIII, politiesMn, polities, placesMn, places, sitesMn, objectsMn, sites, objects, getLocalizedEntity, reconstructions, eraWorlds, heroScenes, getLocalizedReconstruction, getLocalizedEraWorld, getLocalizedHeroScene, media, getLocalizedMedia, chapterVisualAssignments, educationalDiagrams, getLocalizedEducationalVisual, campaigns, organizations, companies, getLocalizedCampaign, getLocalizedOrganization, getLocalizedCompany }) {
+export function validateLocalization({ bundles, supportedLocales, cultureTopicIds, eraIds, chapters, evidenceCodes, terminology, people, dossierPersonIds, familyTreePersonIds, personRelationships, getPersonHref, eraI_IIDossierPersonIds, eraIII_IVDossierPersonIds, moduChanyuStory, events, eventIdsEraI_II, eventIdsEraIII_IV, eventIdsEraV_VI, eventIdsEraVII_VIII, politiesMn, polities, placesMn, places, sitesMn, objectsMn, sites, objects, getLocalizedEntity, reconstructions, eraWorlds, heroScenes, getLocalizedReconstruction, getLocalizedEraWorld, getLocalizedHeroScene, media, getLocalizedMedia, chapterVisualAssignments, educationalDiagrams, getLocalizedEducationalVisual, campaigns, organizations, companies, getLocalizedCampaign, getLocalizedOrganization, getLocalizedCompany, claims, getLocalizedClaim, sources, getLocalizedSource }) {
   const errors = []
   const requiredCommon = ['navigation.home', 'navigation.eras', 'navigation.timeline', 'navigation.people', 'navigation.familyTree', 'navigation.culture', 'languages.english', 'languages.mongolian', 'accessibility.primaryNavigation', 'metadata.title']
   const requiredPersonPageUi = ['historicalBiography','referenceProfile','sourceBacked','researched','alsoKnownAs','shortHistory','lifeRole','whoWas','familyDynasty','dynasticRelationships','historicalContext','politicalWorldChapter','timeline','datedRecords','connectedPeople','familyChangingRelationships','connectedHistory','referenceRecords','sources','furtherReading','noPortraitExplanation','personRecord','reign','death','polity','historicalFigure','noContemporaryPortrait','introduction','onThisLife','onThisLifeAria','lifeHistoricalRecord','historicalRelationships','peopleAround','thisFigure','subjectStory','acrossXiongnuWorld','event','storySourceDate','storySourceTitle','storySourceText','unknown']
@@ -91,6 +91,83 @@ export function validateLocalization({ bundles, supportedLocales, cultureTopicId
     ;['id','slug','foundedYear','endYear','eraIds','status','predecessorIds','successorIds','relatedPersonIds','relatedCompanyIds','relatedEventIds','relatedClaimIds','relatedPlaceIds','relatedOrganizationIds','sourceRefs'].forEach((field) => { if (resolved?.[field] !== canonical?.[field]) errors.push(`Company resolver changed canonical ${field}: ${id}`) })
   })
   publicCompanies.forEach((record) => { if (!companyPresentations[record.id]) errors.push(`Missing MN public company: ${record.id}`) })
+  const claimPresentations = supporting?.claims?.records ?? {}
+  const forbiddenClaimFields = ['id','relatedEvents','relatedPlaces','relatedPeople','companyIds']
+  if ((claims?.length ?? 0) !== 42) errors.push(`Expected 42 canonical claims; found ${claims?.length}.`)
+  if (Object.keys(claimPresentations).length !== 42) errors.push(`Expected 42 MN claim presentations; found ${Object.keys(claimPresentations).length}.`)
+  Object.entries(claimPresentations).forEach(([id, presentation]) => {
+    const canonical = claims.find((record) => record.id === id)
+    if (!canonical) errors.push(`Unknown localized claim ID: ${id}`)
+    forbiddenClaimFields.forEach((field) => { if (field in presentation) errors.push(`Forbidden MN claim locale field: ${id}.${field}`) })
+    ;['title','text','treatment','caution'].forEach((field) => { if (canonical?.[field] && !presentation[field]?.trim()) errors.push(`Missing MN claim ${field}: ${id}`) })
+    const presentedNotes = presentation.sourceSupport
+    if (presentedNotes) {
+      if (presentedNotes.length !== canonical.sourceSupport.length) errors.push(`Incomplete MN claim sourceSupport: ${id}`)
+      presentedNotes.forEach((item, index) => {
+        if (item?.sourceId || item?.role) errors.push(`Forbidden MN claim sourceSupport identity: ${id}[${index}]`)
+        if (canonical.sourceSupport[index]?.note && !item?.note?.trim()) errors.push(`Missing MN claim sourceSupport note: ${id}[${index}]`)
+      })
+    } else if (canonical.sourceSupport.some((item) => item.note)) errors.push(`Missing MN claim sourceSupport notes: ${id}`)
+    const resolved = canonical && getLocalizedClaim?.(canonical, supporting)
+    ;['id','relatedEvents','relatedPlaces','relatedPeople','companyIds'].forEach((field) => { if (resolved?.[field] !== canonical?.[field]) errors.push(`Claim resolver changed canonical ${field}: ${id}`) })
+    canonical?.sourceSupport?.forEach((item, index) => { if (resolved?.sourceSupport?.[index]?.sourceId !== item.sourceId) errors.push(`Claim resolver changed sourceId: ${id}[${index}]`) })
+  })
+  claims?.forEach((record) => { if (!claimPresentations[record.id]) errors.push(`Missing MN public claim: ${record.id}`) })
+  const sourcePresentations = supporting?.sources?.records ?? {}
+  const allowedSourceLocaleFields = ['perspective', 'temporalRelationship']
+  const preservedSourceFields = ['id', 'title', 'author', 'publisher', 'institution', 'citation', 'url', 'license', 'doi', 'relatedEntityIds', 'year', 'language', 'eraId', 'eraIds', 'status', 'sourceType', 'category', 'compositionContext', 'alternativeTitles', 'publication', 'period']
+  const publicSourcePerspectiveIds = new Set()
+  ;[...places, ...sites, ...objects].forEach((entity) => {
+    const evidenceCases = chapters.flatMap((chapter) => chapter.sections ?? []).flatMap((section) => section.evidenceCases ?? []).filter((item) => item.evidenceObjectId === entity.id)
+    const linkedIds = new Set([...(entity.sourceRefs ?? []), ...sources.filter((source) => source.relatedEntityIds?.includes(entity.id)).map((source) => source.id), ...evidenceCases.flatMap((item) => item.sourceIds ?? [])])
+    sources.filter((source) => linkedIds.has(source.id) && (source.perspective || source.temporalRelationship)).forEach((source) => publicSourcePerspectiveIds.add(source.id))
+    claims.filter((claim) => entity.claimIds?.includes(claim.id) || claim.relatedPlaces?.includes(entity.id)).forEach((claim) => {
+      (claim.sourceSupport ?? []).forEach((item) => {
+        const source = sources.find((record) => record.id === item.sourceId)
+        if (source?.perspective || source?.temporalRelationship) publicSourcePerspectiveIds.add(source.id)
+      })
+    })
+  })
+  Object.entries(sourcePresentations).forEach(([id, presentation]) => {
+    const canonical = sources.find((record) => record.id === id)
+    if (!canonical) errors.push(`Unknown localized source ID: ${id}`)
+    Object.keys(presentation ?? {}).forEach((field) => { if (!allowedSourceLocaleFields.includes(field)) errors.push(`Forbidden MN source locale field: ${id}.${field}`) })
+    ;['perspective', 'temporalRelationship'].forEach((field) => { if (canonical?.[field] && !presentation?.[field]?.trim()) errors.push(`Missing MN source ${field}: ${id}`) })
+    const resolved = canonical && getLocalizedSource?.(canonical, supporting)
+    preservedSourceFields.forEach((field) => { if (resolved?.[field] !== canonical?.[field]) errors.push(`Source resolver changed canonical ${field}: ${id}`) })
+  })
+  publicSourcePerspectiveIds.forEach((id) => { if (!sourcePresentations[id]) errors.push(`Missing MN public SourcePerspective source: ${id}`) })
+  const xiongnuCases = chapters.find((chapter) => chapter.id === 'chapter-xiongnu-world')?.sections?.find((section) => section.id === 'archaeology')?.evidenceCases ?? []
+  const localizedXiongnuCases = bundles.mn?.chapters?.records?.['chapter-xiongnu-world']?.sectionPresentation?.archaeology?.evidenceCases ?? []
+  if (xiongnuCases.length !== 3 || localizedXiongnuCases.length !== 3) errors.push(`Expected 3 Xiongnu evidence cases with MN presentation; found ${xiongnuCases.length}/${localizedXiongnuCases.length}.`)
+  xiongnuCases.forEach((item, index) => {
+    const presentation = localizedXiongnuCases[index]
+    ;['evidenceTitle','evidenceSummary','caution'].forEach((field) => { if (item[field] && !presentation?.[field]?.trim()) errors.push(`Missing MN Xiongnu evidenceCase ${field}: ${item.id}`) })
+    if (item.interpretation && !presentation?.interpretation?.trim()) errors.push(`Missing MN Xiongnu evidenceCase interpretation: ${item.id}`)
+    ;['id','siteId','evidenceObjectId','sourceIds','confidence'].forEach((field) => { if (presentation && field in presentation) errors.push(`Forbidden MN evidenceCase field: ${item.id}.${field}`) })
+  })
+  const rouranVisual = chapters.find((chapter) => chapter.id === 'chapter-rouran-khaganate')?.sections?.find((section) => section.id === 'rouran-northern-china')?.relationsVisual
+  const localizedRouranVisual = bundles.mn?.chapters?.records?.['chapter-rouran-khaganate']?.sectionPresentation?.['rouran-northern-china']?.relationsVisual
+  if (!localizedRouranVisual?.center?.trim() || !localizedRouranVisual?.note?.trim() || localizedRouranVisual?.nodes?.length !== 4) errors.push('Incomplete MN Rouran relationsVisual presentation.')
+  localizedRouranVisual?.nodes?.forEach((node, index) => {
+    if (!node?.title?.trim() || !node?.label?.trim()) errors.push(`Incomplete MN Rouran relationsVisual node: ${index}`)
+  })
+  if (rouranVisual?.nodes?.length !== localizedRouranVisual?.nodes?.length) errors.push('Rouran relationsVisual node count changed.')
+  const requiredReputationIds = ['person-zanabazar','person-mandukhai-khatun','person-yisui']
+  const requiredHouseholdIds = ['person-qulan-khatun','person-yisugen','person-yisui','person-ibaqa-beki']
+  const localizedPeopleEarly = bundles.mn?.people?.records ?? {}
+  requiredReputationIds.forEach((id) => {
+    const person = people.find((record) => record.id === id)
+    const translated = localizedPeopleEarly[id]?.characterAndReputation
+    if (!translated?.overview?.trim() || !translated?.caution?.trim() || translated?.traits?.length !== person?.characterAndReputation?.traits?.length) errors.push(`Incomplete MN character and reputation presentation: ${id}`)
+    translated?.traits?.forEach((trait, index) => { if (!trait.label?.trim() || !trait.summary?.trim() || trait.sourceIds || trait.treatment) errors.push(`Invalid MN reputation trait presentation: ${id}[${index}]`) })
+  })
+  requiredHouseholdIds.forEach((id) => {
+    const person = people.find((record) => record.id === id)
+    const translated = localizedPeopleEarly[id]?.householdContext
+    if (person?.householdContext?.summary && !translated?.summary?.trim()) errors.push(`Missing MN householdContext summary: ${id}`)
+    ;['role','sourceIds','associatedPeopleOrPolityIds'].forEach((field) => { if (translated && field in translated) errors.push(`Forbidden MN householdContext field: ${id}.${field}`) })
+  })
   const forbiddenPolityLocaleKeys = ['id','slug','eraId','eraIds','startYear','endYear','relatedEntityIds','sourceIds','sourceRefs','status','confidence','mediaId','mapAvailable','coordinates','geometry']
   if (polities.length !== 47) errors.push(`Expected 47 canonical polities; found ${polities.length}.`)
   if (polities.filter((polity) => ['researched','verified'].includes(polity.status)).length !== 47) errors.push('Expected 47 public canonical polities.')

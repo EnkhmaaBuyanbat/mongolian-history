@@ -35,7 +35,7 @@ function FamilyTreeDetails({ person, family, sources }) {
         </dl>
       </section>
 
-      {person.householdContext ? <section><h3>{ui.householdContext}</h3><p><strong>{person.householdContext.role.replaceAll('_',' ')}</strong></p><p>{person.householdContext.summary}</p></section> : null}
+      {person.householdContext ? <section><h3>{ui.householdContext}</h3><p><strong>{ui.householdRoles?.[person.householdContext.role] ?? person.householdContext.role}</strong></p><p>{person.householdContext.summary}</p></section> : null}
 
       {person.characterAndReputation ? (
         <section>

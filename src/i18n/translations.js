@@ -69,7 +69,9 @@ import { supportingMn } from '../data/locales/mn/supporting'
 import { campaigns } from '../data/campaigns'
 import { organizations } from '../data/organizations'
 import { companies } from '../data/companies'
-import { getLocalizedCampaign, getLocalizedOrganization, getLocalizedCompany } from '../data/supportingLocalization'
+import { claims } from '../data/claims'
+import { sources } from '../data/sources'
+import { getLocalizedCampaign, getLocalizedOrganization, getLocalizedCompany, getLocalizedClaim, getLocalizedSource } from '../data/supportingLocalization'
 
 export const translations = {
   en: { common: commonEn, home: homeEn, culture: cultureEn, eras: erasEn, chapters: chaptersEn, events:eventsEn, entities:entitiesEn, reconstructions:reconstructionsEn, eraWorlds:eraWorldsEn, heroScenes:heroScenesEn, media:mediaEn, evidence:evidenceEn, people:peopleEn, familyTree:familyTreeEn, personRelationships:personRelationshipsEn, supporting:supportingEn },
@@ -123,6 +125,10 @@ const errors = validateLocalization({
   getLocalizedCampaign,
   getLocalizedOrganization,
   getLocalizedCompany,
+  claims,
+  getLocalizedClaim,
+  sources,
+  getLocalizedSource,
 })
 
 if (errors.length) throw new Error(`Localization validation failed:\n${errors.join('\n')}`)

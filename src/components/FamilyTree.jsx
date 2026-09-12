@@ -81,7 +81,8 @@ function FamilyTree() {
   }, [treePeople])
   const belongsToScope = (person) => eraScope === 'all' || (person.eraIds ?? [person.eraId]).includes(eraScope)
   const peopleFor = (group) => householdGroups[group].map((id) => treePeople.find((person) => person.id === id)).filter((person) => person && belongsToScope(person))
-  const roster = (group) => <div className="family-tree-roster">{peopleFor(group).map((person) => <button key={person.id} type="button" aria-pressed={person.id===selectedId} onClick={() => selectPerson(person.id)}><strong>{person.title}</strong><span>{person.householdContext?.role?.replaceAll('_',' ') ?? person.role}</span></button>)}</div>
+  const householdRole = (role) => ui.householdRoles?.[role] ?? role?.replaceAll('_', ' ')
+  const roster = (group) => <div className="family-tree-roster">{peopleFor(group).map((person) => <button key={person.id} type="button" aria-pressed={person.id===selectedId} onClick={() => selectPerson(person.id)}><strong>{person.title}</strong><span>{householdRole(person.householdContext?.role) ?? person.role}</span></button>)}</div>
   const scopedLaterGroups = laterFamilyGroups.filter((group) => eraScope === 'all' || group.eraId === eraScope)
   const selectEraScope = (nextScope) => {
     setEraScope(nextScope)

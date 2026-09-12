@@ -5,4 +5,6 @@ export const supportingEn = {
   campaigns: { records: {}, routeConfidence: {}, treatments: {} },
   organizations: { records: {}, types: {} },
   companies: { records: {}, types: {} },
+  claims: { records: {}, roles: {} },
+  sources: { records: {} },
 }

@@ -6,6 +6,7 @@ import { familyTreePersonIds } from '../data/familyTreePeople'
 import PersonCard from './PersonCard'
 import { useLocale } from '../i18n/useLocale'
 import { getLocalizedPerson } from '../data/personLocalization'
+import { getLocalizedEntity } from '../data/entityLocalization'
 
 function PeopleIndexPage() {
   const { localeSection, localizedRecord } = useLocale()
@@ -29,7 +30,8 @@ function PeopleIndexPage() {
   }
   const normalizedQuery = query.trim().toLocaleLowerCase()
   const roleCategories = [...new Set(visiblePeople.map(getRoleCategory).filter(Boolean))]
-  const politicalContexts = [...new Map(visiblePeople.flatMap((person) => presentations.get(person.id).polities).map((polity) => [polity.id, polity])).values()]
+  const entityLocale = localeSection('entities')
+  const politicalContexts = [...new Map(visiblePeople.flatMap((person) => presentations.get(person.id).polities).map((polity) => [polity.id, getLocalizedEntity(polity, entityLocale)])).values()]
     .sort((a, b) => a.title.localeCompare(b.title))
   const filteredPeople = localizedPeople.filter((person) => {
     const searchable = [...person.searchableNames, person.role].filter(Boolean).join(' ').replace(/\s+/g, ' ').toLocaleLowerCase()
@@ -79,7 +81,7 @@ function PeopleIndexPage() {
             <p className="people-explore-label">{ui.exploreBy}</p>
             {availableBranches.length ? <fieldset><legend>{ui.branch}</legend><div className="people-filter-row"><button type="button" aria-pressed={branch==='all'} onClick={() => setBranch('all')}>{ui.allBranches}</button>{availableBranches.map((item) => <button key={item} type="button" aria-pressed={branch===item} onClick={() => setBranch(item)}>{peopleLocale.branches[item] ?? item}</button>)}</div></fieldset> : null}
             <fieldset><legend>{ui.role}</legend><div className="people-filter-row"><button type="button" aria-pressed={roleCategory==='all'} onClick={() => setRoleCategory('all')}>{ui.allRoles}</button>{roleCategories.map((item) => <button key={item} type="button" aria-pressed={roleCategory===item} onClick={() => setRoleCategory(item)}>{peopleLocale.roleCategories[item] ?? item}</button>)}</div></fieldset>
-            <label className="people-context-filter"><span>{ui.politicalContext}</span><select value={polityId} onChange={(event) => setPolityId(event.target.value)}><option value="all">{ui.allPoliticalContexts}</option>{politicalContexts.map((polity) => <option key={polity.id} value={polity.id}>{peopleLocale.politicalContexts?.[polity.id] ?? polity.title}</option>)}</select></label>
+            <label className="people-context-filter"><span>{ui.politicalContext}</span><select value={polityId} onChange={(event) => setPolityId(event.target.value)}><option value="all">{ui.allPoliticalContexts}</option>{politicalContexts.map((polity) => <option key={polity.id} value={polity.id}>{polity.title}</option>)}</select></label>
           </div>
           <div className="people-results-heading" aria-live="polite"><strong>{filteredPeople.length} {filteredPeople.length === 1 ? ui.person : ui.people} {ui.shown}</strong>{resultContext.length ? <span>{resultContext.join(' · ')}</span> : <span>{ui.allContexts}</span>}</div>
           <div className="people-index-grid" aria-label={ui.gridLabel}>

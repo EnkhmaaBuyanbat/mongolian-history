@@ -3,6 +3,7 @@ import { people } from '../data/people'
 import HistoricalMedia from './HistoricalMedia'
 import { MeanderLine } from './Ornament'
 import { useLocale } from '../i18n/useLocale'
+import { getLocalizedPerson } from '../data/personLocalization'
 
 const representativePeopleIds = [
   'person-temujin-chinggis-khan',
@@ -49,11 +50,13 @@ export function FeaturedStory() {
 }
 
 export function PeopleAndDynasties() {
-  const { t } = useLocale()
+  const { t, localeSection } = useLocale()
   const copy = t('home.people')
+  const peopleLocale = localeSection('people')
   const representativePeople = representativePeopleIds
     .map((id) => people.find((person) => person.id === id))
     .filter(Boolean)
+    .map((person) => getLocalizedPerson(person, peopleLocale))
 
   return (
     <section className="museum-home-section people-pathway">
@@ -66,7 +69,7 @@ export function PeopleAndDynasties() {
         <div className="people-pathway-grid">
           {representativePeople.map((person) => (
             <a key={person.id} href={`/people/${person.slug ?? person.id.replace('person-', '')}`}>
-              <span>{person.period}</span>
+              <span>{person.periodDisplay ?? person.period}</span>
               <strong>{person.title}</strong>
               <small>{person.role}</small>
             </a>

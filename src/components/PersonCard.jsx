@@ -1,6 +1,7 @@
 import { getPersonHref } from '../data/entityRoutes'
 import { getPersonPresentation } from '../data/personPresentation'
 import { useLocale } from '../i18n/useLocale'
+import { getLocalizedEntity } from '../data/entityLocalization'
 
 function PersonCard({ person }) {
   const { localeSection } = useLocale()
@@ -20,7 +21,7 @@ function PersonCard({ person }) {
       <div className="person-card-context">
         {presentation.eras.map((era) => <span key={era.id}>{ui.era} {era.numeral}</span>)}
         {person.dynasticBranch ? <span>{peopleLocale.branches[person.dynasticBranch] ?? person.dynasticBranch}</span> : null}
-        {presentation.polities.slice(0, 2).map((polity) => <span key={polity.id}>{peopleLocale.politicalContexts?.[polity.id] ?? polity.title}</span>)}
+        {presentation.polities.slice(0, 2).map((polity) => <span key={polity.id}>{getLocalizedEntity(polity, localeSection('entities')).title}</span>)}
       </div>
       {person.shortBio || person.summary ? <p className="person-card-summary">{person.shortBio ?? person.summary}</p> : null}
       <div className="person-card-footer"><span>{localeSection('evidence')[presentation.evidence.code] ?? presentation.evidence.label}</span><strong>{action} →</strong></div>

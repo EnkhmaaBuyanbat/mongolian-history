@@ -15,7 +15,7 @@ function CultureEraJourney({ topic, copy, labels }) {
             <div><span>{labels.eraLabel} {era.numeral}</span><strong>{presentation.title}</strong><small>{presentation.period}</small></div>
             <div>
               <p>{copy.eraText[era.id]}</p>
-              {related.length ? <nav aria-label={`${presentation.title}: ${labels.relatedChaptersLabel}`}>{related.map((chapter) => <a key={chapter.id} href={getChapterHref(chapter)}>{chapter.title}</a>)}</nav> : null}
+              {related.length ? <nav aria-label={`${presentation.title}: ${labels.relatedChaptersLabel}`}>{related.map((chapter) => <a key={chapter.id} href={getChapterHref(chapter)}>{localizedRecord('chapters', chapter.id, chapter).title}</a>)}</nav> : null}
             </div>
           </article>
         )
