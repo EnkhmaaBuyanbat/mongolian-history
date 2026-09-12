@@ -1,8 +1,11 @@
 import ConfidenceBadge from './ConfidenceBadge'
 import { useLocale } from '../i18n/useLocale'
+import { toEvidenceCode } from '../i18n/locale'
 
 function PersonStorySection({ section }) {
   const { localeSection } = useLocale()
+  const evidence = localeSection('evidence')
+  const evidenceLabel = (value) => evidence[toEvidenceCode(value)] ?? value
   if (section.sourceAccount) {
     return (
       <section id={section.id} className="person-story-section person-source-section">
@@ -19,7 +22,7 @@ function PersonStorySection({ section }) {
             <aside key={callout.label} className="person-callout">
               <p className="person-callout-label">{callout.label}</p>
               <p>{callout.text}</p>
-              <ConfidenceBadge label={callout.confidence} />
+              <ConfidenceBadge label={evidenceLabel(callout.confidence)} />
             </aside>
           ))}
         </div>
@@ -41,7 +44,7 @@ function PersonStorySection({ section }) {
           <aside key={callout.label} className="person-callout">
             <p className="person-callout-label">{callout.label}</p>
             <p>{callout.text}</p>
-            <ConfidenceBadge label={callout.confidence} />
+            <ConfidenceBadge label={evidenceLabel(callout.confidence)} />
           </aside>
         ))}
       </div>

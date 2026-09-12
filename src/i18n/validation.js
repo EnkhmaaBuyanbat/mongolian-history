@@ -35,7 +35,7 @@ function compatibleShape(base, translated, path, errors) {
 export function validateLocalization({ bundles, supportedLocales, cultureTopicIds, eraIds, chapters, evidenceCodes, terminology, people, dossierPersonIds, familyTreePersonIds, personRelationships, getPersonHref, eraI_IIDossierPersonIds, eraIII_IVDossierPersonIds, moduChanyuStory, events, eventIdsEraI_II, eventIdsEraIII_IV, eventIdsEraV_VI, eventIdsEraVII_VIII, politiesMn, polities, placesMn, places, sitesMn, objectsMn, sites, objects, getLocalizedEntity, reconstructions, eraWorlds, heroScenes, getLocalizedReconstruction, getLocalizedEraWorld, getLocalizedHeroScene, media, getLocalizedMedia, chapterVisualAssignments, educationalDiagrams, getLocalizedEducationalVisual, campaigns, organizations, companies, getLocalizedCampaign, getLocalizedOrganization, getLocalizedCompany }) {
   const errors = []
   const requiredCommon = ['navigation.home', 'navigation.eras', 'navigation.timeline', 'navigation.people', 'navigation.familyTree', 'navigation.culture', 'languages.english', 'languages.mongolian', 'accessibility.primaryNavigation', 'metadata.title']
-  const requiredPersonPageUi = ['historicalBiography','referenceProfile','sourceBacked','researched','alsoKnownAs','shortHistory','lifeRole','whoWas','familyDynasty','dynasticRelationships','historicalContext','politicalWorldChapter','timeline','datedRecords','connectedPeople','familyChangingRelationships','connectedHistory','referenceRecords','sources','furtherReading','noPortraitExplanation']
+  const requiredPersonPageUi = ['historicalBiography','referenceProfile','sourceBacked','researched','alsoKnownAs','shortHistory','lifeRole','whoWas','familyDynasty','dynasticRelationships','historicalContext','politicalWorldChapter','timeline','datedRecords','connectedPeople','familyChangingRelationships','connectedHistory','referenceRecords','sources','furtherReading','noPortraitExplanation','personRecord','reign','death','polity','historicalFigure','noContemporaryPortrait','introduction','onThisLife','onThisLifeAria','lifeHistoricalRecord','historicalRelationships','peopleAround','thisFigure','subjectStory','acrossXiongnuWorld','event','storySourceDate','storySourceTitle','storySourceText','unknown']
   Object.keys(bundles).forEach((locale) => { if (!supportedLocales.includes(locale)) errors.push(`Unsupported locale bundle: ${locale}`) })
   supportedLocales.forEach((locale) => {
     const bundle = bundles[locale]
@@ -373,9 +373,14 @@ export function validateLocalization({ bundles, supportedLocales, cultureTopicId
   })
   const localizedStory = bundles.mn?.people?.stories?.['modu-chanyu']
   if ((localizedStory?.introduction?.length ?? 0) !== moduChanyuStory.introduction.length) errors.push('Modu MN story introduction coverage is incomplete.')
+  ;['personId','chapterId','id','slug','sourceIds','sourceRefs','relatedEventIds'].forEach((field) => { if (field in (localizedStory ?? {})) errors.push(`Forbidden canonical field in MN Modu story presentation: ${field}`) })
   moduChanyuStory.sections.forEach((section) => {
     const translated = localizedStory?.sections?.[section.id]
-    if (!translated?.title?.trim() || translated.paragraphs?.length !== section.paragraphs.length) errors.push(`Modu MN story section coverage is incomplete: ${section.id}`)
+    ;['title','subtitle','period','lead'].filter((field) => section[field]).forEach((field) => { if (!translated?.[field]?.trim()) errors.push(`Missing MN Modu story ${field}: ${section.id}`) })
+    if (translated?.paragraphs?.length !== section.paragraphs.length || translated.paragraphs.some((paragraph) => !paragraph?.trim())) errors.push(`Modu MN story section paragraphs are incomplete: ${section.id}`)
+    ;['id','sourceIds','sourceRefs','relatedEventIds','personId','chapterId'].forEach((field) => { if (field in (translated ?? {})) errors.push(`Forbidden canonical field in MN Modu story section: ${section.id}.${field}`) })
+    if ((section.callouts?.length ?? 0) !== (translated?.callouts?.length ?? 0)) errors.push(`Modu MN story callouts are incomplete: ${section.id}`)
+    section.callouts?.forEach((callout,index) => ['label','text'].forEach((field) => { if (callout[field] && !translated.callouts?.[index]?.[field]?.trim()) errors.push(`Missing MN Modu story callout ${field}: ${section.id}[${index}]`) }))
   })
   const canonicalStorySectionIds = moduChanyuStory.sections.map((section) => section.id)
   Object.keys(localizedStory?.sections ?? {}).forEach((sectionId) => { if (!canonicalStorySectionIds.includes(sectionId)) errors.push(`Unknown Modu MN story section: ${sectionId}`) })

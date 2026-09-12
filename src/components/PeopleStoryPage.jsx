@@ -6,41 +6,46 @@ import { sources } from '../data/sources'
 import { chapters } from '../data/chapters'
 import { eras } from '../data/eras'
 import { moduChanyuStory } from '../data/personStories/moduChanyu'
-import ConfidenceBadge from './ConfidenceBadge'
+import { personRelationships } from '../data/personRelationships'
 import HistoricalRelationships from './HistoricalRelationships'
 import PersonStorySection from './PersonStorySection'
 import PersonTimeline from './PersonTimeline'
 import { MeanderLine } from './Ornament'
-
-const navigationItems = [
-  ['world-modu-entered', 'The World Modu Entered'],
-  ['shijis-story', "The Shiji's Story"],
-  ['becoming-chanyu', 'Becoming Chanyu'],
-  ['building-steppe-power', 'Building Steppe Power'],
-  ['baideng', 'Baideng'],
-  ['diplomacy-with-han', 'Diplomacy with Han'],
-  ['death-and-succession', 'Death and Succession'],
-  ['why-modu-matters', 'Why Modu Matters'],
-]
+import { useLocale } from '../i18n/useLocale'
+import { getLocalizedPerson, getLocalizedPersonStory, getLocalizedRelationship, formatTemplate } from '../data/personLocalization'
+import { getLocalizedEvent } from '../data/eventLocalization'
+import { getLocalizedEntity } from '../data/entityLocalization'
+import { getChapterHref, getEntityHref } from '../data/entityRoutes'
 
 function PersonStoryPage({ person }) {
-  const story = person.id === moduChanyuStory.personId ? moduChanyuStory : null
+  const { localeSection, localizedRecord } = useLocale()
+  const peopleLocale = localeSection('people')
+  const ui = peopleLocale.ui
+  const displayPerson = getLocalizedPerson(person, peopleLocale)
+  const story = person.id === moduChanyuStory.personId
+    ? getLocalizedPersonStory(moduChanyuStory, peopleLocale.stories?.[person.storyId])
+    : null
   const personEvents = useMemo(
     () => person.eventIds
       .map((eventId) => events.find((event) => event.id === eventId))
-      .filter(Boolean),
-    [person.eventIds],
+      .filter(Boolean)
+      .map((event) => getLocalizedEvent(event, localeSection('events'))),
+    [localeSection, person.eventIds],
   )
-  const polity = polities.find((item) => person.polityIds?.includes(item.id))
+  const canonicalPolity = polities.find((item) => person.polityIds?.includes(item.id))
+  const polity = getLocalizedEntity(canonicalPolity, localeSection('entities'))
   const personSources = sources.filter((source) => person.sourceRefs?.includes(source.id))
-  const era = eras.find((item) => item.id === person.eraId)
-  const chapter = story ? chapters.find((item) => item.id === story.chapterId) : null
+  const canonicalEra = eras.find((item) => item.id === person.eraId)
+  const era = canonicalEra ? localizedRecord('eras', canonicalEra.id, canonicalEra) : null
+  const canonicalChapter = story ? chapters.find((item) => item.id === story.chapterId) : null
+  const chapter = canonicalChapter ? localizedRecord('chapters', canonicalChapter.id, canonicalChapter) : null
+  const deathEvent = personEvents.find((event) => event.id === 'event-death-modu-chanyu')
   const timelineItems = [
     {
       id: 'modu-source-account',
-      date: 'Before c. 209 BCE',
-      title: 'Shiji narrative of Modu before accession',
-      text: "The Shiji's account of Modu before his accession.",
+      date: ui.storySourceDate,
+      title: ui.storySourceTitle,
+      text: ui.storySourceText,
       confidence: 'TRADITION / SOURCE ACCOUNT',
       sourceAccount: true,
     },
@@ -57,42 +62,28 @@ function PersonStoryPage({ person }) {
     return null
   }
 
-  const relationshipData = [
-    {
-      personId: person.id,
-      relatedPersonId: 'person-touman',
-      type: 'parent',
-      label: 'Father',
-      confidence: 'TRADITION / SOURCE ACCOUNT',
-      sourceIds: ['source-oxford-xiongnu'],
-    },
-    {
-      personId: person.id,
-      relatedPersonId: 'person-laoshang-chanyu',
-      type: 'successor',
-      label: 'Successor',
-      confidence: 'ESTABLISHED',
-      sourceIds: ['source-oxford-xiongnu'],
-    },
-  ]
+  const relationshipData = personRelationships
+    .filter((relationship) => relationship.personId === person.id)
+    .map((relationship) => getLocalizedRelationship(relationship, localeSection('personRelationships')))
+  const localizedPeople = people.map((candidate) => getLocalizedPerson(candidate, peopleLocale))
 
   return (
     <article className="person-story-page">
       <header className="person-story-header">
         <div className="section-inner person-story-header-inner">
-          <p className="person-context">{era?.title ?? person.eraId} / People</p>
-          <p className="section-label">Person 001</p>
-          <h1>{person.title}</h1>
-          <p className="person-story-subtitle">{person.subtitle}</p>
+          <p className="person-context">{era?.title ?? person.eraId} / {ui.people}</p>
+          <p className="section-label">{ui.personRecord}</p>
+          <h1>{displayPerson.title}</h1>
+          <p className="person-story-subtitle">{displayPerson.subtitle ?? displayPerson.role}</p>
           <div className="person-story-facts">
-            <div><span>Reign</span><strong>{person.periodDisplay}</strong></div>
-            <div><span>Death</span><strong>174 BCE</strong></div>
-            <div><span>Polity</span><strong>{polity?.title ?? 'Unknown'}</strong></div>
+            <div><span>{ui.reign}</span><strong>{displayPerson.periodDisplay}</strong></div>
+            <div><span>{ui.death}</span><strong>{deathEvent?.dateDisplay ?? ui.unknown}</strong></div>
+            <div><span>{ui.polity}</span><strong>{polity?.title ?? ui.unknown}</strong></div>
           </div>
           <MeanderLine className="entity-meander" />
           <div className="person-portrait-placeholder">
-            <span>Historical Figure</span>
-            <strong>No contemporary portrait known</strong>
+            <span>{ui.historicalFigure}</span>
+            <strong>{ui.noContemporaryPortrait}</strong>
           </div>
         </div>
       </header>
@@ -100,15 +91,15 @@ function PersonStoryPage({ person }) {
       <div className="section-inner person-story-layout">
         <main className="person-story-content">
           <section className="person-introduction">
-            <p className="section-label">Introduction</p>
+            <p className="section-label">{ui.introduction}</p>
             {story.introduction.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
           </section>
 
-          <nav className="person-on-this-life" aria-label="On this life">
-            <p className="section-label">On This Life</p>
+          <nav className="person-on-this-life" aria-label={ui.onThisLifeAria}>
+            <p className="section-label">{ui.onThisLife}</p>
             <ol>
-              {navigationItems.map(([id, label], index) => (
-                <li key={id}><a href={`#${id}`}><span>{String(index + 1).padStart(2, '0')}</span>{label}</a></li>
+              {story.sections.map((section, index) => (
+                <li key={section.id}><a href={`#${section.id}`}><span>{String(index + 1).padStart(2, '0')}</span>{section.title}</a></li>
               ))}
             </ol>
           </nav>
@@ -117,30 +108,33 @@ function PersonStoryPage({ person }) {
             {story.sections.map((section) => <PersonStorySection key={section.id} section={section} />)}
           </div>
 
-          <PersonTimeline items={timelineItems} />
+          <PersonTimeline items={timelineItems} label={ui.lifeTimeline} title={ui.lifeHistoricalRecord} />
 
           <HistoricalRelationships
             personId={person.id}
             relationships={relationshipData}
-            people={people}
+            people={localizedPeople}
+            label={ui.historicalRelationships}
+            title={formatTemplate(ui.peopleAround, { name: displayPerson.title })}
+            subjectLabel={ui.subjectStory}
           />
 
           <section className="connected-history">
             <div className="person-section-heading">
-              <p className="section-label">Connected History</p>
-              <h2>Across the Xiongnu world</h2>
+              <p className="section-label">{ui.connectedHistory}</p>
+              <h2>{ui.acrossXiongnuWorld}</h2>
             </div>
             <div className="connected-history-grid">
-              {polity ? <a href={`/polities/${polity.id.replace('polity-', '')}`} className="connected-history-card"><span>Polity</span><strong>{polity.title}</strong></a> : null}
-              {chapter ? <a href={`/eras/${chapter.eraId}/chapters/${chapter.id.replace('chapter-', '')}`} className="connected-history-card"><span>Chapter</span><strong>{chapter.title}</strong></a> : null}
-              {personEvents.map((event) => <a key={event.id} href="#life-timeline" className="connected-history-card"><span>Event</span><strong>{event.dateDisplay} / {event.title}</strong></a>)}
+              {polity ? <a href={getEntityHref(canonicalPolity)} className="connected-history-card"><span>{ui.polity}</span><strong>{polity.title}</strong></a> : null}
+              {chapter ? <a href={getChapterHref(canonicalChapter)} className="connected-history-card"><span>{ui.chapter}</span><strong>{chapter.title}</strong></a> : null}
+              {personEvents.map((event) => <a key={event.id} href="#life-timeline" className="connected-history-card"><span>{ui.event}</span><strong>{event.dateDisplay} / {event.title}</strong></a>)}
             </div>
           </section>
 
           <section className="person-sources">
             <div className="person-section-heading">
-              <p className="section-label">Sources</p>
-              <h2>Further Reading</h2>
+              <p className="section-label">{ui.sources}</p>
+              <h2>{ui.furtherReading}</h2>
             </div>
             <ul>
               {personSources.map((source) => <li key={source.id}><strong>{source.title}</strong><span>{source.institution}</span></li>)}

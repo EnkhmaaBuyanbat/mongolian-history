@@ -9,4 +9,8 @@ export const evidenceEn = {
   MODERN_RECONSTRUCTION: 'Modern historical reconstruction',
   NO_RELIABLE_PORTRAIT: 'No reliable portrait documented',
   HISTORICAL_PHOTOGRAPH: 'Historical photograph',
+  ESTABLISHED: 'Established',
+  TRADITION_SOURCE_ACCOUNT: 'Tradition / Source account',
+  INTERPRETED_SOURCE_ACCOUNT: 'Interpreted / Source account',
+  ESTABLISHED_INTERPRETED: 'Established / Interpreted',
 }

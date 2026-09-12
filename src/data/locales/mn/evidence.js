@@ -9,4 +9,8 @@ export const evidenceMn = {
   MODERN_RECONSTRUCTION: 'Орчин үеийн түүхэн сэргээн дүрслэл',
   NO_RELIABLE_PORTRAIT: 'Найдвартай хөрөг баримтжаагүй',
   HISTORICAL_PHOTOGRAPH: 'Түүхэн гэрэл зураг',
+  ESTABLISHED: 'Тогтоогдсон',
+  TRADITION_SOURCE_ACCOUNT: 'Уламжлал / Эх сурвалжийн өгүүлэмж',
+  INTERPRETED_SOURCE_ACCOUNT: 'Тайлбарласан / Эх сурвалжийн өгүүлэмж',
+  ESTABLISHED_INTERPRETED: 'Тогтоогдсон / Тайлбарласан',
 }
