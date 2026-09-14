@@ -3,6 +3,8 @@ import { useLocale } from '../i18n/useLocale'
 function Footer() {
   const { t } = useLocale()
   const copy = t('home.footer')
+  const navigation = t('common.navigation')
+
   return (
     <footer className="site-footer">
       <div className="section-inner footer-inner">
@@ -12,12 +14,13 @@ function Footer() {
           <p className="footer-note">{copy.note}</p>
         </div>
 
-        <ul className="footer-slots">
-          <li>{copy.sources}</li>
-          <li>{copy.methodology}</li>
-          <li>{copy.github}</li>
-          <li>{copy.about}</li>
-        </ul>
+        <nav className="footer-nav" aria-label={copy.explore}>
+          <a href="/eras">{navigation.eras}</a>
+          <a href="/people">{navigation.people}</a>
+          <a href="/family-tree">{navigation.familyTree}</a>
+          <a href="/culture">{navigation.culture}</a>
+          <a href="/experience">{navigation.experience}</a>
+        </nav>
       </div>
     </footer>
   )

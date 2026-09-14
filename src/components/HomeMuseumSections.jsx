@@ -1,9 +1,20 @@
+import { useRef } from 'react'
+import { useHeroParallax } from '../hooks/useHeroParallax'
 import { getApprovedMedia, getMediaById } from '../data/mediaResolvers'
 import { people } from '../data/people'
-import HistoricalMedia from './HistoricalMedia'
-import { MeanderLine } from './Ornament'
+import { eras } from '../data/eras'
+import { homepageEvidencePresentation, homepagePeopleRoles } from '../data/homepageFeatured'
+import { resolveHomeVisual } from '../data/homeVisualManifest'
+import { getLocalizedReconstruction } from '../data/visualLocalization'
+import { getLocalizedMedia } from '../data/mediaLocalization'
+import { getPersonPresentation } from '../data/personPresentation'
+import { getLocalizedEntity } from '../data/entityLocalization'
 import { useLocale } from '../i18n/useLocale'
+import { toEvidenceCode } from '../i18n/locale'
 import { getLocalizedPerson } from '../data/personLocalization'
+import { getPersonHref } from '../data/entityRoutes'
+import CinematicStill from './CinematicStill'
+import HomeGenealogyPreview from './HomeGenealogyPreview'
 
 const representativePeopleIds = [
   'person-temujin-chinggis-khan',
@@ -13,74 +24,144 @@ const representativePeopleIds = [
 
 const evidenceMediaIds = [
   'media-deer-stones-uushgiin-uvur-01',
-  'media-xiongnu-belt-buckle-01',
   'media-kul-tegin-inscription-01',
+  'media-xiongnu-belt-buckle-01',
   'media-jami-al-tawarikh-folio-01',
   'media-zanabazar-maitreya-01',
 ]
 
-function SectionHeading({ label, title, text }) {
-  return (
-    <div className="museum-home-heading">
-      <p className="section-label">{label}</p>
-      <h2>{title}</h2>
-      <MeanderLine />
-      {text ? <p>{text}</p> : null}
-    </div>
-  )
-}
+function PersonGalleryCard({ person, featured = false }) {
+  const { t, localeSection, localizedRecord } = useLocale()
+  const copy = t('home.people')
+  const labels = t('common.sourceInterface')
+  const entityLocale = localeSection('entities')
+  const era = eras.find((item) => item.id === person.eraId)
+  const eraPresentation = era ? localizedRecord('eras', era.id, era) : null
+  const visual = resolveHomeVisual(homepagePeopleRoles[person.id])
+  const presentation = getPersonPresentation(person)
+  const polity = presentation.polities[0]
+    ? getLocalizedEntity(presentation.polities[0], entityLocale)
+    : null
+  const atmosphereLabel = visual?.presentation === 'related-object'
+    ? copy.relatedObject
+    : visual?.presentation === 'contextual-reconstruction'
+      ? copy.contextualReconstruction
+      : labels.noPortrait
+  const evidenceLabel = visual?.evidenceLabel
+    ? (t(`evidence.${toEvidenceCode(visual.evidenceLabel)}`) || visual.evidenceLabel)
+    : null
 
-export function FeaturedStory() {
-  const { t } = useLocale()
-  const copy = t('home.featured')
   return (
-    <section className="museum-home-section featured-world">
-      <div className="section-inner featured-world-layout">
-        <SectionHeading label={copy.label} title={copy.title} />
-        <div className="featured-world-copy">
-          <p>{copy.text}</p>
-          <div className="featured-world-actions">
-            <a href="/eras/ancient-steppe">{copy.ancient}</a>
-            <a href="/timeline">{copy.chronology}</a>
-          </div>
+    <li className={featured ? 'people-gallery-item is-featured' : 'people-gallery-item is-secondary'}>
+      <a
+        className={`person-select is-${visual?.presentation ?? 'typographic'}${featured ? ' is-featured' : ''}`}
+        href={getPersonHref(person)}
+      >
+        <CinematicStill
+          visual={visual?.presentation === 'related-object' ? { ...visual, crop: undefined } : visual}
+          className="person-select-visual"
+          sizes={featured ? '(max-width: 1000px) 100vw, 50vw' : '(max-width: 1000px) 100vw, 28vw'}
+        />
+        <div className="person-select-shade" aria-hidden="true" />
+        <div className="person-select-copy">
+          <span className="person-select-period">{person.periodDisplay ?? person.period}</span>
+          <strong>{person.displayName}</strong>
+          <small>{person.role}</small>
+          {polity ? <em>{polity.title}</em> : eraPresentation ? <em>{eraPresentation.title}</em> : null}
+          {evidenceLabel ? <span className="person-select-note">{evidenceLabel}</span> : null}
+          <span className="person-select-note">{atmosphereLabel}</span>
+          <span className="person-select-note is-secondary">{labels.noPortrait}</span>
         </div>
-      </div>
-    </section>
+      </a>
+    </li>
   )
 }
 
 export function PeopleAndDynasties() {
   const { t, localeSection } = useLocale()
   const copy = t('home.people')
+  const familyUi = localeSection('familyTree').ui
   const peopleLocale = localeSection('people')
   const representativePeople = representativePeopleIds
     .map((id) => people.find((person) => person.id === id))
     .filter(Boolean)
     .map((person) => getLocalizedPerson(person, peopleLocale))
+  const featured = representativePeople[0]
+  const secondary = representativePeople.slice(1)
 
   return (
-    <section className="museum-home-section people-pathway">
-      <div className="section-inner">
-        <SectionHeading
-          label={copy.label}
-          title={copy.title}
-          text={copy.text}
-        />
-        <div className="people-pathway-grid">
-          {representativePeople.map((person) => (
-            <a key={person.id} href={`/people/${person.slug ?? person.id.replace('person-', '')}`}>
-              <span>{person.periodDisplay ?? person.period}</span>
-              <strong>{person.title}</strong>
-              <small>{person.role}</small>
-            </a>
-          ))}
+    <section className="people-pathway">
+      <div className="people-pathway-bar">
+        <div>
+          <p className="people-pathway-kicker">{copy.label}</p>
+          <h2>{copy.title}</h2>
+          <p className="people-pathway-lead">{copy.text}</p>
         </div>
-        <div className="museum-home-actions">
-          <a href="/people">{copy.explorePeople}</a>
-          <a href="/family-tree">{copy.exploreTree}</a>
-        </div>
+        <a href="/people">{copy.explorePeople}</a>
       </div>
+      <ul className="people-gallery">
+        {featured ? <PersonGalleryCard key={featured.id} person={featured} featured /> : null}
+        {secondary.map((person) => (
+          <PersonGalleryCard key={person.id} person={person} />
+        ))}
+        <li className="people-gallery-item is-tree">
+          <a className="family-tree-pathway" href="/family-tree">
+            <HomeGenealogyPreview />
+            <div className="family-tree-copy">
+              <p className="section-label">{copy.familyTreeKicker}</p>
+              <h3>{copy.familyTreeTitle}</h3>
+              <p>{copy.familyTreeText}</p>
+              <p className="home-tree-gap-note"><strong>{familyUi.gap}</strong> {familyUi.gapLine}</p>
+              <span>{copy.exploreTree}</span>
+            </div>
+          </a>
+        </li>
+      </ul>
     </section>
+  )
+}
+
+function HomeEvidenceCard({ media, copy }) {
+  const { t, localeSection } = useLocale()
+  const display = getLocalizedMedia(media, localeSection('media'))
+  const presentation = homepageEvidencePresentation[media.id] ?? { classKey: 'object', fit: 'object' }
+  const classLabel = copy.classes?.[presentation.classKey] ?? presentation.classKey
+  const evidenceLabel = media.evidenceType
+    ? (t(`evidence.${toEvidenceCode(media.evidenceType)}`) || media.evidenceType)
+    : null
+  const src = media.asset?.mediumPath ?? media.asset?.largePath ?? media.asset?.originalPath
+  const href = media.sourceUrl
+  const context = display.caption ?? display.historicalContext
+
+  const card = (
+    <>
+      <div className={`home-evidence-stage is-${presentation.fit}`}>
+        <img
+          src={src}
+          alt={display.alt ?? ''}
+          width={media.asset?.width}
+          height={media.asset?.height}
+          loading="lazy"
+        />
+      </div>
+      <figcaption>
+        <span className="home-evidence-class">{classLabel}</span>
+        <strong>{display.title}</strong>
+        {context ? <small>{context}</small> : null}
+        {evidenceLabel ? <span className="home-evidence-type">{evidenceLabel}</span> : null}
+      </figcaption>
+    </>
+  )
+
+  return (
+    <figure className={`home-evidence-card is-${presentation.fit}`}>
+      {href ? (
+        <a href={href} target="_blank" rel="noopener noreferrer">
+          {card}
+          <span className="home-evidence-view">{copy.explore}</span>
+        </a>
+      ) : card}
+    </figure>
   )
 }
 
@@ -92,45 +173,64 @@ export function ObjectsAndEvidence() {
   )
 
   return (
-    <section className="museum-home-section evidence-pathway">
-      <div className="section-inner">
-        <SectionHeading
-          label={copy.label}
-          title={copy.title}
-          text={copy.text}
-        />
-        <div className="evidence-pathway-rail">
-          {evidenceMedia.map((record) => (
-            <HistoricalMedia key={record.id} media={record} />
-          ))}
+    <section className="evidence-pathway">
+      <div className="people-pathway-bar">
+        <div>
+          <p className="people-pathway-kicker">{copy.label}</p>
+          <h2>{copy.title}</h2>
+          <p className="people-pathway-lead">{copy.voices}</p>
         </div>
+        <a href="/culture">{copy.viewAll}</a>
+      </div>
+      <div
+        className="evidence-gallery"
+        role="list"
+        aria-label={copy.gallery}
+      >
+        {evidenceMedia.map((record) => (
+          <HomeEvidenceCard key={record.id} media={record} copy={copy} />
+        ))}
       </div>
     </section>
   )
 }
 
 export function ExperienceHistory() {
-  const { t } = useLocale()
+  const { t, localeSection } = useLocale()
   const copy = t('home.experience')
-  const plannedExperiences = copy.items
+  const experienceRef = useRef(null)
+  const { layerStyle } = useHeroParallax(experienceRef)
+  const visual = resolveHomeVisual('experience')
+  const reconstruction = visual?.reconstruction
+    ? getLocalizedReconstruction(visual.reconstruction, localeSection('reconstructions'))
+    : null
+  const evidenceLabel = visual?.evidenceLabel
+    ? (t(`evidence.${toEvidenceCode(visual.evidenceLabel)}`) || visual.evidenceLabel)
+    : null
 
   return (
-    <section className="museum-home-section experience-pathway">
-      <div className="section-inner experience-layout">
-        <SectionHeading
-          label={copy.label}
-          title={copy.title}
-          text={copy.text}
-        />
-        <div className="experience-portals" aria-label={copy.plannedLabel}>
-          {plannedExperiences.map((experience) => (
-            <article key={experience.title}>
-              <span>{copy.development}</span>
-              <h3>{experience.title}</h3>
-              <small>{experience.type}</small>
-            </article>
-          ))}
+    <section className="experience-pathway" id="experience" ref={experienceRef}>
+      <div className="experience-depth-bg" style={layerStyle(0.1, -40, { scale: true })}>
+        <CinematicStill visual={visual} className="experience-still" sizes="(max-width: 1100px) 100vw, 50vw" />
+      </div>
+      <div className="experience-depth-mid" aria-hidden="true" />
+      <div className="experience-dust" aria-hidden="true" />
+      <div className="experience-copy" style={layerStyle(0.04, 20)}>
+        <p className="experience-status">{copy.comingSoon}</p>
+        <h2>{copy.lead}</h2>
+        <p className="cinematic-copy">{copy.text}</p>
+        <div className="experience-primary">
+          <span>{copy.primaryYear}</span>
+          <h3>{copy.primaryTitle}</h3>
+          <small>{copy.primaryKind ?? copy.primaryType}</small>
+          <a className="btn-primary" href="/experience">{copy.enterScene}</a>
         </div>
+        {evidenceLabel ? (
+          <p className="experience-disclosure">
+            <span>{evidenceLabel}</span>
+              {reconstruction?.historicalCaution ? <small>{reconstruction.historicalCaution}</small> : null}
+          </p>
+        ) : null}
       </div>
     </section>
   )

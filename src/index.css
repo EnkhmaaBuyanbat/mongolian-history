@@ -1,4 +1,12 @@
 :root {
+  --liquid-fill: rgba(22, 16, 12, 0.34);
+  --liquid-fill-strong: rgba(14, 10, 8, 0.52);
+  --liquid-border: rgba(255, 236, 205, 0.28);
+  --liquid-shine: linear-gradient(155deg, rgba(255, 248, 230, 0.28) 0%, rgba(255, 248, 230, 0.06) 28%, transparent 52%);
+  --liquid-blur: 24px;
+  --liquid-radius: 1.25rem;
+  --liquid-shadow: 0 18px 50px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 248, 230, 0.28), inset 0 -1px 0 rgba(0, 0, 0, 0.22);
+  --liquid-card: var(--liquid-shine), rgba(18, 13, 10, 0.48);
   --bg-deep: #080706;
   --bg-brown: #17100c;
   --parchment: #e4d4b7;
@@ -19,6 +27,25 @@
   --glass-blur: 16px;
   --glass-saturation: 1.08;
   --glass-radius: 0;
+  --glass-dark: rgba(10, 9, 8, 0.55);
+  --depth-background: 0.12;
+  --depth-midground: 0.24;
+  --depth-foreground: 0.42;
+  --scene-depth-bg: 0.08;
+  --scene-depth-mid: 0.2;
+  --scene-depth-fg: 0.36;
+  --cinematic-scale: 1.04;
+  --museum-glow: 0 24px 60px rgba(0, 0, 0, 0.38), 0 0 40px rgba(183, 138, 58, 0.08);
+  --gold-glow: 0 0 28px rgba(183, 138, 58, 0.18);
+  --bronze-line: rgba(183, 138, 58, 0.42);
+  --surface-black: #080706;
+  --surface-brown: #17100c;
+  --scene-vignette: radial-gradient(ellipse at center, transparent 42%, rgba(5, 4, 3, 0.55) 100%);
+  --depth-bg: 0;
+  --depth-world: 1;
+  --depth-content: 2;
+  --depth-overlay: 3;
+  --depth-ui: 4;
   --serif: 'Cormorant Garamond', 'Palatino Linotype', Palatino, Georgia, serif;
   --sans: 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
 }
@@ -43,7 +70,8 @@ body {
   background: var(--bg-deep);
 }
 
-#root {
+#root,
+body {
   min-height: 100svh;
 }
 
@@ -93,6 +121,22 @@ button {
   outline-offset: 3px;
 }
 
+.liquid-glass {
+  border: 1px solid var(--liquid-border);
+  background: var(--liquid-card);
+  box-shadow: var(--liquid-shadow);
+  backdrop-filter: blur(var(--liquid-blur)) saturate(1.35);
+  -webkit-backdrop-filter: blur(var(--liquid-blur)) saturate(1.35);
+}
+
+.site-main {
+  padding-top: 5.1rem;
+}
+
+.site-main.is-overlay {
+  padding-top: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -103,5 +147,10 @@ button {
   *::after {
     animation: none !important;
     transition: none !important;
+  }
+
+  .hero-copy-enter {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

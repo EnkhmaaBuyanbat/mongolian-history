@@ -53,7 +53,7 @@ function FamilyTree() {
     const slug = new URLSearchParams(window.location.search).get('person')
     return treePeople.find((person) => getPersonSlug(person) === slug)?.id ?? 'person-sorghaghtani-beki'
   }
-  const [selectedId, setSelectedId] = useState(getUrlSelection)
+  const [selectedId, setSelectedId] = useState('person-sorghaghtani-beki')
   const [expandedBranch, setExpandedBranch] = useState(null)
   const [eraScope, setEraScope] = useState('all')
   const selectedPerson = treePeople.find((person) => person.id === selectedId) ?? treePeople[0]
@@ -71,11 +71,8 @@ function FamilyTree() {
     window.history.pushState({}, '', `${url.pathname}${url.search}`)
   }
   useEffect(() => {
-    const restoreSelection = () => {
-      const slug = new URLSearchParams(window.location.search).get('person')
-      const personId = treePeople.find((person) => getPersonSlug(person) === slug)?.id ?? 'person-sorghaghtani-beki'
-      setSelectedId(personId)
-    }
+    setSelectedId(getUrlSelection())
+    const restoreSelection = () => setSelectedId(getUrlSelection())
     window.addEventListener('popstate', restoreSelection)
     return () => window.removeEventListener('popstate', restoreSelection)
   }, [treePeople])

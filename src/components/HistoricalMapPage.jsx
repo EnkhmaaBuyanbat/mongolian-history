@@ -1,3 +1,5 @@
+'use client'
+
 import { useCallback, useMemo, useState } from 'react'
 import HistoricalMap from './HistoricalMap'
 import MapInfoPanel from './MapInfoPanel'

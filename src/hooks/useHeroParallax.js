@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react'
 import { usePrefersReducedMotion } from './usePrefersReducedMotion'
 
+function canUsePointerParallax() {
+  return window.matchMedia('(hover: hover) and (pointer: fine)').matches
+}
+
 export function useHeroParallax(heroRef) {
   const reduced = usePrefersReducedMotion()
   const [pose, setPose] = useState({ mx: 0, my: 0, sy: 0 })
@@ -15,6 +19,7 @@ export function useHeroParallax(heroRef) {
     let my = 0
     let sy = 0
     let frame = 0
+    const pointerEnabled = canUsePointerParallax()
 
     const render = () => {
       frame = 0
@@ -40,25 +45,26 @@ export function useHeroParallax(heroRef) {
       queue()
     }
 
-    hero.addEventListener('mousemove', onMove)
+    if (pointerEnabled) hero.addEventListener('mousemove', onMove)
     window.addEventListener('scroll', onScroll, { passive: true })
-    onScroll()
+    queue()
 
     return () => {
-      hero.removeEventListener('mousemove', onMove)
+      if (pointerEnabled) hero.removeEventListener('mousemove', onMove)
       window.removeEventListener('scroll', onScroll)
       if (frame) cancelAnimationFrame(frame)
     }
   }, [heroRef, reduced])
 
-  const layerStyle = (depth, z = 0) => {
+  const layerStyle = (depth, z = 0, { scale = false } = {}) => {
     if (reduced) {
-      return { transform: `translate3d(0, 0, ${z}px)` }
+      return z ? { transform: `translate3d(0, 0, ${z}px)` } : undefined
     }
 
-    const x = pose.mx * depth * 26
-    const y = pose.my * depth * 16 + pose.sy * depth * 42
-    return { transform: `translate3d(${x}px, ${y}px, ${z}px)` }
+    const x = pose.mx * depth * 10
+    const y = pose.my * depth * 7 + pose.sy * depth * 18
+    const s = scale ? 1.03 + pose.sy * 0.015 : 1
+    return { transform: `translate3d(${x}px, ${y}px, ${z}px) scale(${s})` }
   }
 
   return { layerStyle, reduced }

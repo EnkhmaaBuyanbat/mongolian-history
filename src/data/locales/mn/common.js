@@ -1,5 +1,5 @@
 export const commonMn = {
-  navigation: { home: 'Нүүр', eras: 'Үеүд', timeline: 'Он цагийн хэлхээс', people: 'Хүмүүс', familyTree: 'Угийн мод', culture: 'Соёл', about: 'Тухай', menu: 'Цэс' },
+  navigation: { home: 'Нүүр', eras: 'Үеүд', timeline: 'Он цагийн хэлхээс', people: 'Хүмүүс', familyTree: 'Угийн мод', culture: 'Соёл', experience: 'Мэдрэх', about: 'Тухай', menu: 'Цэс' },
   languages: { label: 'Хэл сонгох', english: 'Англи', mongolian: 'Монгол' },
   actions: { beginJourney: 'Аяллаа эхлэх', exploreTimeline: 'Он цагийн хэлхээсийг үзэх', continueExploring: 'Үргэлжлүүлэн судлах', explore: 'Судлах', readChapter: 'Бүлгийг унших', viewRecord: 'Бүртгэлийг үзэх' },
   sections: { sources: 'Эх сурвалж', overview: 'Тойм', whyMatters: 'Яагаад чухал вэ', throughTime: 'Цаг хугацааны явцад', evidence: 'Олдвор ба баримт', peoplePractice: 'Хүмүүс ба дадал', placesSites: 'Газар ба дурсгалт газар', questions: 'Түүхийн асуултууд', relatedChapters: 'Холбогдох бүлгүүд' },

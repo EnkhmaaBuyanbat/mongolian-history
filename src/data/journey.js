@@ -15,6 +15,6 @@ export const journeyPaths = [
     id: 'experience',
     title: 'Experience',
     text: 'Immersive historical scenes',
-    status: 'coming-soon',
+    href: '/experience',
   },
 ]

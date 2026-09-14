@@ -1,5 +1,5 @@
 export const commonEn = {
-  navigation: { home: 'Home', eras: 'Eras', timeline: 'Timeline', people: 'People', familyTree: 'Family Tree', culture: 'Culture', about: 'About', menu: 'Menu' },
+  navigation: { home: 'Home', eras: 'Eras', timeline: 'Timeline', people: 'People', familyTree: 'Family Tree', culture: 'Culture', experience: 'Experience', about: 'About', menu: 'Menu' },
   languages: { label: 'Language', english: 'English', mongolian: 'Mongolian' },
   actions: { beginJourney: 'Begin the Journey', exploreTimeline: 'Explore Timeline', continueExploring: 'Continue Exploring', explore: 'Explore', readChapter: 'Read chapter', viewRecord: 'View record' },
   sections: { sources: 'Sources', overview: 'Overview', whyMatters: 'Why This Matters', throughTime: 'Through Time', evidence: 'Objects & Evidence', peoplePractice: 'People & Practice', placesSites: 'Places & Sites', questions: 'Historical Questions', relatedChapters: 'Related Chapters' },

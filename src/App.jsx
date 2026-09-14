@@ -3,7 +3,9 @@ import Header from './components/Header'
 import Hero from './components/Hero'
 import Introduction from './components/Introduction'
 import EraPreview from './components/EraPreview'
-import { ExperienceHistory, FeaturedStory, ObjectsAndEvidence, PeopleAndDynasties } from './components/HomeMuseumSections'
+import HomeGateway from './components/HomeGateway'
+import FeaturedStory from './components/HomeFeaturedStory'
+import { ExperienceHistory, ObjectsAndEvidence, PeopleAndDynasties } from './components/HomeMuseumSections'
 import GlobalTimelinePage from './components/GlobalTimelinePage'
 import Footer from './components/Footer'
 import HistoricalEntityPage from './components/EntityDetailPage'
@@ -27,8 +29,10 @@ import { objects } from './data/objects'
 import { dossierPersonIds } from './data/personPresentation'
 import { getCultureTopicBySlug } from './data/cultureTopics'
 import './App.css'
+import './homepage.css'
 
 const HistoricalMapPage = lazy(() => import('./components/HistoricalMapPage'))
+const ExperiencePage = lazy(() => import('./components/ExperiencePage'))
 
 function getCurrentPath() {
   return window.location.pathname || '/'
@@ -136,6 +140,7 @@ function App() {
   const showChapterPage = Boolean(chapter)
   const showTimelinePage = route === '/timeline'
   const showMapPage = route === '/map'
+  const showExperiencePage = route === '/experience'
   const showPeopleIndexPage = route === '/people'
   const showErasIndexPage = route === '/eras'
   const showFamilyTreePage = route === '/family-tree'
@@ -148,10 +153,12 @@ function App() {
 
   return (
     <>
-      <Header />
+      <Header route={route} />
       <main>
         {showMapPage ? (
           <Suspense fallback={<div className="section-inner map-loading">Loading historical map…</div>}><HistoricalMapPage /></Suspense>
+        ) : showExperiencePage ? (
+          <Suspense fallback={<div className="section-inner map-loading" aria-busy="true" />}><ExperiencePage /></Suspense>
         ) : showEntityPage ? (
           <HistoricalEntityPage entity={entity} />
         ) : showChapterPage ? (
@@ -180,13 +187,16 @@ function App() {
           <CultureIndexPage />
         ) : (
           <>
-            <Hero />
-            <EraPreview />
-            <FeaturedStory />
-            <PeopleAndDynasties />
-            <ObjectsAndEvidence />
-            <ExperienceHistory />
-            <Introduction />
+            <div className="home-cinematic">
+              <Hero />
+              <HomeGateway />
+              <EraPreview variant="home" />
+              <FeaturedStory />
+              <PeopleAndDynasties />
+              <ObjectsAndEvidence />
+              <ExperienceHistory />
+              <Introduction />
+            </div>
           </>
         )}
       </main>
