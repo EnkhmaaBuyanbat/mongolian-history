@@ -99,3 +99,10 @@ export function getPersonHeaderVisual(person) {
   return mediaVisual(directMedia, 'person')
     ?? reconstructionVisual(getContextualReconstructionForPerson(personId), 'person-context')
 }
+
+// Dossier headers use reconstructions only. Related media stays in the evidence
+// panel so an object photograph is never cropped and darkened behind title text.
+export function getPersonContextHeaderVisual(person) {
+  const personId = typeof person === 'string' ? person : person?.id
+  return reconstructionVisual(getContextualReconstructionForPerson(personId), 'person-context')
+}

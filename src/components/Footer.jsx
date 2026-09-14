@@ -20,6 +20,7 @@ function Footer() {
           <a href="/family-tree">{navigation.familyTree}</a>
           <a href="/culture">{navigation.culture}</a>
           <a href="/experience">{navigation.experience}</a>
+          <a href="/about">{navigation.about}</a>
         </nav>
       </div>
     </footer>

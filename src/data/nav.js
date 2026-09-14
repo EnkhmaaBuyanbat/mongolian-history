@@ -6,5 +6,5 @@ export const navItems = [
   { id: 'family-tree', labelKey: 'familyTree', href: '/family-tree' },
   { id: 'culture', labelKey: 'culture', href: '/culture' },
   { id: 'experience', labelKey: 'experience', href: '/experience' },
-  { id: 'about', labelKey: 'about', href: '#about', placeholder: true },
+  { id: 'about', labelKey: 'about', href: '/about' },
 ]

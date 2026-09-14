@@ -3,9 +3,9 @@ import { useLocale } from '../i18n/useLocale'
 import { toEvidenceCode } from '../i18n/locale'
 import CinematicStill from './CinematicStill'
 
-function GatewayPortal({ kicker, text, href, action, visual, evidenceLabel, status, pending = false }) {
+function GatewayPortal({ kicker, text, href, action, visual, evidenceLabel, status, pending = false, portalClass = '' }) {
   return (
-    <a className={`gateway-portal${pending ? ' is-pending' : ''}`} href={href}>
+    <a className={`gateway-portal${pending ? ' is-pending' : ''}${portalClass ? ` ${portalClass}` : ''}`} href={href}>
       <CinematicStill visual={visual} className="gateway-portal-visual" sizes="(max-width: 1100px) 100vw, 32vw" />
       <div className="gateway-portal-shade" aria-hidden="true" />
       <div className="gateway-portal-copy">
@@ -40,6 +40,7 @@ function HomeGateway() {
           action={copy.learn.primary}
           visual={learn}
           evidenceLabel={labelFor(learn)}
+          portalClass="is-learn"
         />
         <GatewayPortal
           kicker={copy.explore.kicker}
@@ -48,6 +49,7 @@ function HomeGateway() {
           action={copy.explore.primary}
           visual={explore}
           evidenceLabel={labelFor(explore)}
+          portalClass="is-explore"
         />
         <GatewayPortal
           kicker={copy.experience.kicker}
@@ -57,6 +59,7 @@ function HomeGateway() {
           visual={experience}
           evidenceLabel={labelFor(experience)}
           status={copy.experience.status}
+          portalClass="is-experience"
         />
       </div>
     </section>

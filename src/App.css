@@ -4134,6 +4134,16 @@
   color: var(--parchment);
 }
 
+/* Long single-word names such as Sorghaghtani must wrap at spaces, never mid-word. */
+.cinematic-page-header.person-profile-header h1 {
+  max-width: 20ch;
+  overflow-wrap: normal;
+}
+
+:lang(mn) .cinematic-page-header.person-profile-header h1 {
+  overflow-wrap: anywhere;
+}
+
 .person-profile-aliases,
 .person-profile-affiliation {
   margin-top: 0.7rem;
@@ -4799,9 +4809,9 @@
 .family-tree-page:lang(mn) strong { overflow-wrap: anywhere; }
 .family-tree-gap span { margin-top: .35rem; color: var(--parchment); font-family: var(--serif); font-size: .82rem; letter-spacing: .07em; }
 .family-tree-gap p { margin: .45rem 0 0; color: var(--muted); font-size: .7rem; line-height: 1.5; }
-.family-tree-canvas { position: relative; width: 1640px; height: 960px; background-image: linear-gradient(rgba(183,138,58,.035) 1px, transparent 1px); background-size: 100% 330px; }
-.family-tree-generation { position: absolute; left: 14px; z-index: 2; color: var(--gold-dim); font-size: .62rem; letter-spacing: .2em; text-transform: uppercase; writing-mode: vertical-rl; }
-.generation-one { top: 40px; }.generation-two { top: 370px; }.generation-three { top: 720px; }
+.family-tree-canvas { position: relative; width: 1740px; height: 1280px; background-image: linear-gradient(rgba(183,138,58,.035) 1px, transparent 1px); background-size: 100% 250px; }
+.family-tree-generation { position: absolute; left: 14px; z-index: 2; width: 1.1rem; max-height: 210px; overflow: hidden; color: var(--gold-dim); font-size: .62rem; letter-spacing: .2em; text-transform: uppercase; white-space: nowrap; writing-mode: vertical-rl; }
+.generation-household { top: 48px; }.generation-consorts { top: 268px; }.generation-sons { top: 528px; }.generation-daughters { top: 778px; }.generation-later { top: 1028px; }
 .family-tree-connectors { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 .family-tree-connectors path { fill: none; stroke: rgba(183,138,58,.56); stroke-width: 1.25; transition: opacity .2s, stroke-width .2s, stroke .2s; }
 .family-tree-connectors path.spouse { stroke: rgba(218,183,105,.78); stroke-width: 2; }
@@ -4810,8 +4820,11 @@
 .family-tree-node:hover,.family-tree-node:focus-visible { border-color: var(--gold); transform: translateY(-3px); }
 .family-tree-node:focus-visible { outline: 2px solid var(--parchment); outline-offset: 3px; }
 .family-tree-node.is-selected { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(183,138,58,.28), 0 16px 40px rgba(0,0,0,.4); }
-.family-tree-node.is-selected::after { content: 'Selected'; position: absolute; top: 7px; right: 7px; padding: .2rem .32rem; background: var(--deep-red); color: var(--parchment); font-size: .51rem; letter-spacing: .12em; text-transform: uppercase; }
+.family-tree-selected-badge { position: absolute; top: 7px; right: 7px; z-index: 3; padding: .2rem .32rem; background: var(--deep-red); color: var(--parchment); font-size: .51rem; letter-spacing: .12em; text-transform: uppercase; }
 .family-tree-node.is-connected { border-color: rgba(218,183,105,.9); }.family-tree-node.is-dimmed { opacity: .38; }
+.family-tree-node.is-compact .family-tree-portrait { height: 64px; }
+.family-tree-node.is-compact .family-tree-node-copy { padding: .55rem .7rem; gap: .12rem; }
+.family-tree-node.is-compact .family-tree-node-copy strong { font-size: .82rem; }
 .family-tree-portrait { display: grid; place-items: center; height: 78px; border-bottom: 1px solid var(--line); background: radial-gradient(circle, rgba(183,138,58,.2), transparent 58%); }
 .family-tree-portrait i { display: grid; place-items: center; width: 45px; height: 45px; border: 1px solid var(--bronze); border-radius: 50%; color: var(--gold); font-family: var(--serif); font-size: 1.1rem; font-style: normal; }
 .family-tree-portrait small { position: absolute; top: 62px; color: rgba(205,195,177,.62); font-size: .43rem; letter-spacing: .12em; text-transform: uppercase; }

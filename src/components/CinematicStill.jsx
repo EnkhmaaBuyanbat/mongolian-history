@@ -11,7 +11,15 @@ function CinematicStill({ visual, className = '', sizes = '100vw', eager = false
   ].filter(Boolean).join(', ')
 
   return (
-    <div className={`${className} cinematic-media`} aria-hidden="true">
+    <div
+      className={`${className} cinematic-media`}
+      aria-hidden="true"
+      style={{
+        '--still-object-position': visual.crop || 'center',
+        '--still-object-position-tablet': visual.cropTablet || visual.crop || 'center',
+        '--still-object-position-mobile': visual.cropMobile || visual.crop || 'center',
+      }}
+    >
       <img
         src={asset.largePath ?? asset.mediumPath ?? asset.mobilePath ?? asset.originalPath}
         srcSet={srcSet || undefined}
@@ -20,7 +28,6 @@ function CinematicStill({ visual, className = '', sizes = '100vw', eager = false
         height={asset.height}
         alt=""
         loading={eager ? 'eager' : 'lazy'}
-        style={visual.crop ? { objectPosition: visual.crop } : undefined}
       />
     </div>
   )

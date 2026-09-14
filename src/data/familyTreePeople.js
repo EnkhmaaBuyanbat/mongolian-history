@@ -2,6 +2,15 @@ export const coreTreePersonIds = [
   'person-temujin-chinggis-khan','person-borte','person-jochi','person-chagatai','person-ogedei-khan','person-toregene-khatun','person-tolui','person-sorghaghtani-beki','person-batu','person-guyuk-khan','person-mongke-khan','person-qubilai','person-hulegu','person-ariq-boke',
 ]
 
+export const visualTreePersonIds = [
+  'person-temujin-chinggis-khan', 'person-borte',
+  'person-qulan-khatun', 'person-yisui', 'person-yisugen', 'person-ibaqa-beki',
+  'person-jochi', 'person-chagatai', 'person-ogedei-khan', 'person-toregene-khatun',
+  'person-tolui', 'person-sorghaghtani-beki', 'person-kolgen',
+  'person-qojin-beki', 'person-checheyigen', 'person-alaqa-beki', 'person-tumelun', 'person-al-altun',
+  'person-batu', 'person-guyuk-khan', 'person-mongke-khan', 'person-qubilai', 'person-hulegu', 'person-ariq-boke',
+]
+
 export const householdGroups = {
   principal:['person-temujin-chinggis-khan','person-borte'],
   otherConsorts:['person-qulan-khatun','person-yisugen','person-yisui','person-ibaqa-beki'],

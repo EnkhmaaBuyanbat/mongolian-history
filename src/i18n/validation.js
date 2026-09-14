@@ -32,9 +32,10 @@ function compatibleShape(base, translated, path, errors) {
   })
 }
 
-export function validateLocalization({ bundles, supportedLocales, cultureTopicIds, eraIds, chapters, evidenceCodes, terminology, people, dossierPersonIds, familyTreePersonIds, personRelationships, getPersonHref, eraI_IIDossierPersonIds, eraIII_IVDossierPersonIds, moduChanyuStory, events, eventIdsEraI_II, eventIdsEraIII_IV, eventIdsEraV_VI, eventIdsEraVII_VIII, politiesMn, polities, placesMn, places, sitesMn, objectsMn, sites, objects, getLocalizedEntity, reconstructions, eraWorlds, heroScenes, getLocalizedReconstruction, getLocalizedEraWorld, getLocalizedHeroScene, media, getLocalizedMedia, chapterVisualAssignments, educationalDiagrams, getLocalizedEducationalVisual, campaigns, organizations, companies, getLocalizedCampaign, getLocalizedOrganization, getLocalizedCompany, claims, getLocalizedClaim, sources, getLocalizedSource }) {
+export function validateLocalization({ bundles, supportedLocales, cultureTopicIds, eraIds, chapters, evidenceCodes, terminology, people, dossierPersonIds, familyTreePersonIds, personRelationships, getPersonHref, eraI_IIDossierPersonIds, eraIII_IVDossierPersonIds, moduChanyuStory, events, eventIdsEraI_II, eventIdsEraIII_IV, eventIdsEraV_VI, eventIdsEraVII_VIII, politiesMn, polities, placesMn, places, sitesMn, objectsMn, sites, objects, getLocalizedEntity, reconstructions, eraWorlds, heroScenes, getLocalizedReconstruction, getLocalizedEraWorld, getLocalizedHeroScene, media, getLocalizedMedia, chapterVisualAssignments, educationalDiagrams, getLocalizedEducationalVisual, campaigns, organizations, companies, getLocalizedCampaign, getLocalizedOrganization, getLocalizedCompany, claims, getLocalizedClaim, sources, getLocalizedSource, aboutEvidenceConceptCodes, aboutPortraitStateCodes, aboutMissionStrandKeys, aboutPathwayKeys, aboutSourceKindKeys, aboutFutureKeys, aboutNarrativeSourceId, aboutExampleSourceIds }) {
   const errors = []
-  const requiredCommon = ['navigation.home', 'navigation.eras', 'navigation.timeline', 'navigation.people', 'navigation.familyTree', 'navigation.culture', 'languages.english', 'languages.mongolian', 'accessibility.primaryNavigation', 'metadata.title']
+  const requiredCommon = ['navigation.home', 'navigation.eras', 'navigation.timeline', 'navigation.people', 'navigation.familyTree', 'navigation.culture', 'navigation.about', 'languages.english', 'languages.mongolian', 'accessibility.primaryNavigation', 'metadata.title']
+  const requiredAbout = ['hero.title', 'hero.statement', 'hero.intro', 'hero.framingNote', 'mission.title', 'mission.questions', 'continuity.title', 'continuity.caution', 'pathways.title', 'evidence.title', 'evidence.note', 'sources.title', 'sources.narrativeText', 'reconstruction.title', 'reconstruction.rules', 'portraits.title', 'genealogy.title', 'genealogy.rules', 'project.title', 'project.disclaimer', 'future.title', 'closing.title']
   const requiredPersonPageUi = ['historicalBiography','referenceProfile','sourceBacked','researched','alsoKnownAs','shortHistory','lifeRole','whoWas','familyDynasty','dynasticRelationships','historicalContext','politicalWorldChapter','timeline','datedRecords','connectedPeople','familyChangingRelationships','connectedHistory','referenceRecords','sources','furtherReading','noPortraitExplanation','personRecord','reign','death','polity','historicalFigure','noContemporaryPortrait','introduction','onThisLife','onThisLifeAria','lifeHistoricalRecord','historicalRelationships','peopleAround','thisFigure','subjectStory','acrossXiongnuWorld','event','storySourceDate','storySourceTitle','storySourceText','unknown']
   Object.keys(bundles).forEach((locale) => { if (!supportedLocales.includes(locale)) errors.push(`Unsupported locale bundle: ${locale}`) })
   supportedLocales.forEach((locale) => {
@@ -42,8 +43,24 @@ export function validateLocalization({ bundles, supportedLocales, cultureTopicId
     if (!bundle) errors.push(`Missing locale bundle: ${locale}`)
     requiredCommon.forEach((path) => { if (!getPath(bundle?.common, path)) errors.push(`Missing required ${locale} key: common.${path}`) })
     requiredPersonPageUi.forEach((key) => { if (!bundle?.people?.ui?.[key]) errors.push(`Missing required ${locale} person-page key: people.ui.${key}`) })
+    requiredAbout.forEach((path) => { if (!getPath(bundle?.about, path)) errors.push(`Missing required ${locale} about key: about.${path}`) })
+    const about = bundle?.about
+    aboutEvidenceConceptCodes?.forEach((code) => {
+      if (!evidenceCodes.includes(code)) errors.push(`About evidence concept is not a canonical evidence code: ${code}`)
+      if (!about?.evidence?.concepts?.[code]?.trim()) errors.push(`Missing ${locale} about evidence concept: ${code}`)
+    })
+    aboutPortraitStateCodes?.forEach((code) => {
+      if (!evidenceCodes.includes(code)) errors.push(`About portrait state is not a canonical evidence code: ${code}`)
+      if (!about?.portraits?.states?.[code]?.trim()) errors.push(`Missing ${locale} about portrait state: ${code}`)
+    })
+    aboutMissionStrandKeys?.forEach((key) => { if (!about?.mission?.strands?.[key]?.title || !about?.mission?.strands?.[key]?.text) errors.push(`Missing ${locale} about mission strand: ${key}`) })
+    aboutPathwayKeys?.forEach((key) => { if (!about?.pathways?.[key]?.title || !about?.pathways?.[key]?.points?.length) errors.push(`Missing ${locale} about pathway: ${key}`) })
+    aboutSourceKindKeys?.forEach((key) => { if (!about?.sources?.kinds?.[key]?.title || !about?.sources?.kinds?.[key]?.text) errors.push(`Missing ${locale} about source kind: ${key}`) })
+    aboutFutureKeys?.forEach((key) => { if (!about?.future?.items?.[key]?.title || !about?.future?.items?.[key]?.text) errors.push(`Missing ${locale} about roadmap item: ${key}`) })
     inspectValues(bundle, locale, errors)
   })
+  if (aboutNarrativeSourceId && !sources.some((record) => record.id === aboutNarrativeSourceId)) errors.push(`About narrative source is not a canonical source record: ${aboutNarrativeSourceId}`)
+  aboutExampleSourceIds?.forEach((id) => { if (!sources.some((record) => record.id === id)) errors.push(`About example source is not a canonical source record: ${id}`) })
   compatibleShape(bundles.en, bundles.mn, 'mn', errors)
   const supporting = bundles.mn?.supporting
   const campaignPresentations = supporting?.campaigns?.records ?? {}
