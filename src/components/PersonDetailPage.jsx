@@ -9,7 +9,7 @@ import { people } from '../data/people'
 import { polities } from '../data/polities'
 import { sites } from '../data/sites'
 import { sources } from '../data/sources'
-import { getChapterHref, getEntityHref } from '../data/entityRoutes'
+import { getCampaignHref, getChapterHref, getEntityHref, getEventHref } from '../data/entityRoutes'
 import { sortChronologically } from '../data/chronology'
 import { getMediaForPerson, resolvePortrait } from '../data/mediaResolvers'
 import { MeanderLine } from './Ornament'
@@ -231,7 +231,7 @@ function PersonDetailPage({ person }) {
           <div className="section-inner person-profile-inner">
             <div className="entity-section-heading"><p className="section-label">{ui.timeline}</p><h2>{ui.datedRecords}</h2></div>
             <ol className="era-event-list">
-              {personEvents.map((event) => <li key={event.id} className="era-event-record"><time>{event.dateDisplay}</time><div><strong>{event.title}</strong><p>{event.summary}</p></div></li>)}
+              {personEvents.map((event) => <li key={event.id}><a href={getEventHref(event)} className="era-event-record"><time>{event.dateDisplay}</time><div><strong>{event.title}</strong><p>{event.summary}</p></div></a></li>)}
             </ol>
           </div>
         </section>
@@ -241,7 +241,7 @@ function PersonDetailPage({ person }) {
         <section className="entity-section">
           <div className="section-inner person-profile-inner">
             <div className="entity-section-heading"><p className="section-label">{ui.campaigns}</p><h2>{ui.connectedCampaigns}</h2></div>
-            <div className="chapter-record-grid">{personCampaigns.map((campaign) => <article key={campaign.id} className="chapter-record-card"><small>{campaign.dateDisplay}</small><strong>{campaign.title}</strong><p>{campaign.summary}</p></article>)}</div>
+            <div className="chapter-record-grid">{personCampaigns.map((campaign) => <a key={campaign.id} href={getCampaignHref(campaign)} className="chapter-record-link"><article className="chapter-record-card"><small>{campaign.dateDisplay}</small><strong>{campaign.title}</strong><p>{campaign.summary}</p></article></a>)}</div>
           </div>
         </section>
       ) : null}

@@ -74,6 +74,8 @@ export function validateLocalization({ bundles, supportedLocales, cultureTopicId
     requiredPersonPageUi.forEach((key) => { if (!bundle?.people?.ui?.[key]) errors.push(`Missing required ${locale} person-page key: people.ui.${key}`) })
     requiredAbout.forEach((path) => { if (!getPath(bundle?.about, path)) errors.push(`Missing required ${locale} about key: about.${path}`) })
     const requiredSearch = ['trigger', 'ariaLabel', 'placeholder', 'shortcutMac', 'shortcutWin', 'close', 'filterLabel', 'resultsLabel', 'showingTop', 'explore', 'exploreLead', 'recent', 'clearRecent', 'viewAll', 'noResults', 'noResultsHint', 'resultsFor', 'resultCount', 'emptyTitle', 'emptyLead', 'eraLabel', 'hintMove', 'hintOpen', 'hintClose']
+    const requiredEventsUi = ['timeline', 'historicalTimeline', 'intro', 'eraNavigator', 'filterByEra', 'allEras', 'completeChronology', 'era', 'empty', 'selectedRecord']
+    requiredEventsUi.forEach((key) => { if (!bundle?.events?.ui?.[key]) errors.push(`Missing required ${locale} events key: events.ui.${key}`) })
     requiredSearch.forEach((key) => { if (!bundle?.search?.[key]) errors.push(`Missing required ${locale} search key: search.${key}`) })
     ;['people', 'eras', 'places', 'culture'].forEach((key) => { if (!bundle?.search?.categories?.[key]) errors.push(`Missing required ${locale} search category: search.categories.${key}`) })
     ;['person', 'event', 'campaign', 'era', 'chapter', 'place', 'site', 'polity', 'culture', 'object', 'organization', 'company', 'claim'].forEach((key) => { if (!bundle?.search?.types?.[key]) errors.push(`Missing required ${locale} search type: search.types.${key}`) })

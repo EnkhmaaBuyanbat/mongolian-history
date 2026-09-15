@@ -9,7 +9,7 @@ import { chapters } from '../data/chapters'
 import { eras } from '../data/eras'
 import { sortChronologically } from '../data/chronology'
 import { MeanderLine } from './Ornament'
-import { getEntityHref } from '../data/entityRoutes'
+import { getEntityHref, getEventHref, getTimelineHref } from '../data/entityRoutes'
 import { getEraHeaderVisual } from '../data/pageVisualResolvers'
 import CinematicPageHeader from './CinematicPageHeader'
 import { getEraWorld } from '../data/eraWorlds'
@@ -84,7 +84,7 @@ function EraDetailPage({ era }) {
   const firstChapter = eraChapters[0]
   const headerActions = [
     firstChapter ? { label: ui.startEra, href: `/eras/${era.slug ?? era.id}/chapters/${firstChapter.slug ?? firstChapter.id.replace('chapter-', '')}` } : null,
-    { label: ui.viewTimeline, href: '/timeline' },
+    { label: ui.viewTimeline, href: getTimelineHref({ eraId: era.id }) },
     { label: ui.viewPeople, href: '/people' },
   ].filter(Boolean)
 
@@ -163,12 +163,14 @@ function EraDetailPage({ era }) {
           {eraEvents.length ? (
             <ol className="era-event-list">
               {eraEvents.map((event) => (
-                <li key={event.id} className="era-event-record">
-                  <time>{event.dateDisplay}</time>
-                  <div>
-                    <strong>{event.title}</strong>
-                    <p>{event.summary}</p>
-                  </div>
+                <li key={event.id}>
+                  <a href={getEventHref(event)} className="era-event-record">
+                    <time>{event.dateDisplay}</time>
+                    <div>
+                      <strong>{event.title}</strong>
+                      <p>{event.summary}</p>
+                    </div>
+                  </a>
                 </li>
               ))}
             </ol>

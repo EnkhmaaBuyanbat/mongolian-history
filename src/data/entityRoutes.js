@@ -26,6 +26,13 @@ export function getEventHref(event) {
   return getTimelineHref({ eraId: event.eraId, eventId: event.id })
 }
 
+export function getCampaignHref(campaign) {
+  const related = (campaign?.events ?? [])
+    .map((id) => events.find((event) => event.id === id))
+    .find(isPublicChronologyEvent)
+  return related ? getEventHref(related) : '/timeline'
+}
+
 export function getPersonHref(person) {
   return person ? `/people/${getPersonSlug(person)}` : null
 }
@@ -77,6 +84,7 @@ export function getEntityHref(record) {
   if (!record || record.status === 'draft') return null
   if (record.id.startsWith('person-')) return getPersonHref(record)
   if (record.id.startsWith('event-')) return isPublicChronologyEvent(record) ? getEventHref(record) : null
+  if (record.id.startsWith('campaign-')) return getCampaignHref(record)
   if (record.id.startsWith('organization-')) return getOrganizationHref(record)
   if (record.id.startsWith('company-')) return getCompanyHref(record)
   if (record.id.startsWith('claim-')) return getClaimHref(record)

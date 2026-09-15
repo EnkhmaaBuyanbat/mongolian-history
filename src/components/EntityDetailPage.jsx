@@ -6,7 +6,7 @@ import { people } from '../data/people'
 import { events } from '../data/events'
 import { sources } from '../data/sources'
 import { MeanderLine } from './Ornament'
-import { getEntityHref, getPersonHref } from '../data/entityRoutes'
+import { getEntityHref, getEventHref, getPersonHref } from '../data/entityRoutes'
 import { getLocalizedEntity, getLocalizedPolity } from '../data/entityLocalization'
 import { getLocalizedEvent } from '../data/eventLocalization'
 import { getLocalizedPerson } from '../data/personLocalization'
@@ -173,12 +173,14 @@ function HistoricalEntityPage({ entity }) {
               {relatedEvents.map((item) => {
                 const event = getLocalizedEvent(item.record, eventLocale)
                 return (
-                  <li key={item.id} className="timeline-record">
-                    <span className="timeline-record-date">{event.dateDisplay}</span>
-                    <div>
-                      <strong>{event.title}</strong>
-                      <p>{event.summary}</p>
-                    </div>
+                  <li key={item.id}>
+                    <a href={getEventHref(event)} className="timeline-record">
+                      <span className="timeline-record-date">{event.dateDisplay}</span>
+                      <div>
+                        <strong>{event.title}</strong>
+                        <p>{event.summary}</p>
+                      </div>
+                    </a>
                   </li>
                 )
               })}
