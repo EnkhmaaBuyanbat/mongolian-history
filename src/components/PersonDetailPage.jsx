@@ -251,12 +251,16 @@ function PersonDetailPage({ person }) {
           <div className="section-inner person-profile-inner">
             <div className="entity-section-heading"><p className="section-label">{ui.connectedPeople}</p><h2>{ui.familyChangingRelationships}</h2></div>
             <div className="person-profile-links">
-              {relationships.map((relationship) => relationship.person ? (
-                <a key={`${relationship.personId}-${relationship.relatedPersonId}`} href={getEntityHref(relationship.person)}>
-                  <span>{getLocalizedRelationship(relationship, localeSection('personRelationships')).displayLabel}</span><strong>{getLocalizedPerson(relationship.person, peopleLocale).title}</strong>
-                  {relationship.phases?.map((phase) => <small key={`${phase.type}-${phase.period}`}>{phase.period}: {localeSection('personRelationships').types?.[phase.type] ?? phase.type}</small>)}
-                </a>
-              ) : null)}
+              {relationships.map((relationship) => {
+                if (!relationship.person) return null
+                const localized = getLocalizedRelationship(relationship, localeSection('personRelationships'))
+                return (
+                  <a key={`${relationship.personId}-${relationship.relatedPersonId}`} href={getEntityHref(relationship.person)}>
+                    <span>{localized.displayLabel}</span><strong>{getLocalizedPerson(relationship.person, peopleLocale).title}</strong>
+                    {localized.phases?.map((phase) => <small key={`${phase.type}-${phase.period}`}>{phase.displayPeriod}: {phase.displayType}</small>)}
+                  </a>
+                )
+              })}
             </div>
           </div>
         </section>

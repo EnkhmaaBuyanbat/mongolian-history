@@ -33,5 +33,10 @@ export function getLocalizedRelationship(record, localeBundle = {}) {
     ...record,
     displayType: localeBundle.types?.[record.type] ?? record.type,
     displayLabel: localeBundle.labels?.[record.label] ?? record.label,
+    phases: record.phases?.map((phase) => ({
+      ...phase,
+      displayType: localeBundle.types?.[phase.type] ?? phase.type,
+      displayPeriod: localeBundle.periods?.[phase.period] ?? phase.period,
+    })),
   }
 }

@@ -357,7 +357,7 @@ export const sources = [
     year: null,
     category: 'MEDIEVAL MONGOLIAN NARRATIVE',
     eraId: 'before-chinggis', status: 'verified',
-    relatedEntityIds: ['person-temujin-chinggis-khan', 'person-borte', 'person-qulan-khatun', 'person-kolgen', 'person-yisugen', 'person-yisui', 'person-ibaqa-beki', 'person-qojin-beki', 'person-checheyigen', 'person-alaqa-beki', 'person-tumelun', 'person-al-altun', 'person-hoelun', 'person-yesugei', 'person-jamukha', 'person-toghrul-ong-khan', 'event-birth-temujin-debated', 'event-jamukha-gur-khan-1201', 'event-kereit-defeat-1203', 'event-new-mongol-order-1206'],
+    relatedEntityIds: ['person-temujin-chinggis-khan', 'person-borte', 'person-qulan-khatun', 'person-kolgen', 'person-yisugen', 'person-yisui', 'person-ibaqa-beki', 'person-qojin-beki', 'person-checheyigen', 'person-alaqa-beki', 'person-tumelun', 'person-al-altun', 'person-hoelun', 'person-yesugei', 'person-jamukha', 'person-toghrul-ong-khan', 'person-tayang-khan', 'event-birth-temujin-debated', 'event-jamukha-gur-khan-1201', 'event-kereit-defeat-1203', 'event-naiman-defeat-1204', 'event-new-mongol-order-1206'],
     citation: 'The Secret History of the Mongols — medieval Mongolian narrative tradition.', url: null,
   },
   {
@@ -365,7 +365,7 @@ export const sources = [
     title: 'The Secret History of the Mongols: A Mongolian Epic Chronicle of the Thirteenth Century. Translated with Historical and Philological Commentary',
     author: 'Igor de Rachewiltz', institution: 'Brill', publication: 'Brill’s Inner Asian Library; corrected impression', year: 2006,
     category: 'MODERN SCHOLARLY TRANSLATION / COMMENTARY', eraId: 'before-chinggis', status: 'verified',
-    relatedEntityIds: ['person-temujin-chinggis-khan', 'person-borte', 'person-qulan-khatun', 'person-kolgen', 'person-yisugen', 'person-yisui', 'person-ibaqa-beki', 'person-qojin-beki', 'person-checheyigen', 'person-alaqa-beki', 'person-tumelun', 'person-al-altun', 'person-hoelun', 'person-yesugei', 'person-jamukha', 'person-toghrul-ong-khan', 'event-birth-temujin-debated', 'event-jamukha-gur-khan-1201', 'event-kereit-defeat-1203', 'event-new-mongol-order-1206'],
+    relatedEntityIds: ['person-temujin-chinggis-khan', 'person-borte', 'person-qulan-khatun', 'person-kolgen', 'person-yisugen', 'person-yisui', 'person-ibaqa-beki', 'person-qojin-beki', 'person-checheyigen', 'person-alaqa-beki', 'person-tumelun', 'person-al-altun', 'person-hoelun', 'person-yesugei', 'person-jamukha', 'person-toghrul-ong-khan', 'person-tayang-khan', 'event-birth-temujin-debated', 'event-jamukha-gur-khan-1201', 'event-kereit-defeat-1203', 'event-naiman-defeat-1204', 'event-new-mongol-order-1206'],
     citation: 'Igor de Rachewiltz, The Secret History of the Mongols: A Mongolian Epic Chronicle of the Thirteenth Century. Translated with Historical and Philological Commentary, Brill’s Inner Asian Library, corrected impression, 2006.', url: null,
   },
   {

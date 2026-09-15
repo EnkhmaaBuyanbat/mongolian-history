@@ -24,12 +24,41 @@ function compatibleShape(base, translated, path, errors) {
     if (path.startsWith('mn.supporting.') && ['records','types','routeConfidence','treatments','roles'].includes(key)) return
     if (['mn.reconstructions','mn.eraWorlds','mn.heroScenes','mn.media'].includes(path) && key === 'records') return
     if (path === 'mn.people' && ['events','stories','politicalContexts'].includes(key)) return
-    if (path === 'mn.personRelationships' && key === 'labels') return
+    if (path === 'mn.personRelationships' && ['labels', 'periods'].includes(key)) return
     const baseValue = base?.[key]
     if (baseValue === undefined) errors.push(`Unknown translation key: ${path}.${key}`)
     else if (Array.isArray(value) !== Array.isArray(baseValue) || (isObject(value) !== isObject(baseValue))) errors.push(`Incompatible translation shape: ${path}.${key}`)
     else if (isObject(value)) compatibleShape(baseValue, value, `${path}.${key}`, errors)
   })
+}
+
+const ENGLISH_VISITOR_PROSE = /\b(and|the|of|with|from|based|sources include|drawing on|contemporary|later|modern|research|records|scholarship|institutional|history|public|documentation|synthesis|dated|urban|program|interpretation|agreements|reporting|official|human-rights|democratic-transition|foreign-policy)\b/i
+
+function isEnglishVisitorProse(text) {
+  if (typeof text !== 'string' || !text.trim()) return false
+  if (/[\u0400-\u04FF]/.test(text)) return false
+  if ((text.match(/[A-Za-z]/g) || []).length < 8) return false
+  return ENGLISH_VISITOR_PROSE.test(text)
+}
+
+function isChronologicalPeriod(period) {
+  return /^\d/.test(String(period ?? '').trim())
+}
+
+function collectLinkedSourceIds(value, acc = []) {
+  if (!value || typeof value !== 'object') return acc
+  if (Array.isArray(value)) {
+    value.forEach((child) => collectLinkedSourceIds(child, acc))
+    return acc
+  }
+  ;['sourceIds', 'sourceRefs', 'sources'].forEach((key) => {
+    if (Array.isArray(value[key])) acc.push(...value[key])
+  })
+  if (typeof value.sourceId === 'string') acc.push(value.sourceId)
+  Object.values(value).forEach((child) => {
+    if (child && typeof child === 'object') collectLinkedSourceIds(child, acc)
+  })
+  return acc
 }
 
 export function validateLocalization({ bundles, supportedLocales, cultureTopicIds, eraIds, chapters, evidenceCodes, terminology, people, dossierPersonIds, familyTreePersonIds, personRelationships, getPersonHref, eraI_IIDossierPersonIds, eraIII_IVDossierPersonIds, moduChanyuStory, events, eventIdsEraI_II, eventIdsEraIII_IV, eventIdsEraV_VI, eventIdsEraVII_VIII, politiesMn, polities, placesMn, places, sitesMn, objectsMn, sites, objects, getLocalizedEntity, reconstructions, eraWorlds, heroScenes, getLocalizedReconstruction, getLocalizedEraWorld, getLocalizedHeroScene, media, getLocalizedMedia, chapterVisualAssignments, educationalDiagrams, getLocalizedEducationalVisual, campaigns, organizations, companies, getLocalizedCampaign, getLocalizedOrganization, getLocalizedCompany, claims, getLocalizedClaim, sources, getLocalizedSource, aboutEvidenceConceptCodes, aboutPortraitStateCodes, aboutMissionStrandKeys, aboutPathwayKeys, aboutSourceKindKeys, aboutFutureKeys, aboutNarrativeSourceId, aboutExampleSourceIds }) {
@@ -422,6 +451,11 @@ export function validateLocalization({ bundles, supportedLocales, cultureTopicId
       const localizedSection = record.sectionPresentation?.[sectionId]
       if (!localizedSection?.title?.trim()) errors.push(`Missing MN Chapter section title: ${id}.${sectionId}`)
       if (canonicalSection?.paragraphs && (!Array.isArray(localizedSection?.paragraphs) || !localizedSection.paragraphs.length)) errors.push(`Invalid MN Chapter section paragraphs: ${id}.${sectionId}`)
+      if (canonicalSection?.evidenceNote?.sourceBasis) {
+        const mnSourceBasis = localizedSection?.evidenceNote?.sourceBasis
+        if (!mnSourceBasis?.trim()) errors.push(`Missing MN evidenceNote.sourceBasis: ${id}.${sectionId}`)
+        else if (isEnglishVisitorProse(mnSourceBasis)) errors.push(`English visitor-facing MN sourceBasis: ${id}.${sectionId}`)
+      }
     })
     localizedSectionIds.forEach((sectionId) => { if (!canonicalSectionIds.includes(sectionId)) errors.push(`Unknown MN Chapter section: ${id}.${sectionId}`) })
   })
@@ -493,8 +527,38 @@ export function validateLocalization({ bundles, supportedLocales, cultureTopicId
       translated?.traits?.forEach((trait,index) => { if (!trait.label?.trim() || !trait.summary?.trim() || trait.sourceIds || trait.treatment) errors.push(`Invalid MN reputation trait presentation: ${person.id}[${index}]`) })
     }
   })
+  const relationshipTypes = bundles.mn?.personRelationships?.types ?? {}
+  const relationshipLabels = bundles.mn?.personRelationships?.labels ?? {}
+  const relationshipPeriods = bundles.mn?.personRelationships?.periods ?? {}
   personRelationships.forEach((relationship) => {
-    if (!people.some((person) => person.id === relationship.personId) || !people.some((person) => person.id === relationship.relatedPersonId)) errors.push(`Dangling canonical relationship endpoint: ${relationship.personId}|${relationship.relatedPersonId}`)
+    const relationshipKey = `${relationship.personId}|${relationship.relatedPersonId}`
+    if (!people.some((person) => person.id === relationship.personId) || !people.some((person) => person.id === relationship.relatedPersonId)) errors.push(`Missing relationship endpoint: ${relationshipKey}`)
+    if (!relationshipTypes[relationship.type]) errors.push(`Missing MN relationship type: ${relationship.type}`)
+    if (!relationshipLabels[relationship.label]) errors.push(`Missing MN relationship label: ${relationship.label}`)
+    relationship.phases?.forEach((phase) => {
+      if (!relationshipTypes[phase.type]) errors.push(`Missing MN relationship phase type: ${phase.type}`)
+      if (phase.period && !isChronologicalPeriod(phase.period) && !relationshipPeriods[phase.period]) errors.push(`Missing MN relationship phase period: ${phase.period}`)
+    })
+  })
+  const knownSourceIds = new Set(sources.map((source) => source.id))
+  const sourceLinkedRecords = [
+    ...people,
+    ...events,
+    ...chapters,
+    ...personRelationships,
+    ...(campaigns ?? []),
+    ...(organizations ?? []),
+    ...(companies ?? []),
+    ...(claims ?? []),
+    ...(media ?? []),
+    ...(reconstructions ?? []),
+    ...(educationalDiagrams ?? []),
+  ]
+  sourceLinkedRecords.forEach((record) => {
+    const origin = record.id ?? `${record.personId}|${record.relatedPersonId}`
+    collectLinkedSourceIds(record).forEach((id) => {
+      if (id && !knownSourceIds.has(id)) errors.push(`Broken source ID: ${origin}.${id}`)
+    })
   })
   const terminologyEntries = Object.entries(terminology ?? {})
   if (new Set(terminologyEntries.map(([key]) => key)).size !== terminologyEntries.length) errors.push('Duplicate Mongolian terminology key.')

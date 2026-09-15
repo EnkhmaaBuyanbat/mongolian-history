@@ -18,7 +18,9 @@ function PersonRelationshipVisual({ person, relationships, label }) {
           const localized = getLocalizedRelationship(relationship, relationshipLocale)
           const relatedPerson = getLocalizedPerson(relationship.person, peopleLocale)
           return <a key={`${relationship.personId}-${relationship.relatedPersonId}-${relationship.type}`} href={getPersonHref(relationship.person)}>
-            <span>{localized.displayLabel}</span><strong>{relatedPerson.title}</strong><small>{localeSection('evidence')[toEvidenceCode(relationship.confidence)] ?? relationship.confidence}</small>
+            <span>{localized.displayLabel}</span><strong>{relatedPerson.title}</strong>
+            {localized.phases?.map((phase) => <small key={`${phase.type}-${phase.period}`}>{phase.displayPeriod}: {phase.displayType}</small>)}
+            <small>{localeSection('evidence')[toEvidenceCode(relationship.confidence)] ?? relationship.confidence}</small>
           </a>
         })}
       </div>
