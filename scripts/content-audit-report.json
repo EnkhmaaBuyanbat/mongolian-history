@@ -1,0 +1,1099 @@
+{
+  "generatedAt": "2026-09-15",
+  "people": {
+    "canonical": 116,
+    "public": 115,
+    "dossiers": 32,
+    "familyTree": 45,
+    "story": 4,
+    "biography": 105,
+    "reference": 4,
+    "unsetType": 3,
+    "withBiographySections": 6,
+    "noSources": [
+      {
+        "id": "person-tayang-khan",
+        "profileType": "biography"
+      },
+      {
+        "id": "person-senggum",
+        "profileType": "reference"
+      },
+      {
+        "id": "person-toqtoa-beki",
+        "profileType": "reference"
+      },
+      {
+        "id": "person-jaqa-gambu",
+        "profileType": "reference"
+      },
+      {
+        "id": "person-kuchlug",
+        "profileType": "reference"
+      }
+    ],
+    "thinCopy": [
+      {
+        "id": "person-touman",
+        "profileType": "unset",
+        "hasRole": false,
+        "hasSummary": false
+      },
+      {
+        "id": "person-laoshang-chanyu",
+        "profileType": "unset",
+        "hasRole": false,
+        "hasSummary": false
+      }
+    ],
+    "dossiersWithoutSections": [
+      {
+        "id": "person-modu-chanyu",
+        "eraId": "ancient-steppe"
+      },
+      {
+        "id": "person-borte",
+        "eraId": "before-chinggis"
+      },
+      {
+        "id": "person-jamukha",
+        "eraId": "before-chinggis"
+      },
+      {
+        "id": "person-toghrul-ong-khan",
+        "eraId": "before-chinggis"
+      },
+      {
+        "id": "person-ogedei-khan",
+        "eraId": "rise-empire"
+      },
+      {
+        "id": "person-mongke-khan",
+        "eraId": "rise-empire"
+      },
+      {
+        "id": "person-tolui",
+        "eraId": "rise-empire"
+      },
+      {
+        "id": "person-sorghaghtani-beki",
+        "eraId": "rise-empire"
+      },
+      {
+        "id": "person-qubilai",
+        "eraId": "rise-empire"
+      },
+      {
+        "id": "person-hulegu",
+        "eraId": "rise-empire"
+      },
+      {
+        "id": "person-chabi",
+        "eraId": "mongol-world"
+      },
+      {
+        "id": "person-zhenjin",
+        "eraId": "mongol-world"
+      },
+      {
+        "id": "person-temur-oljeytu",
+        "eraId": "mongol-world"
+      },
+      {
+        "id": "person-oz-beg",
+        "eraId": "mongol-world"
+      },
+      {
+        "id": "person-jani-beg",
+        "eraId": "mongol-world"
+      },
+      {
+        "id": "person-abaqa",
+        "eraId": "mongol-world"
+      },
+      {
+        "id": "person-esen-taishi",
+        "eraId": "northern-yuan"
+      },
+      {
+        "id": "person-mandukhai-khatun",
+        "eraId": "northern-yuan"
+      },
+      {
+        "id": "person-dayan-khan",
+        "eraId": "northern-yuan"
+      },
+      {
+        "id": "person-altan-khan",
+        "eraId": "northern-yuan"
+      },
+      {
+        "id": "person-ligden-khan",
+        "eraId": "northern-yuan"
+      },
+      {
+        "id": "person-hong-taiji",
+        "eraId": "northern-yuan"
+      },
+      {
+        "id": "person-kangxi-emperor",
+        "eraId": "qing-rule"
+      },
+      {
+        "id": "person-zanabazar",
+        "eraId": "qing-rule"
+      },
+      {
+        "id": "person-qianlong-emperor",
+        "eraId": "qing-rule"
+      },
+      {
+        "id": "person-batmonkh",
+        "eraId": "revolution-socialist"
+      }
+    ],
+    "dossiersMnMismatch": [],
+    "referenceIds": [
+      "person-senggum",
+      "person-toqtoa-beki",
+      "person-jaqa-gambu",
+      "person-kuchlug"
+    ],
+    "mnMissingRole": [],
+    "mnMissingSummary": []
+  },
+  "chapters": {
+    "total": 64,
+    "complete": 8,
+    "inProgress": [
+      {
+        "id": "chapter-bronze-age-steppe",
+        "eraId": "ancient-steppe",
+        "sources": 1,
+        "sections": 6,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-xiongnu-world",
+        "eraId": "ancient-steppe",
+        "sources": 5,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-after-xiongnu",
+        "eraId": "ancient-steppe",
+        "sources": 3,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-rouran-khaganate",
+        "eraId": "ancient-steppe",
+        "sources": 7,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-rise-of-the-turks",
+        "eraId": "ancient-steppe",
+        "sources": 4,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-orkhon-world",
+        "eraId": "ancient-steppe",
+        "sources": 5,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-uyghur-khaganate",
+        "eraId": "ancient-steppe",
+        "sources": 2,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-840-transition",
+        "eraId": "ancient-steppe",
+        "sources": 3,
+        "sections": 8,
+        "emptySourceSections": 1
+      },
+      {
+        "id": "chapter-after-840-changing-steppe",
+        "eraId": "before-chinggis",
+        "sources": 2,
+        "sections": 8,
+        "emptySourceSections": 7
+      },
+      {
+        "id": "chapter-khitan-liao-world",
+        "eraId": "before-chinggis",
+        "sources": 2,
+        "sections": 8,
+        "emptySourceSections": 4
+      },
+      {
+        "id": "chapter-after-liao",
+        "eraId": "before-chinggis",
+        "sources": 1,
+        "sections": 8,
+        "emptySourceSections": 8
+      },
+      {
+        "id": "chapter-twelfth-century-steppe-powers",
+        "eraId": "before-chinggis",
+        "sources": 3,
+        "sections": 8,
+        "emptySourceSections": 8
+      },
+      {
+        "id": "chapter-temujins-world",
+        "eraId": "before-chinggis",
+        "sources": 6,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-temujin-jamukha-toghrul",
+        "eraId": "before-chinggis",
+        "sources": 3,
+        "sections": 8,
+        "emptySourceSections": 8
+      },
+      {
+        "id": "chapter-struggle-eastern-steppe",
+        "eraId": "before-chinggis",
+        "sources": 3,
+        "sections": 8,
+        "emptySourceSections": 8
+      },
+      {
+        "id": "chapter-new-order-1206",
+        "eraId": "before-chinggis",
+        "sources": 3,
+        "sections": 8,
+        "emptySourceSections": 8
+      },
+      {
+        "id": "chapter-building-new-order-1206",
+        "eraId": "rise-empire",
+        "sources": 5,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-western-xia-jin",
+        "eraId": "rise-empire",
+        "sources": 1,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-empire-turns-west",
+        "eraId": "rise-empire",
+        "sources": 3,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-chinggis-death-succession",
+        "eraId": "rise-empire",
+        "sources": 3,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-ogedei-governing-empire",
+        "eraId": "rise-empire",
+        "sources": 4,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-expansion-across-eurasia",
+        "eraId": "rise-empire",
+        "sources": 1,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-queens-regents-throne",
+        "eraId": "rise-empire",
+        "sources": 1,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-mongke-united-empire-crisis",
+        "eraId": "rise-empire",
+        "sources": 2,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-crisis-of-1260",
+        "eraId": "mongol-world",
+        "sources": 7,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-qubilai-yuan-imperial-order",
+        "eraId": "mongol-world",
+        "sources": 3,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-jochid-world",
+        "eraId": "mongol-world",
+        "sources": 5,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-chagatai-realm",
+        "eraId": "mongol-world",
+        "sources": 4,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-hulegu-ilkhanid-world",
+        "eraId": "mongol-world",
+        "sources": 6,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-empire-of-connections",
+        "eraId": "mongol-world",
+        "sources": 7,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-religion-knowledge-cultural-exchange",
+        "eraId": "mongol-world",
+        "sources": 9,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-crisis-fragmentation-fall-yuan",
+        "eraId": "mongol-world",
+        "sources": 6,
+        "sections": 9,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-after-1368-yuan-court-steppe",
+        "eraId": "northern-yuan",
+        "sources": 3,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-chinggisid-rivals-changing-mongolia",
+        "eraId": "northern-yuan",
+        "sources": 3,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-oirat-ascendancy",
+        "eraId": "northern-yuan",
+        "sources": 3,
+        "sections": 9,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-mandukhai-dayan-restoration",
+        "eraId": "northern-yuan",
+        "sources": 3,
+        "sections": 9,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-sixteenth-century-mongol-world",
+        "eraId": "northern-yuan",
+        "sources": 4,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-altan-khan-buddhist-revival",
+        "eraId": "northern-yuan",
+        "sources": 6,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-ligden-khan-crisis-unity",
+        "eraId": "northern-yuan",
+        "sources": 3,
+        "sections": 9,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-toward-qing-rule-1691",
+        "eraId": "northern-yuan",
+        "sources": 4,
+        "sections": 9,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-entering-qing-imperial-order",
+        "eraId": "qing-rule",
+        "sources": 7,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-khalkha-qing-government",
+        "eraId": "qing-rule",
+        "sources": 4,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-dzungar-qing-struggle",
+        "eraId": "qing-rule",
+        "sources": 2,
+        "sections": 10,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-buddhism-monasteries-authority-qing",
+        "eraId": "qing-rule",
+        "sources": 8,
+        "sections": 9,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-pastoral-society-everyday-life-qing",
+        "eraId": "qing-rule",
+        "sources": 4,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-trade-tea-silver-debt-frontier",
+        "eraId": "qing-rule",
+        "sources": 7,
+        "sections": 9,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-between-qing-russian-empires",
+        "eraId": "qing-rule",
+        "sources": 4,
+        "sections": 9,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-late-qing-crisis-road-1911",
+        "eraId": "qing-rule",
+        "sources": 10,
+        "sections": 10,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-building-democratic-state-1990-1992",
+        "eraId": "modern",
+        "sources": 4,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-shock-transition-markets-privatization",
+        "eraId": "modern",
+        "sources": 3,
+        "sections": 9,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-democracy-practice-elections-parties",
+        "eraId": "modern",
+        "sources": 10,
+        "sections": 9,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-new-foreign-policy",
+        "eraId": "modern",
+        "sources": 8,
+        "sections": 8,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-mining-growth-natural-resources",
+        "eraId": "modern",
+        "sources": 9,
+        "sections": 9,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-crisis-protest-democratic-resilience",
+        "eraId": "modern",
+        "sources": 11,
+        "sections": 9,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-changing-society-modern-mongolia",
+        "eraId": "modern",
+        "sources": 19,
+        "sections": 10,
+        "emptySourceSections": 0
+      },
+      {
+        "id": "chapter-mongolia-twenty-first-century",
+        "eraId": "modern",
+        "sources": 24,
+        "sections": 10,
+        "emptySourceSections": 0
+      }
+    ],
+    "noSources": [],
+    "missingMnSections": [],
+    "emptySourceSectionCount": 52,
+    "emptySourceSectionSample": [
+      {
+        "id": "chapter-840-transition",
+        "empty": [
+          "looking-toward-era-two"
+        ]
+      },
+      {
+        "id": "chapter-after-840-changing-steppe",
+        "empty": [
+          "what-ended-840",
+          "post-840-world",
+          "population-movement",
+          "regional-powers",
+          "no-dynasty-chain",
+          "evidence-after-840",
+          "why-transition-matters"
+        ]
+      },
+      {
+        "id": "chapter-khitan-liao-world",
+        "empty": [
+          "khitan-before-liao",
+          "liao-mongolia",
+          "imperial-network",
+          "liao-governance"
+        ]
+      },
+      {
+        "id": "chapter-after-liao",
+        "empty": [
+          "end-liao-rule",
+          "khitan-continuities",
+          "jurchen-jin",
+          "qara-khitai",
+          "changing-influence",
+          "not-vanishing",
+          "source-gap-liao",
+          "multiple-trajectories"
+        ]
+      },
+      {
+        "id": "chapter-twelfth-century-steppe-powers",
+        "empty": [
+          "many-powers",
+          "kereit-world",
+          "naiman-world",
+          "merkit-tatar",
+          "mongol-groupings",
+          "imperial-neighbours",
+          "relationships-change",
+          "not-modern-nations"
+        ]
+      },
+      {
+        "id": "chapter-temujin-jamukha-toghrul",
+        "empty": [
+          "three-agents",
+          "temujin-jamukha-early",
+          "temujin-jamukha-rivalry",
+          "jamukha-1201",
+          "toghrul-kereit-ruler",
+          "cooperation",
+          "rupture-1203",
+          "changing-relations"
+        ]
+      },
+      {
+        "id": "chapter-struggle-eastern-steppe",
+        "empty": [
+          "coalitions-1201",
+          "not-inevitable",
+          "kereit-1203",
+          "naiman-1204",
+          "continued-resistance",
+          "coalition-growth",
+          "defeat-not-disappearance",
+          "toward-1206"
+        ]
+      },
+      {
+        "id": "chapter-new-order-1206",
+        "empty": [
+          "before-1206",
+          "assembly-1206",
+          "recognition-chinggis",
+          "political-reorganization",
+          "not-first-mongols",
+          "not-beginning-history",
+          "what-changed",
+          "toward-era-three"
+        ]
+      }
+    ]
+  },
+  "relationships": {
+    "total": 80,
+    "uniqueTypes": [
+      "parent",
+      "successor",
+      "spouse",
+      "changing relationship",
+      "parent / successor",
+      "parent / succession support",
+      "imperial commission",
+      "imperial command",
+      "brothers / rival claimants",
+      "changing political relationship",
+      "campaign command",
+      "delegated command",
+      "military command",
+      "religious patronage / political alliance",
+      "religious and political relationship",
+      "dynastic and political succession",
+      "imperial military conflict"
+    ],
+    "uniqueLabels": 40,
+    "uniquePhaseTypes": [
+      "close personal / political relationship",
+      "rivalry",
+      "alliance / connection",
+      "rupture / conflict",
+      "father / son",
+      "successor as Great Khan",
+      "western campaign commission",
+      "brothers",
+      "rival claimants"
+    ],
+    "missingPhaseTypeMn": [
+      "close personal / political relationship",
+      "rivalry",
+      "alliance / connection",
+      "rupture / conflict",
+      "father / son",
+      "successor as Great Khan",
+      "western campaign commission",
+      "brothers",
+      "rival claimants"
+    ],
+    "danglingPeople": [],
+    "missingMn": [
+      {
+        "key": "person-temujin-chinggis-khan → person-jamukha",
+        "type": "changing relationship",
+        "label": "Personal and political relationship",
+        "missingTypeMn": false,
+        "missingLabelMn": false,
+        "missingPhaseTypeMn": [
+          "close personal / political relationship",
+          "rivalry"
+        ]
+      },
+      {
+        "key": "person-temujin-chinggis-khan → person-toghrul-ong-khan",
+        "type": "changing relationship",
+        "label": "Political relationship",
+        "missingTypeMn": false,
+        "missingLabelMn": false,
+        "missingPhaseTypeMn": [
+          "alliance / connection",
+          "rupture / conflict"
+        ]
+      },
+      {
+        "key": "person-temujin-chinggis-khan → person-ogedei-khan",
+        "type": "parent / successor",
+        "label": "Father / son; later successor",
+        "missingTypeMn": false,
+        "missingLabelMn": false,
+        "missingPhaseTypeMn": [
+          "father / son",
+          "successor as Great Khan"
+        ]
+      },
+      {
+        "key": "person-mongke-khan → person-hulegu",
+        "type": "imperial commission",
+        "label": "Great Khan / western commission",
+        "missingTypeMn": false,
+        "missingLabelMn": false,
+        "missingPhaseTypeMn": [
+          "western campaign commission"
+        ]
+      },
+      {
+        "key": "person-qubilai → person-ariq-boke",
+        "type": "brothers / rival claimants",
+        "label": "Brothers; rival claimants in 1260",
+        "missingTypeMn": false,
+        "missingLabelMn": false,
+        "missingPhaseTypeMn": [
+          "brothers",
+          "rival claimants"
+        ]
+      }
+    ],
+    "noSources": [],
+    "englishVisitorLeaks": [
+      {
+        "key": "person-temujin-chinggis-khan → person-borte",
+        "description": false,
+        "context": true,
+        "phaseTypes": [],
+        "phasePeriods": []
+      },
+      {
+        "key": "person-temujin-chinggis-khan → person-qulan-khatun",
+        "description": false,
+        "context": true,
+        "phaseTypes": [],
+        "phasePeriods": []
+      },
+      {
+        "key": "person-temujin-chinggis-khan → person-yisugen",
+        "description": false,
+        "context": true,
+        "phaseTypes": [],
+        "phasePeriods": []
+      },
+      {
+        "key": "person-temujin-chinggis-khan → person-yisui",
+        "description": false,
+        "context": true,
+        "phaseTypes": [],
+        "phasePeriods": []
+      },
+      {
+        "key": "person-temujin-chinggis-khan → person-ibaqa-beki",
+        "description": false,
+        "context": true,
+        "phaseTypes": [],
+        "phasePeriods": []
+      },
+      {
+        "key": "person-temujin-chinggis-khan → person-jamukha",
+        "description": false,
+        "context": false,
+        "phaseTypes": [
+          "close personal / political relationship",
+          "rivalry"
+        ],
+        "phasePeriods": [
+          "earlier phase",
+          "later phase"
+        ]
+      },
+      {
+        "key": "person-temujin-chinggis-khan → person-toghrul-ong-khan",
+        "description": false,
+        "context": false,
+        "phaseTypes": [
+          "alliance / connection",
+          "rupture / conflict"
+        ],
+        "phasePeriods": [
+          "earlier phase"
+        ]
+      },
+      {
+        "key": "person-temujin-chinggis-khan → person-jochi",
+        "description": true,
+        "context": false,
+        "phaseTypes": [],
+        "phasePeriods": []
+      },
+      {
+        "key": "person-temujin-chinggis-khan → person-ogedei-khan",
+        "description": false,
+        "context": false,
+        "phaseTypes": [
+          "father / son",
+          "successor as Great Khan"
+        ],
+        "phasePeriods": [
+          "dynastic relationship"
+        ]
+      },
+      {
+        "key": "person-temujin-chinggis-khan → person-qojin-beki",
+        "description": false,
+        "context": true,
+        "phaseTypes": [],
+        "phasePeriods": []
+      },
+      {
+        "key": "person-borte → person-qojin-beki",
+        "description": false,
+        "context": true,
+        "phaseTypes": [],
+        "phasePeriods": []
+      },
+      {
+        "key": "person-temujin-chinggis-khan → person-checheyigen",
+        "description": false,
+        "context": true,
+        "phaseTypes": [],
+        "phasePeriods": []
+      },
+      {
+        "key": "person-borte → person-checheyigen",
+        "description": false,
+        "context": true,
+        "phaseTypes": [],
+        "phasePeriods": []
+      },
+      {
+        "key": "person-temujin-chinggis-khan → person-alaqa-beki",
+        "description": false,
+        "context": true,
+        "phaseTypes": [],
+        "phasePeriods": []
+      },
+      {
+        "key": "person-borte → person-alaqa-beki",
+        "description": false,
+        "context": true,
+        "phaseTypes": [],
+        "phasePeriods": []
+      },
+      {
+        "key": "person-temujin-chinggis-khan → person-tumelun",
+        "description": false,
+        "context": true,
+        "phaseTypes": [],
+        "phasePeriods": []
+      },
+      {
+        "key": "person-borte → person-tumelun",
+        "description": false,
+        "context": true,
+        "phaseTypes": [],
+        "phasePeriods": []
+      },
+      {
+        "key": "person-temujin-chinggis-khan → person-al-altun",
+        "description": false,
+        "context": true,
+        "phaseTypes": [],
+        "phasePeriods": []
+      },
+      {
+        "key": "person-borte → person-al-altun",
+        "description": false,
+        "context": true,
+        "phaseTypes": [],
+        "phasePeriods": []
+      },
+      {
+        "key": "person-jochi → person-tuqa-timur",
+        "description": true,
+        "context": false,
+        "phaseTypes": [],
+        "phasePeriods": []
+      },
+      {
+        "key": "person-mongke-khan → person-hulegu",
+        "description": false,
+        "context": false,
+        "phaseTypes": [
+          "western campaign commission"
+        ],
+        "phasePeriods": []
+      },
+      {
+        "key": "person-qubilai → person-ariq-boke",
+        "description": false,
+        "context": false,
+        "phaseTypes": [
+          "brothers",
+          "rival claimants"
+        ],
+        "phasePeriods": [
+          "dynastic relationship"
+        ]
+      }
+    ],
+    "treeWithoutRel": [],
+    "publicWithoutRelCount": 46,
+    "publicWithoutRelSample": [
+      "person-kul-tegin",
+      "person-bilge-khagan",
+      "person-yujiulu-shelun",
+      "person-bumin-qaghan",
+      "person-tanshihuai",
+      "person-tayang-khan",
+      "person-senggum",
+      "person-toqtoa-beki",
+      "person-jaqa-gambu",
+      "person-kuchlug",
+      "person-oghul-qaimish",
+      "person-baraq",
+      "person-duwa",
+      "person-qaidu",
+      "person-ghazan",
+      "person-abu-said",
+      "person-phags-pa",
+      "person-rashid-al-din",
+      "person-rabban-bar-sauma",
+      "person-mongke-temur",
+      "person-toqta",
+      "person-kebek",
+      "person-tarmashirin",
+      "person-yelu-chucai"
+    ]
+  },
+  "sources": {
+    "total": 142,
+    "verified": 128,
+    "researched": 14,
+    "draft": 0,
+    "withMnPerspective": 62,
+    "unused": [
+      "source-cambridge-map-mongol-empire-1241",
+      "source-baabar-twentieth-century-mongolia-1999",
+      "source-british-library-mongolian-newspapers-1990-1995"
+    ],
+    "missingMnPerspective": [
+      "source-mongolia-ochirbat-obituary-2025",
+      "source-montsame-government-transfer-2025",
+      "source-fes-mongolia-parties-2021",
+      "source-un-mongolia-peacekeeping",
+      "source-un-mongolia-nuclear-free-2000",
+      "source-mongolian-third-neighbor-scholarship-2021",
+      "source-osce-mongolia-election-2024",
+      "source-ipu-mongolia-election-2024",
+      "source-ot-investment-agreement-sec-2009",
+      "source-erdenes-oyu-tolgoi-timeline",
+      "source-mongolia-constitution-1992",
+      "source-parliament-constitution-history",
+      "source-parliament-constitutional-amendment-2023",
+      "source-world-bank-mongolia-market-economy-1991",
+      "source-world-bank-mongolia-privatization-1992",
+      "source-fish-inner-asian-anomaly-2001",
+      "source-fish-deviant-democracy-2008",
+      "source-mongolia-mfa-third-neighbor",
+      "source-mpp-history-2010",
+      "source-wto-mongolia-accession",
+      "source-imf-mongolia-eff-2017",
+      "source-rashid-al-din-compendium",
+      "source-deweese-islamization-2009",
+      "source-erdeni-yin-tobchi-1662",
+      "source-munkh-erdene-hereditary-divisions-2016",
+      "source-tsultem-zanabazar-art-2015",
+      "source-chuluunbaatar-rogers-women-property-2020",
+      "source-bass-bound-steppe-2021",
+      "source-natsagdorj-bnmau-soyolyn-tuukh-1981",
+      "source-radnaased-collectivization-2025",
+      "source-radchenko-mongolian-politics-sino-soviet-2006",
+      "source-cambridge-oral-history-mongolia",
+      "source-adb-evolution-mongolia-health-system-2023",
+      "source-wickhamsmith-politics-literature-mongolia-2020",
+      "source-shimamura-chinggis-socialism-2019",
+      "source-british-library-mongolian-newspapers-1990-1995"
+    ],
+    "brokenRefs": []
+  },
+  "leftover": {
+    "total": 12,
+    "byKind": {
+      "latin-only": 12
+    },
+    "byRoot": {
+      "chapters": 12
+    },
+    "samples": [
+      {
+        "path": "mn.chapters.records.chapter-1911-independence.sectionPresentation.why-1911-matters.evidenceNote.sourceBasis",
+        "kind": "latin-only",
+        "preview": "Feng, Esherick and Wei; Bawden; Rossabi"
+      },
+      {
+        "path": "mn.chapters.records.chapter-occupation-revolution-1921.sectionPresentation.transformation-not-single-event.evidenceNote.sourceBasis",
+        "kind": "latin-only",
+        "preview": "Bawden, Rossabi, Morozova, and Kaplonski"
+      },
+      {
+        "path": "mn.chapters.records.chapter-mpr-socialist-project.sectionPresentation.crisis-1932.evidenceNote.sourceBasis",
+        "kind": "latin-only",
+        "preview": "Bawden, Rossabi, Morozova, and Kaplonski"
+      },
+      {
+        "path": "mn.chapters.records.chapter-khalkhin-gol-world-war.sectionPresentation.recognition-postwar-position.evidenceNote.sourceBasis",
+        "kind": "latin-only",
+        "preview": "Coox, Bawden, Rossabi, and United Nations records"
+      },
+      {
+        "path": "mn.chapters.records.chapter-late-socialism-democratic-revolution-1990.sectionPresentation.transition-new-era.evidenceNote.sourceBasis",
+        "kind": "latin-only",
+        "preview": "Fish, Rossabi, and Kaplonski"
+      },
+      {
+        "path": "mn.chapters.records.chapter-building-democratic-state-1990-1992.sectionPresentation.constitution-1992.evidenceNote.sourceBasis",
+        "kind": "latin-only",
+        "preview": "Constitution of Mongolia and State Great Hural institutional history"
+      },
+      {
+        "path": "mn.chapters.records.chapter-shock-transition-markets-privatization.sectionPresentation.voucher-privatization.evidenceNote.sourceBasis",
+        "kind": "latin-only",
+        "preview": "Contemporary World Bank program research and later historical interpretation"
+      },
+      {
+        "path": "mn.chapters.records.chapter-democracy-practice-elections-parties.sectionPresentation.transfer-power-1996.evidenceNote.sourceBasis",
+        "kind": "latin-only",
+        "preview": "Mongolian election records and modern democratic-transition scholarship"
+      },
+      {
+        "path": "mn.chapters.records.chapter-new-foreign-policy.sectionPresentation.third-neighbor-idea.evidenceNote.sourceBasis",
+        "kind": "latin-only",
+        "preview": "Mongolian foreign-policy documents and modern scholarship"
+      },
+      {
+        "path": "mn.chapters.records.chapter-mining-growth-natural-resources.sectionPresentation.ownership-investment-state.evidenceNote.sourceBasis",
+        "kind": "latin-only",
+        "preview": "Canonical mining agreements, public records, and modern economic scholarship"
+      },
+      {
+        "path": "mn.chapters.records.chapter-crisis-protest-democratic-resilience.sectionPresentation.state-emergency.evidenceNote.sourceBasis",
+        "kind": "latin-only",
+        "preview": "Item-level contemporary reporting, official records, and human-rights documentation"
+      },
+      {
+        "path": "mn.chapters.records.chapter-changing-society-modern-mongolia.sectionPresentation.dzud-climate-environment.evidenceNote.sourceBasis",
+        "kind": "latin-only",
+        "preview": "Mongolian agricultural and climate-vulnerability research, local mining scholarship, UN synthesis, and a dated urban air-pollution study"
+      }
+    ],
+    "evidenceCodeHits": 0
+  },
+  "events": {
+    "public": 154,
+    "noSources": [
+      "event-naiman-defeat-1204"
+    ]
+  }
+}

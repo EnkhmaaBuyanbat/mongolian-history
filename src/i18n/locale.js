@@ -1,5 +1,3 @@
-import { createContext } from 'react'
-
 export const SUPPORTED_LOCALES = Object.freeze(['en', 'mn'])
 export const DEFAULT_LOCALE = 'en'
 export const LOCALE_STORAGE_KEY = 'mongolian-history-locale'
@@ -22,5 +20,3 @@ export function mergeLocaleValues(base, translated) {
 export function toEvidenceCode(value) {
   return typeof value === 'string' ? value.trim().toUpperCase().replace(/[^A-Z0-9]+/g, '_').replace(/^_|_$/g, '') : ''
 }
-
-export const LocaleContext = createContext(null)

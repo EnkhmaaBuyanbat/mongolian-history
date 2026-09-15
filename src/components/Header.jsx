@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { navItems } from '../data/nav'
 import { useLocale } from '../i18n/useLocale'
+import SearchTrigger from './SearchTrigger'
 
 function isCurrentPath(href, route, placeholder) {
   if (placeholder || !route) return false
@@ -64,29 +65,31 @@ function Header({ route }) {
         <NavLinks labels={navigation} route={route} />
       </nav>
 
-      <details className="nav-drawer">
-        <summary>{navigation.menu}</summary>
-        <nav aria-label={t('common.accessibility.mobileNavigation')}>
-          <NavLinks
-            labels={navigation}
-            route={route}
-            onNavigate={(event) => {
-              event.currentTarget.closest('details')?.removeAttribute('open')
-            }}
-          />
-        </nav>
-      </details>
-
-      <div className="lang-switch" role="group" aria-label={t('common.accessibility.languageControl')}>
-        <button type="button" aria-label={t('common.languages.english')} aria-pressed={locale === 'en'} lang="en" onClick={() => setLocale('en')}>
-          EN
-        </button>
-        <span className="lang-rule" aria-hidden="true">
-          |
-        </span>
-        <button type="button" aria-label={t('common.languages.mongolian')} aria-pressed={locale === 'mn'} lang="mn" onClick={() => setLocale('mn')}>
-          МН
-        </button>
+      <div className="header-tools">
+        <SearchTrigger />
+        <details className="nav-drawer">
+          <summary>{navigation.menu}</summary>
+          <nav aria-label={t('common.accessibility.mobileNavigation')}>
+            <NavLinks
+              labels={navigation}
+              route={route}
+              onNavigate={(event) => {
+                event.currentTarget.closest('details')?.removeAttribute('open')
+              }}
+            />
+          </nav>
+        </details>
+        <div className="lang-switch" role="group" aria-label={t('common.accessibility.languageControl')}>
+          <button type="button" aria-label={t('common.languages.english')} aria-pressed={locale === 'en'} lang="en" onClick={() => setLocale('en')}>
+            EN
+          </button>
+          <span className="lang-rule" aria-hidden="true">
+            |
+          </span>
+          <button type="button" aria-label={t('common.languages.mongolian')} aria-pressed={locale === 'mn'} lang="mn" onClick={() => setLocale('mn')}>
+            МН
+          </button>
+        </div>
       </div>
     </header>
   )

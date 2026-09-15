@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useSyncExternalStore } from 'react'
 import { usePathname } from 'next/navigation'
-import { DEFAULT_LOCALE, isSupportedLocale, LOCALE_STORAGE_KEY, LocaleContext, mergeLocaleValues } from './locale'
+import { DEFAULT_LOCALE, isSupportedLocale, LOCALE_STORAGE_KEY, mergeLocaleValues } from './locale'
+import { LocaleContext } from './localeContext'
 import { translations } from './translations'
 
 const LOCALE_CHANGE_EVENT = 'mongolian-history-locale-change'

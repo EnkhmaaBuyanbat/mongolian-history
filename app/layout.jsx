@@ -1,3 +1,4 @@
+import '../src/search/assertSearchIndex'
 import Providers from './providers'
 
 export const metadata = {
