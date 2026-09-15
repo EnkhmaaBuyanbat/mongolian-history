@@ -29,6 +29,9 @@ export const searchEn = {
     polity: 'Polity',
     culture: 'Culture',
     object: 'Object',
+    organization: 'Organization',
+    company: 'Company',
+    claim: 'Question',
   },
   filters: {
     all: 'All',
@@ -36,6 +39,7 @@ export const searchEn = {
     events: 'Events',
     eras: 'Eras & chapters',
     places: 'Places',
+    institutions: 'Institutions',
     culture: 'Culture',
     evidence: 'Evidence',
   },

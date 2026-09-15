@@ -9,11 +9,14 @@ import { dossierPersonIds } from '../data/personPresentation'
 import { places } from '../data/places'
 import { polities } from '../data/polities'
 import { sites } from '../data/sites'
-import { getChapterHref, getEntityHref, getPersonHref } from '../data/entityRoutes'
+import { organizations } from '../data/organizations'
+import { companies } from '../data/companies'
+import { claims } from '../data/claims'
+import { getChapterHref, getCampaignHref, getClaimHref, getCompanyHref, getEntityHref, getEventHref, getOrganizationHref, getPersonHref } from '../data/entityRoutes'
 import { getLocalizedEntity } from '../data/entityLocalization'
 import { getLocalizedEvent } from '../data/eventLocalization'
 import { getLocalizedPerson } from '../data/personLocalization'
-import { getLocalizedCampaign } from '../data/supportingLocalization'
+import { getLocalizedCampaign, getLocalizedClaim, getLocalizedCompany, getLocalizedOrganization } from '../data/supportingLocalization'
 import { chaptersMn } from '../data/locales/mn/chapters'
 import { cultureEn } from '../data/locales/en/culture'
 import { cultureMn } from '../data/locales/mn/culture'
@@ -22,6 +25,7 @@ import { erasEn } from '../data/locales/en/eras'
 import { erasMn } from '../data/locales/mn/eras'
 import { eventsMn } from '../data/locales/mn/events'
 import { peopleMn } from '../data/locales/mn/people'
+import { supportingEn } from '../data/locales/en/supporting'
 import { supportingMn } from '../data/locales/mn/supporting'
 import { SEARCH_TYPES } from './searchConfig'
 import { normalizeSearchText, parsePeriodBounds, uniqueTexts } from './normalizeSearchText'
@@ -45,11 +49,6 @@ function joinSearchText(values) {
 
 function titleForms(title) {
   return compact(String(title ?? '').split(/\s*\/\s*/))
-}
-
-function getEraRoute(eraId) {
-  const era = eras.find((item) => item.id === eraId)
-  return era ? `/eras/${era.slug ?? era.id}` : '/timeline'
 }
 
 function makeRecord({
@@ -204,7 +203,7 @@ function buildEventRecords() {
     return makeRecord({
       id: event.id,
       type: SEARCH_TYPES.event,
-      route: getEraRoute(event.eraId),
+      route: getEventHref(event),
       canonicalTitle: event.title,
       localizedTitle: localized.title,
       summary: event.summary || '',
@@ -228,7 +227,7 @@ function buildCampaignRecords() {
     return makeRecord({
       id: campaign.id,
       type: SEARCH_TYPES.campaign,
-      route: getEraRoute(events.find((event) => campaign.events?.includes(event.id))?.eraId),
+      route: getCampaignHref(campaign),
       canonicalTitle: campaign.title,
       localizedTitle: localized.title,
       summary: campaign.summary || '',
@@ -291,6 +290,79 @@ function buildCultureRecords() {
   })
 }
 
+function buildOrganizationRecords() {
+  return organizations.filter((record) => isVisitorPublic(record) && (record.status === 'researched' || record.status === 'verified')).map((record) => {
+    const localized = getLocalizedOrganization(record, supportingMn)
+    const english = getLocalizedOrganization(record, supportingEn)
+    return makeRecord({
+      id: record.id,
+      type: SEARCH_TYPES.organization,
+      route: getOrganizationHref(record),
+      canonicalTitle: record.title,
+      localizedTitle: localized.title,
+      aliases: record.alternativeNames,
+      localizedAliases: localized.alternativeNames,
+      summary: record.summary || '',
+      localizedSummary: localized.summary || record.summary || '',
+      role: english.type || record.type || '',
+      localizedRole: localized.type || record.type || '',
+      period: record.period || '',
+      localizedPeriod: localized.period || record.period || '',
+      eraIds: eraIdsFrom(record),
+      startYear: record.startYear ?? null,
+      endYear: record.endYear ?? null,
+      keywords: [record.type, ...(record.nameHistory ?? []).map((item) => item.title)],
+      depth: 'reference',
+    })
+  }).filter((record) => record.route)
+}
+
+function buildCompanyRecords() {
+  return companies.filter((record) => isVisitorPublic(record) && (record.status === 'researched' || record.status === 'verified')).map((record) => {
+    const localized = getLocalizedCompany(record, supportingMn)
+    const english = getLocalizedCompany(record, supportingEn)
+    return makeRecord({
+      id: record.id,
+      type: SEARCH_TYPES.company,
+      route: getCompanyHref(record),
+      canonicalTitle: record.title,
+      localizedTitle: localized.title,
+      aliases: record.alternativeNames,
+      localizedAliases: localized.alternativeNames,
+      summary: record.summary || '',
+      localizedSummary: localized.summary || record.summary || '',
+      role: english.companyType || record.companyType || '',
+      localizedRole: localized.companyType || record.companyType || '',
+      period: record.period || '',
+      localizedPeriod: localized.period || record.period || '',
+      eraIds: eraIdsFrom(record),
+      startYear: record.foundedYear ?? record.startYear ?? null,
+      endYear: record.endYear ?? null,
+      keywords: [record.companyType, ...(record.ownershipHistory ?? []).map((item) => item.period)],
+      depth: 'reference',
+    })
+  }).filter((record) => record.route)
+}
+
+function buildClaimRecords() {
+  return claims.filter(isVisitorPublic).map((claim) => {
+    const localized = getLocalizedClaim(claim, supportingMn)
+    return makeRecord({
+      id: claim.id,
+      type: SEARCH_TYPES.claim,
+      route: getClaimHref(claim),
+      canonicalTitle: claim.title,
+      localizedTitle: localized.title,
+      summary: claim.text || '',
+      localizedSummary: localized.text || claim.text || '',
+      role: claim.treatment || '',
+      localizedRole: localized.treatment || claim.treatment || '',
+      keywords: [claim.treatment],
+      depth: 'reference',
+    })
+  }).filter((record) => record.route)
+}
+
 let cachedIndex = null
 
 export function buildSearchIndex() {
@@ -305,6 +377,9 @@ export function buildSearchIndex() {
     ...buildEntityRecords(sites, SEARCH_TYPES.site),
     ...buildEntityRecords(objects, SEARCH_TYPES.object),
     ...buildCultureRecords(),
+    ...buildOrganizationRecords(),
+    ...buildCompanyRecords(),
+    ...buildClaimRecords(),
   ]
 
   return Object.freeze(records.map((record) => Object.freeze(record)))

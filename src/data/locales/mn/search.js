@@ -29,6 +29,9 @@ export const searchMn = {
     polity: 'Улс төрийн ертөнц',
     culture: 'Соёл',
     object: 'Эд өлөг',
+    organization: 'Байгууллага',
+    company: 'Компани',
+    claim: 'Асуулт',
   },
   filters: {
     all: 'Бүгд',
@@ -36,6 +39,7 @@ export const searchMn = {
     events: 'Үйл явдал',
     eras: 'Үе ба бүлэг',
     places: 'Газрууд',
+    institutions: 'Байгууллага, компани',
     culture: 'Соёл',
     evidence: 'Баримт',
   },

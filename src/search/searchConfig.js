@@ -9,6 +9,9 @@ export const SEARCH_TYPES = Object.freeze({
   site: 'site',
   object: 'object',
   culture: 'culture',
+  organization: 'organization',
+  company: 'company',
+  claim: 'claim',
 })
 
 export const SEARCH_FILTERS = Object.freeze([
@@ -17,8 +20,9 @@ export const SEARCH_FILTERS = Object.freeze([
   { id: 'events', types: ['event', 'campaign'] },
   { id: 'eras', types: ['era', 'chapter'] },
   { id: 'places', types: ['place', 'site', 'polity'] },
+  { id: 'institutions', types: ['organization', 'company'] },
   { id: 'culture', types: ['culture'] },
-  { id: 'evidence', types: ['object'] },
+  { id: 'evidence', types: ['object', 'claim'] },
 ])
 
 export const SEARCH_GROUP_ORDER = Object.freeze([
@@ -30,8 +34,11 @@ export const SEARCH_GROUP_ORDER = Object.freeze([
   'place',
   'site',
   'polity',
+  'organization',
+  'company',
   'culture',
   'object',
+  'claim',
 ])
 
 export const SEARCH_OVERLAY_LIMIT = 8

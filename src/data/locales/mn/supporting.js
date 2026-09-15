@@ -6,7 +6,7 @@ import { sourcesMn } from './sources'
 
 export const supportingMn = {
   ui: {
-    campaign: 'Аян', organization: 'Байгууллага', company: 'Компани', route: 'ЧИГЛЭЛ', historicalContext: 'Түүхэн нөхцөл', relatedEvents: 'Холбогдох үйл явдлууд', relatedPeople: 'Холбогдох хүмүүс',
+    campaign: 'Аян', organization: 'Байгууллага', company: 'Компани', claim: 'Асуулт', route: 'ЧИГЛЭЛ', historicalContext: 'Түүхэн нөхцөл', relatedEvents: 'Холбогдох үйл явдлууд', relatedPeople: 'Холбогдох хүмүүс', relatedPlaces: 'Холбогдох газрууд', relatedClaims: 'Холбогдох асуултууд', relatedOrganizations: 'Холбогдох байгууллагууд', relatedCompanies: 'Холбогдох компаниуд', relatedChapters: 'Холбогдох бүлгүүд', relatedHistory: 'Холбоотой түүх', continueExploring: 'Цааш судлах', alsoKnownAs: 'Өөр нэр', nameHistory: 'Нэрийн түүх', ownershipHistory: 'Өмчлөлийн түүх', evidenceCaution: 'Баримтын анхааруулга', sources: 'Эх сурвалж', furtherReading: 'Нэмж унших', treatment: 'Түүхэн тайлбар', notFound: 'Энэ бүртгэл одоогоор нээлттэй биш байна.', returnHome: 'Нүүр хуудас руу буцах',
   },
   campaigns: {
     records: campaignsMn,

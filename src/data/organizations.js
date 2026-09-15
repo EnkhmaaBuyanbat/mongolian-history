@@ -1,4 +1,4 @@
-/** Canonical non-polity organizations. Detail-page UI is intentionally deferred. */
+/** Canonical non-polity organizations. */
 export const organizationStatusOptions = ['draft', 'researched', 'verified']
 
 export const organizationTypeOptions = [

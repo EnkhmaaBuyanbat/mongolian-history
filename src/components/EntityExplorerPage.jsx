@@ -1,6 +1,8 @@
 import { chapters } from '../data/chapters'
 import { campaigns } from '../data/campaigns'
 import { claims } from '../data/claims'
+import { companies } from '../data/companies'
+import { organizations } from '../data/organizations'
 import { eras } from '../data/eras'
 import { events } from '../data/events'
 import { objects } from '../data/objects'
@@ -16,7 +18,7 @@ import SourcePerspective from './SourcePerspective'
 import { getLocalizedEntity } from '../data/entityLocalization'
 import { getLocalizedEvent } from '../data/eventLocalization'
 import { getLocalizedPerson } from '../data/personLocalization'
-import { getLocalizedCampaign, getLocalizedClaim, mergePresentationList } from '../data/supportingLocalization'
+import { getLocalizedCampaign, getLocalizedClaim, getLocalizedCompany, getLocalizedOrganization, mergePresentationList } from '../data/supportingLocalization'
 import { useLocale } from '../i18n/useLocale'
 import { mergeLocaleValues } from '../i18n/locale'
 
@@ -27,6 +29,8 @@ const entityCollections = [
   { label: 'Sites', records: sites },
   { label: 'Objects / Monuments', records: objects },
   { label: 'Events', records: events },
+  { label: 'Organizations', records: organizations },
+  { label: 'Companies', records: companies },
 ]
 
 function references(record, entityId) {
@@ -37,6 +41,10 @@ function references(record, entityId) {
     record.places,
     record.sites,
     record.objects,
+    record.relatedPlaceIds,
+    record.relatedPlaces,
+    record.relatedOrganizationIds,
+    record.relatedCompanyIds,
   ]
   return fields.some((ids) => ids?.includes(entityId))
 }
@@ -71,10 +79,16 @@ function EntityExplorerPage({ entity }) {
   const localizeRelated = (record) => {
     if (record.id.startsWith('person-')) return getLocalizedPerson(record, peopleLocale)
     if (record.id.startsWith('event-')) return getLocalizedEvent(record, eventLocale)
+    if (record.id.startsWith('organization-')) return getLocalizedOrganization(record, localeSection('supporting'))
+    if (record.id.startsWith('company-')) return getLocalizedCompany(record, localeSection('supporting'))
     return getLocalizedEntity(record, entityLocale)
   }
 
-  const directIds = new Set(entity.relatedEntityIds ?? [])
+  const directIds = new Set([
+    ...(entity.relatedEntityIds ?? []),
+    ...(entity.companyIds ?? []),
+    ...(entity.organizationIds ?? []),
+  ])
   const connectingEvents = events.filter(
     (event) => directIds.has(event.id) || references(event, entity.id),
   )
@@ -97,6 +111,9 @@ function EntityExplorerPage({ entity }) {
       chapter.relatedPlaceIds,
       chapter.relatedSiteIds,
       chapter.relatedObjectIds,
+      chapter.organizationIds,
+      chapter.companyIds,
+      chapter.claimIds,
     ]
     return fields.some((ids) => ids?.includes(entity.id))
       || chapter.sections?.some((section) => section.relatedEntityIds?.includes(entity.id))
@@ -249,7 +266,7 @@ function EntityExplorerPage({ entity }) {
             <div className="entity-section-heading"><p className="section-label">{ui.connectedHistory}</p><h2>{ui.relatedRecords}</h2></div>
             {relatedGroups.map((group) => (
               <div key={group.label} className="explorer-related-group">
-                <h3>{ui[{ People: 'people', 'Political Worlds': 'politicalWorlds', Places: 'places', Sites: 'sites', 'Objects / Monuments': 'objectsMonuments', Events: 'events' }[group.label]]}</h3>
+                <h3>{ui[{ People: 'people', 'Political Worlds': 'politicalWorlds', Places: 'places', Sites: 'sites', 'Objects / Monuments': 'objectsMonuments', Events: 'events', Organizations: 'organizations', Companies: 'companies' }[group.label]]}</h3>
                 <div className="chapter-record-grid">
                   {group.records.map((record) => {
                     const localized = localizeRelated(record)

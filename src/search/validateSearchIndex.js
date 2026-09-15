@@ -8,6 +8,9 @@ import { people } from '../data/people'
 import { places } from '../data/places'
 import { polities } from '../data/polities'
 import { sites } from '../data/sites'
+import { organizations } from '../data/organizations'
+import { companies } from '../data/companies'
+import { claims } from '../data/claims'
 import { getSearchIndex, getSearchIndexCounts } from './buildSearchIndex'
 import { SEARCH_TYPES } from './searchConfig'
 
@@ -20,7 +23,10 @@ const ROUTE_PATTERNS = [
   /^\/sites\/[a-z0-9-]+$/i,
   /^\/objects\/[a-z0-9-]+$/i,
   /^\/culture\/[a-z0-9-]+$/i,
-  /^\/timeline$/,
+  /^\/organizations\/[a-z0-9-]+$/i,
+  /^\/companies\/[a-z0-9-]+$/i,
+  /^\/claims\/[a-z0-9-]+$/i,
+  /^\/timeline(?:\?[a-z0-9%=._&-]+)?$/i,
 ]
 
 function isValidRoute(route) {
@@ -75,6 +81,9 @@ function runSearchIndexValidation(index) {
     site: expectedPublicCount(sites, (record) => record.status === 'researched' || record.status === 'verified'),
     object: expectedPublicCount(objects, (record) => record.status === 'researched' || record.status === 'verified'),
     culture: cultureTopics.length,
+    organization: expectedPublicCount(organizations, (record) => record.status === 'researched' || record.status === 'verified'),
+    company: expectedPublicCount(companies, (record) => record.status === 'researched' || record.status === 'verified'),
+    claim: expectedPublicCount(claims),
   }
 
   Object.entries(expected).forEach(([type, count]) => {

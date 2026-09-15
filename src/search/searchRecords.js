@@ -14,6 +14,9 @@ const TYPE_TIE = {
   chapter: 3,
   culture: 2,
   object: 2,
+  organization: 4,
+  company: 4,
+  claim: 2,
   campaign: 1,
   event: 1,
 }

@@ -76,8 +76,8 @@ export function validateLocalization({ bundles, supportedLocales, cultureTopicId
     const requiredSearch = ['trigger', 'ariaLabel', 'placeholder', 'shortcutMac', 'shortcutWin', 'close', 'filterLabel', 'resultsLabel', 'showingTop', 'explore', 'exploreLead', 'recent', 'clearRecent', 'viewAll', 'noResults', 'noResultsHint', 'resultsFor', 'resultCount', 'emptyTitle', 'emptyLead', 'eraLabel', 'hintMove', 'hintOpen', 'hintClose']
     requiredSearch.forEach((key) => { if (!bundle?.search?.[key]) errors.push(`Missing required ${locale} search key: search.${key}`) })
     ;['people', 'eras', 'places', 'culture'].forEach((key) => { if (!bundle?.search?.categories?.[key]) errors.push(`Missing required ${locale} search category: search.categories.${key}`) })
-    ;['person', 'event', 'campaign', 'era', 'chapter', 'place', 'site', 'polity', 'culture', 'object'].forEach((key) => { if (!bundle?.search?.types?.[key]) errors.push(`Missing required ${locale} search type: search.types.${key}`) })
-    ;['all', 'people', 'events', 'eras', 'places', 'culture', 'evidence'].forEach((key) => { if (!bundle?.search?.filters?.[key]) errors.push(`Missing required ${locale} search filter: search.filters.${key}`) })
+    ;['person', 'event', 'campaign', 'era', 'chapter', 'place', 'site', 'polity', 'culture', 'object', 'organization', 'company', 'claim'].forEach((key) => { if (!bundle?.search?.types?.[key]) errors.push(`Missing required ${locale} search type: search.types.${key}`) })
+    ;['all', 'people', 'events', 'eras', 'places', 'institutions', 'culture', 'evidence'].forEach((key) => { if (!bundle?.search?.filters?.[key]) errors.push(`Missing required ${locale} search filter: search.filters.${key}`) })
     ;['people', 'eras', 'timeline', 'culture', 'familyTree', 'places'].forEach((key) => { if (!bundle?.search?.links?.[key]) errors.push(`Missing required ${locale} search link: search.links.${key}`) })
     const about = bundle?.about
     aboutEvidenceConceptCodes?.forEach((code) => {

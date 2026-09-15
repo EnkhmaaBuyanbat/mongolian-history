@@ -1,4 +1,4 @@
-/** Canonical commercial and state-commercial entities. Company detail UI is deferred. */
+/** Canonical commercial and state-commercial entities. */
 export const companyTypeOptions = [
   'PRIVATE_COMPANY',
   'STATE_OWNED_ENTERPRISE',
