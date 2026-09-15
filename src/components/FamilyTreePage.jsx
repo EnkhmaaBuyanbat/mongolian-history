@@ -1,8 +1,11 @@
+'use client'
+
+import { Suspense } from 'react'
 import FamilyTree from './FamilyTree'
 import { MeanderLine } from './Ornament'
 import { useLocale } from '../i18n/useLocale'
 
-function FamilyTreePage() {
+function FamilyTreePage({ initialPerson = '' }) {
   const { localeSection } = useLocale()
   const copy = localeSection('familyTree')
   const ui = copy.ui
@@ -21,7 +24,9 @@ function FamilyTreePage() {
         <div className="section-inner family-tree-section-inner">
           <div className="family-tree-intro"><div><p className="section-label">{ui.exhibit}</p><h2>{ui.exhibitTitle}</h2></div><p>{ui.exhibitIntro}</p></div>
           <div className="family-tree-legend" aria-label={ui.legend}><span className="jochid">{branches.JOCHID}</span><span className="chagataid">{branches.CHAGATAID}</span><span className="ogedeid">{branches.OGEDEID}</span><span className="toluid">{branches.TOLUID}</span><i>{ui.marriage}</i><b>{ui.parentChild}</b></div>
-          <FamilyTree />
+          <Suspense fallback={<div className="family-tree-exhibit" aria-hidden="true" />}>
+            <FamilyTree initialPerson={initialPerson} />
+          </Suspense>
         </div>
       </section>
     </article>

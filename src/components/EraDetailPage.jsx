@@ -44,10 +44,12 @@ function EraDetailPage({ era }) {
   const eventLocale = localeSection('events')
   const entityLocale = localeSection('entities')
   const peopleLocale = localeSection('people')
-  const presentation = localizedRecord('eras', era.id, era)
   const recordsByGroup = useMemo(
-    () =>
-      Object.fromEntries(
+    () => {
+      if (!era) {
+        return Object.fromEntries(entityGroups.map((group) => [group.key, []]))
+      }
+      return Object.fromEntries(
         entityGroups.map((group) => [
           group.key,
           sortChronologically(
@@ -56,10 +58,16 @@ function EraDetailPage({ era }) {
             ),
           ),
         ]),
-      ),
+      )
+    },
     [era],
   )
 
+  if (!era) {
+    return null
+  }
+
+  const presentation = localizedRecord('eras', era.id, era)
   const eraChapters = era.chapterIds
     .map((chapterId) => chapters.find((chapter) => chapter.id === chapterId))
     .filter(Boolean)
@@ -79,10 +87,6 @@ function EraDetailPage({ era }) {
     { label: ui.viewTimeline, href: '/timeline' },
     { label: ui.viewPeople, href: '/people' },
   ].filter(Boolean)
-
-  if (!era) {
-    return null
-  }
 
   return (
     <article className="era-detail-page">

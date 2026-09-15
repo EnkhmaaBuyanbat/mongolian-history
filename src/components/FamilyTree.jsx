@@ -1,4 +1,7 @@
+'use client'
+
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { people } from '../data/people'
 import { personRelationships } from '../data/personRelationships'
 import { sources } from '../data/sources'
@@ -47,6 +50,22 @@ const compactNodeIds = new Set([
   ...householdGroups.otherConsorts,
   ...householdGroups.daughters,
 ])
+const DEFAULT_TREE_PERSON_ID = 'person-sorghaghtani-beki'
+
+function firstParam(value) {
+  if (Array.isArray(value)) return value[0] ?? ''
+  return value ?? ''
+}
+
+function treePersonIdFromSlug(slug) {
+  if (!slug) return null
+  const person = people.find((item) => treePersonIds.includes(item.id) && getPersonSlug(item) === slug)
+  return person?.id ?? null
+}
+
+function familyTreeHref(slug) {
+  return slug ? `/family-tree?person=${encodeURIComponent(slug)}` : '/family-tree'
+}
 
 function relationshipKind(relationship) {
   if (relationship.type === 'spouse') return 'spouse'
@@ -93,7 +112,9 @@ function getFamily(person, familyEdges, treePeople) {
   return { parents, spouses, children }
 }
 
-function FamilyTree() {
+function FamilyTree({ initialPerson = '' }) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const { localeSection } = useLocale()
   const peopleLocale = localeSection('people')
   const familyLocale = localeSection('familyTree')
@@ -109,7 +130,9 @@ function FamilyTree() {
   }))
   const coveredParentEdges = new Set(familyUnits.flatMap((unit) => unit.children.flatMap((childId) => [`${unit.couple.personId}-${childId}`,`${unit.couple.relatedPersonId}-${childId}`])))
   const singleParentEdges = parentEdges.filter((edge) => { const pair=getParentChildIds(edge); return pair && !coveredParentEdges.has(`${pair.parentId}-${pair.childId}`) })
-  const [selectedId, setSelectedId] = useState('person-sorghaghtani-beki')
+  const requestedSlug = firstParam(searchParams.get('person')) || initialPerson
+  const requestedId = treePersonIdFromSlug(requestedSlug)
+  const selectedId = requestedId ?? DEFAULT_TREE_PERSON_ID
   const [expandedBranch, setExpandedBranch] = useState(null)
   const [eraScope, setEraScope] = useState('all')
   const canvasScrollRef = useRef(null)
@@ -118,25 +141,14 @@ function FamilyTree() {
   const selectedFamily = getFamily(selectedPerson, familyEdges, treePeople)
   const selectedSourceIds = new Set([...(selectedPerson.sourceRefs ?? []), ...(selectedPerson.characterAndReputation?.traits ?? []).flatMap((trait) => trait.sourceIds ?? [])])
   const selectedSources = sources.filter((source) => selectedSourceIds.has(source.id))
-  const selectPerson = (personId, { updateHistory = true } = {}) => {
-    setSelectedId(personId)
-    if (!updateHistory) return
-    const person = treePeople.find((item) => item.id === personId)
+  const selectPerson = (personId) => {
+    if (!treePersonIds.includes(personId)) return
+    const person = people.find((item) => item.id === personId)
     if (!person) return
-    const url = new URL(window.location.href)
-    url.searchParams.set('person', getPersonSlug(person))
-    window.history.pushState({}, '', `${url.pathname}${url.search}`)
+    const slug = getPersonSlug(person)
+    if (requestedId === personId && requestedSlug === slug) return
+    router.push(familyTreeHref(slug), { scroll: false })
   }
-  useEffect(() => {
-    const restoreSelection = () => {
-      const slug = new URLSearchParams(window.location.search).get('person')
-      const nextId = treePeople.find((person) => getPersonSlug(person) === slug)?.id
-      if (nextId) setSelectedId(nextId)
-    }
-    restoreSelection()
-    window.addEventListener('popstate', restoreSelection)
-    return () => window.removeEventListener('popstate', restoreSelection)
-  }, [treePeople])
   useEffect(() => {
     const scroller = canvasScrollRef.current
     const node = scroller?.querySelector('.family-tree-node.is-selected')
