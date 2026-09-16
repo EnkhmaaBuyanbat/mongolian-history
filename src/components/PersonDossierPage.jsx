@@ -66,8 +66,11 @@ function PersonDossierPage({ person }) {
 
       <Section number="01" label={ui.overview} title={ui.lifeRole}>
         {story?.introduction?.map((paragraph) => <p key={paragraph} className="entity-copy">{paragraph}</p>)}
-        {!story && displayPerson.shortBio ? <p className="entity-copy">{displayPerson.shortBio}</p> : null}
-        {displayPerson.biographySections?.length ? <div className="person-dossier-narrative">{displayPerson.biographySections.map((section) => <article key={section.id}><h3>{section.title}</h3>{section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}{section.callout ? <aside><ConfidenceBadge label={section.callout.confidence} /><strong>{section.callout.label}</strong><p>{section.callout.text}</p></aside> : null}</article>)}</div> : null}
+        {!story && displayPerson.shortBio && !displayPerson.biographySections?.length ? <p className="entity-copy">{displayPerson.shortBio}</p> : null}
+        {displayPerson.biographySections?.length ? <div className="person-dossier-narrative">
+          {displayPerson.biographySections.length > 7 ? <nav className="person-dossier-contents" aria-label={ui.onThisLifeAria}><p className="section-label">{ui.onThisLife}</p><ol>{displayPerson.biographySections.map((section) => <li key={section.id}><a href={`#${section.id}`}>{section.title}</a></li>)}</ol></nav> : null}
+          {displayPerson.biographySections.map((section) => <article key={section.id} id={section.id}>{section.number ? <p className="section-label">{section.number}</p> : null}<h3>{section.title}</h3>{section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}{section.callout ? <aside><ConfidenceBadge label={section.callout.confidence} /><strong>{section.callout.label}</strong><p>{section.callout.text}</p></aside> : null}</article>)}
+        </div> : null}
       </Section>
 
       {(presentation.eras.length || presentation.polities.length || personChapters.length) ? <Section number="02" label={ui.historicalContext} title={ui.worldAround} alt><div className="person-dossier-links">{presentation.eras.map((era) => { const localized=localizedRecord('eras',era.id,era); return <a key={era.id} href={`/eras/${era.slug ?? era.id}`}><span>{ui.era} {era.numeral}</span><strong>{localized.title}</strong></a> })}{presentation.polities.map((polity) => <a key={polity.id} href={getEntityHref(polity)}><span>{ui.politicalWorld}</span><strong>{getLocalizedEntity(polity, entityLocale).title}</strong></a>)}{personChapters.slice(0, 4).map((chapter) => { const localized=localizedRecord('chapters',chapter.id,chapter); return <a key={chapter.id} href={getChapterHref(chapter)}><span>{ui.chapter} {chapter.number}</span><strong>{localized.title}</strong></a> })}</div></Section> : null}

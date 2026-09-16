@@ -3,6 +3,11 @@
  * Demonstrates the structure for people and figures without inventing historical facts.
  */
 
+import { applyPeopleBiographyOverlays, peopleBiographyOverlaysEraI_II } from './peopleBiographyOverlaysEraI-II.js'
+import { peopleBiographyOverlaysEraIII_IV } from './peopleBiographyOverlaysEraIII-IV.js'
+import { peopleBiographyOverlaysEraV_VI } from './peopleBiographyOverlaysEraV-VI.js'
+import { peopleBiographyOverlaysEraVII_VIII } from './peopleBiographyOverlaysEraVII-VIII.js'
+
 export const peopleStatusOptions = ['draft', 'researched', 'verified']
 
 const noReliablePortrait = {
@@ -303,7 +308,216 @@ export const people = [
     relatedEntityIds: ['person-modu-chanyu'],
     sourceRefs: ['source-oxford-xiongnu'],
   },
-  { id:'person-temujin-chinggis-khan',slug:'temujin-chinggis-khan',title:'Temüjin / Chinggis Khan',profileType:'story',role:'Founder and ruler of the expanding Mongol imperial order',period:'born c. 1160s (date debated)–1227',eraId:'before-chinggis',eraIds:['before-chinggis','rise-empire'],status:'verified',dynasticBranch:null,shortBio:'Temüjin became Chinggis Khan and the central ruler of the imperial order recognized in 1206. With Börte, he stands at the head of the four principal branches represented in this first family-tree group. The expanding empire depended on many commanders, political actors and incorporated elites.',portrait:noReliablePortrait,summary:'Temüjin entered a complex political world, became the central leader of the reorganization recognized in 1206, and ruled an expanding Eurasian empire until his death in 1227. Expansion depended on many commanders, political actors and incorporated elites and was not inevitable.',relatedEntityIds:['polity-mongol-groupings','polity-emerging-mongol-order','polity-yeke-mongol-ulus','event-birth-temujin-debated','event-kereit-defeat-1203','event-naiman-defeat-1204','event-new-mongol-order-1206','event-chinggis-death-1227','place-burkhan-khaldun'],sourceRefs:['source-secret-history-mongols','source-derachewiltz-secret-history-2006','source-atwood-secret-history-2023','source-dunnell-rise-chinggis-2023','source-munkh-erdene-chinggisid-dynasty-2018','source-unesco-burkhan-khaldun'],biographySections:[{id:'temujin-world',number:'02',title:'The World He Entered',paragraphs:['Temüjin did not create political organization from nothing, and his eventual dominance was not inevitable.']},{id:'temujin-source',number:'03',title:'Family and Early Source Traditions',paragraphs:['The Secret History reports detailed scenes from Temüjin’s early life. These remain medieval narrative accounts rather than independently verified transcripts.'],callout:{label:'Source Account',text:'Narrative traditions require critical treatment rather than presentation as eyewitness transcripts.',confidence:'SOURCE ACCOUNT'}},{id:'temujin-coalition',number:'04',title:'Building a Political Coalition',paragraphs:['His coalition developed through changing alliances, rivalries and political realignments.']},{id:'temujin-turning-points',number:'05',title:'1203–1204',paragraphs:['Kereit and Naiman defeats changed political power without making their communities disappear.']},{id:'temujin-1206',number:'06',title:'1206 and the Imperial Phase',paragraphs:['After recognition as Chinggis Khan, he led an expanding imperial order through political organization, delegated command and incorporation of diverse elites. He did not personally command every campaign.']},{id:'temujin-evidence',number:'07',title:'How Do We Know This?',paragraphs:['The Secret History supplies the major native narrative tradition; modern translations, Persian historiography and modern scholarship help assess its accounts and place them in a wider political context.']}] },
+  {
+    id: 'person-temujin-chinggis-khan',
+    slug: 'temujin-chinggis-khan',
+    title: 'Temüjin / Chinggis Khan',
+    profileType: 'biography',
+    role: 'Founder and ruler of the expanding Mongol imperial order',
+    period: 'born c. 1160s (date debated)–1227',
+    eraId: 'before-chinggis',
+    eraIds: ['before-chinggis', 'rise-empire'],
+    status: 'verified',
+    dynasticBranch: null,
+    shortBio: 'Temüjin became Chinggis Khan and the central ruler of the imperial order recognized in 1206. With Börte he stands at the head of the four principal Chinggisid branches. The expanding empire depended on many commanders, political actors and incorporated elites; it was not the work of one person acting alone.',
+    portrait: noReliablePortrait,
+    summary: 'Temüjin entered an already organized twelfth-century political world, became the central leader of the reorganization recognized in 1206, and ruled an expanding Eurasian imperial order until his death in 1227. Expansion depended on many commanders, political actors and incorporated elites and was not inevitable.',
+    relatedEntityIds: [
+      'polity-mongol-groupings',
+      'polity-emerging-mongol-order',
+      'polity-yeke-mongol-ulus',
+      'event-birth-temujin-debated',
+      'event-jamukha-gur-khan-1201',
+      'event-kereit-defeat-1203',
+      'event-naiman-defeat-1204',
+      'event-new-mongol-order-1206',
+      'event-chinggis-death-1227',
+      'place-burkhan-khaldun',
+    ],
+    sourceRefs: [
+      'source-secret-history-mongols',
+      'source-derachewiltz-secret-history-2006',
+      'source-atwood-secret-history-2023',
+      'source-dunnell-rise-chinggis-2023',
+      'source-munkh-erdene-chinggisid-dynasty-2018',
+      'source-cambridge-inner-asia-c1200',
+      'source-juvaini-world-conqueror',
+      'source-boyle-world-conqueror-1958',
+      'source-unesco-burkhan-khaldun',
+    ],
+    characterAndReputation: {
+      overview: 'Medieval sources present Temüjin through political narrative, dynastic tradition and, in the Secret History, a native epic-chronicle voice. Those portrayals are evidence for how he was remembered and argued about; they are not a modern psychological portrait.',
+      traits: [
+        {
+          label: 'Secret History representation',
+          treatment: 'SOURCE_ACCOUNT',
+          summary: 'The Secret History preserves scenes, speeches and judgements about Temüjin within a medieval narrative tradition. That literary portrayal is not converted here into an objective personality diagnosis.',
+          sourceIds: ['source-secret-history-mongols', 'source-derachewiltz-secret-history-2006', 'source-atwood-secret-history-2023'],
+        },
+        {
+          label: 'Coalition politics',
+          treatment: 'INTERPRETED',
+          summary: 'Modern historical synthesis places his rise in changing alliances and elite incorporation, not in a destined career.',
+          sourceIds: ['source-dunnell-rise-chinggis-2023', 'source-munkh-erdene-chinggisid-dynasty-2018'],
+        },
+        {
+          label: 'Imperial organization',
+          treatment: 'INTERPRETED',
+          summary: 'After 1206 much of the expanding empire was governed through household authority, assemblies and delegated command rather than by his personal presence on every campaign.',
+          sourceIds: ['source-dunnell-rise-chinggis-2023'],
+        },
+      ],
+      caution: 'Court narrative, later dynastic compilation and modern commemoration all shape Temüjin’s reputation. None of those layers should be treated as a window onto private motives or an inner life.',
+    },
+    biographySections: [
+      {
+        id: 'temujin-world',
+        number: '02',
+        title: 'The World He Entered',
+        paragraphs: [
+          'Temüjin entered a world of households, lineages, coalitions and neighbouring imperial powers. He did not create political organization from nothing, and Mongol groupings already existed before the reorganization of 1206.',
+          'The twelfth-century eastern steppe contained several organized political communities. Kereit, Naiman, Merkit, Tatar and Mongol groupings competed, cooperated and formed alliances in a landscape also shaped by Jin and Qara Khitai. These were not modern nation-states.',
+          'His later dominance was not predetermined. 1206 was not the first appearance of Mongols, and it was not the beginning of steppe history.',
+        ],
+      },
+      {
+        id: 'temujin-source',
+        number: '03',
+        title: 'The Secret History and Early Life',
+        paragraphs: [
+          'Temüjin was born around the 1160s. The precise year remains debated.',
+          'The Secret History of the Mongols is the major native narrative for his family and early life. It identifies Yesügei as his father, Hö’elün as his mother, and Börte as his wife and principal spouse. Those identifications are kept here as source-based dynastic relationships.',
+          'The same narrative reports detailed early-life scenes, including Börte’s capture by a Merkit group and recovery by an allied force. The broad episode can be used cautiously. Precise chronology, motives, dialogue and routes are not reconstructed here.',
+        ],
+        callout: {
+          label: 'How to Read the Secret History',
+          text: 'The Secret History is indispensable, but it is a medieval epic chronicle rather than an eyewitness transcript. Narrative detail and modern reconstruction must remain distinct.',
+          confidence: 'SOURCE ACCOUNT',
+        },
+      },
+      {
+        id: 'temujin-relationships',
+        number: '04',
+        title: 'Relationships That Changed',
+        paragraphs: [
+          'Temüjin, Jamukha and Toghrul each had political agency of their own. Their relationships changed, and none of them should be frozen as hero, villain or helper.',
+          'Medieval narrative describes an earlier close personal and political relationship between Temüjin and Jamukha, which later became rivalry. The closeness belongs to the source account; the later rivalry is a historical reading of changing coalition politics.',
+          'Toghrul was a major Kereit ruler with interests independent of Temüjin. Sources describe an earlier political connection and later cooperation, then rupture and conflict in 1203.',
+          'Börte was Temüjin’s wife and principal spouse in the emerging imperial household.',
+        ],
+      },
+      {
+        id: 'temujin-turning-points',
+        number: '05',
+        title: '1201–1204',
+        paragraphs: [
+          'Temüjin’s coalition grew through changing alliances and, over time, the incorporation of elites from defeated communities. Dominance on the eastern steppe was an outcome of that process, not a starting point.',
+          'In the Secret History’s source-based chronology, Jamukha was elevated as Gür Khan in 1201 amid competing coalitions. That date is a chronological marker in the narrative, not an independently verified transcript of the ceremony.',
+          'In 1203 the relationship with Toghrul ended in rupture and conflict associated with the defeat of Kereit political power. This was a major transformation. It does not mean that Kereit people disappeared.',
+          'In 1204 a major Naiman defeat changed the balance of power on the eastern steppe. Naiman people did not become extinct. Resistance and political realignment continued around 1204–1205. These events prepared the setting for 1206; they did not make that assembly inevitable.',
+        ],
+      },
+      {
+        id: 'temujin-1206',
+        number: '06',
+        title: '1206: Recognition and a New Order',
+        paragraphs: [
+          'In 1206 an assembly recognized Temüjin as Chinggis Khan within a major political reorganization. Medieval sources describe this gathering as an assembly, often called a quriltai. It should not be imagined as a modern constitutional convention.',
+          'What changed was political organization and leadership. Populations did not suddenly appear, and Mongol groupings already had histories before this date.',
+          'The new order grew from earlier coalitions, rivalries and institutions rather than from a political vacuum. It was neither inevitable nor a uniform modern state.',
+        ],
+        callout: {
+          label: 'What 1206 Was Not',
+          text: '1206 was a political reorganization. It was not the beginning of Mongolian history and not the moment Mongols first appeared.',
+          confidence: 'ESTABLISHED / INTERPRETED',
+        },
+      },
+      {
+        id: 'temujin-order',
+        number: '07',
+        title: 'Household, Command and Imperial Organization',
+        paragraphs: [
+          'After 1206 Chinggis Khan led an expanding imperial project in which household authority, assemblies, elite incorporation and military organization were interwoven. This was not a force in which every person had one identical role.',
+          'Commanders such as Muqali, Jebe and Subutai show that he did not personally command every campaign. Delegated command was part of imperial government.',
+          'Claims to imperial authority developed alongside expansion. The evidence does not support treating the so-called Great Yassa as one surviving fixed written law code.',
+        ],
+      },
+      {
+        id: 'temujin-east',
+        number: '08',
+        title: 'Western Xia and Jin',
+        paragraphs: [
+          'Relations with Western Xia and the Jurchen Jin unfolded as a sequence of political and military phases, not as a single uninterrupted conquest.',
+          'In 1209 Western Xia accepted a tributary or subordinate relationship after Mongol campaigning. The relationship remained politically contingent.',
+          'Major war with Jin began in 1211. Mongol forces captured Zhongdu in 1215 amid coercion and destruction, but Jin political power continued. Chinggis Khan did not live to see Jin’s final defeat, which came in 1234 under Ögedei.',
+          'Muqali held major responsibility in the war against Jin. The eastern war was a long, delegated process.',
+        ],
+      },
+      {
+        id: 'temujin-west',
+        number: '09',
+        title: 'The Empire Turns West',
+        paragraphs: [
+          'Around 1218 Jebe’s campaign ended Kuchlug’s rule and brought the former Qara Khitai domain under Mongol control. That was delegated imperial command, not a personal march by Chinggis Khan along a reconstructed route.',
+          'The Otrar crisis of 1218 formed an important stage in the breakdown between the Mongol and Khwarazmian imperial worlds. Narrative details and causal emphasis vary by source. Otrar is not a complete one-cause explanation for the war.',
+          'Invasion of the Khwarazmian Empire began in 1219. The 1220 campaign phase against Bukhara and Samarkand brought conquest, coercion, destruction and displacement. In 1221 the struggle for Urgench involved destructive warfare and command tensions among Jochi, Chagatai and Ögedei.',
+          'Medieval narratives report extremely large casualty totals. Those figures tell us what the accounts claim. They are not independently verified population counts.',
+          'From 1221 to 1223 Jebe and Subutai led an extended western expedition through several political regions and defeated a coalition of Rus’ princes and Cuman allies at the Kalka River in 1223. The expedition is not reconstructed here as a precise line of march, and Chinggis Khan is not placed on that campaign in person.',
+        ],
+        callout: {
+          label: 'Source Reports and Causation',
+          text: 'Persian historiography preserves crucial narrative evidence for the western war. Its causal stories and casualty totals require critical treatment.',
+          confidence: 'SOURCE ACCOUNT / INTERPRETED',
+        },
+      },
+      {
+        id: 'temujin-household',
+        number: '10',
+        title: 'Family, Household and Succession',
+        paragraphs: [
+          'Börte and their four principal sons — Jochi, Chagatai, Ögedei and Tolui — anchored the dynastic structure later remembered through the Chinggisid branches. Later independent khanate boundaries should not be read back onto that household during Chinggis Khan’s lifetime.',
+          'The Secret History also attests a wider household, including Qulan Khatun, Yisüi and Yisügen, and daughters in the dynastic tradition. Ibaqa Beki appears in a changing household and remarriage narrative. Kölgen is identified as a son of Chinggis Khan and Qulan Khatun; he did not found one of the four principal branches. Specific marriages and offices for the daughters are not assigned here.',
+          'Medieval narrative preserves a controversy concerning Jochi’s parentage within dynastic politics. The father–son relationship is kept in the Chinggisid order; the controversy is not treated as biological proof of a different father.',
+          'After Chinggis Khan’s death, supreme authority required dynastic negotiation and recognition rather than automatic modern-style inheritance. That process belongs to 1227–1229.',
+        ],
+        callout: {
+          label: 'A Dynastic Dispute',
+          text: 'The Secret History’s controversy over Jochi is a source-dependent political dispute, not a modern paternity finding.',
+          confidence: 'SOURCE ACCOUNT',
+        },
+      },
+      {
+        id: 'temujin-death',
+        number: '11',
+        title: 'Death in 1227',
+        paragraphs: [
+          'Chinggis Khan died in 1227 during the final Western Xia campaign. That setting is established. Surviving accounts differ on the circumstances, and no single dramatic scene is reconstructed here.',
+          'Tolui then governed as regent from 1227 to 1229. Ögedei was recognized as Great Khan in 1229. Dynastic branches existed, but later successor-state independence should not be read back into 1227.',
+        ],
+      },
+      {
+        id: 'temujin-legacy',
+        number: '12',
+        title: 'Why Chinggis Khan Matters',
+        paragraphs: [
+          'Temüjin’s historical importance lies in the political transformation of the early thirteenth century: the reorganization recognized in 1206 and the expanding imperial order that followed. He stands at a turning point in Mongol imperial history, not at the beginning of the Mongolian past, and not as the sole author of every later Chinggisid state.',
+          'That transformation involved many people. Commanders, household members, incorporated elites and rival leaders all belong in the history. Reducing the period to a single conqueror’s will distorts the evidence.',
+        ],
+      },
+      {
+        id: 'temujin-evidence',
+        number: '13',
+        title: 'How We Know This',
+        paragraphs: [
+          'The Secret History supplies the major native narrative for family, early life and the politics of the rise. Modern translations and commentary by de Rachewiltz and Atwood are used to read that tradition critically. Burkhan Khaldun belongs to a later sacred-landscape record associated with this historical world; it is not a portrait, and it does not prove undocumented childhood episodes.',
+          'Dunnell’s synthesis of the united empire from 1206 to 1260 supports the imperial chronology, delegated command and succession process. Munkh-Erdene and the Cambridge Inner Asian chapter support the plural twelfth-century political world and changing relationships.',
+          'Juvayni, in Boyle’s English translation, preserves a medieval Persian conquest narrative for the western war. It reports, rather than independently verifies, details of escalation and casualty totals.',
+          'No reliable contemporary portrait is documented. Visual reconstructions of a kind of steppe world are not Temüjin’s face.',
+        ],
+      },
+    ],
+  },
+
   { id:'person-borte',slug:'borte',title:'Börte',profileType:'biography',role:'Principal spouse of Chinggis Khan and mother within the imperial household',eraId:'before-chinggis',eraIds:['before-chinggis','rise-empire'],status:'verified',dynasticBranch:null,shortBio:'Börte was Temüjin’s wife and principal spouse and an important figure within the emerging imperial household. Dynastic tradition identifies Jochi, Chagatai, Ögedei and Tolui as their four principal sons. The account of her capture and recovery remains source-dependent.',portrait:noReliablePortrait,summary:'Börte was Temüjin’s wife and principal spouse and is connected in the dynastic tradition to their four principal sons: Jochi, Chagatai, Ögedei and Tolui. The capture and recovery episode remains source-dependent.',relatedEntityIds:['person-temujin-chinggis-khan','polity-merkit','polity-yeke-mongol-ulus'],sourceRefs:['source-secret-history-mongols','source-derachewiltz-secret-history-2006','source-atwood-secret-history-2023','source-dunnell-rise-chinggis-2023'] },
   { id:'person-qulan-khatun',slug:'qulan-khatun',title:'Qulan Khatun',alternativeNames:['Khulan'],profileType:'biography',role:'Wife within Chinggis Khan’s imperial household',eraId:'rise-empire',status:'verified',dynasticBranch:null,shortBio:'Qulan appears in the medieval narrative tradition as a wife of Chinggis Khan within the expanded imperial household. The current source layer supports her household position more securely than a detailed independent biography or exact chronology.',householdContext:{role:'WIFE_KHATUN',associatedPeopleOrPolityIds:['person-temujin-chinggis-khan','polity-merkit'],summary:'Her record belongs to the wider household created through conquest and political incorporation; exact institutional responsibilities are not reconstructed.',sourceIds:['source-secret-history-mongols','source-derachewiltz-secret-history-2006']},portrait:noReliablePortrait,summary:'Qulan Khatun is retained as a source-attested member of Chinggis Khan’s wider household.',relatedEntityIds:['person-temujin-chinggis-khan','polity-merkit'],sourceRefs:['source-secret-history-mongols','source-derachewiltz-secret-history-2006'] },
   { id:'person-yisugen',slug:'yisugen',title:'Yisügen',alternativeNames:['Yesügen','Yesugen'],profileType:'biography',role:'Consort within Chinggis Khan’s imperial household',eraId:'rise-empire',status:'verified',dynasticBranch:null,shortBio:'Yisügen appears in the Secret History as a consort of Chinggis Khan in the context of the defeat and incorporation of Tatar elites. Her presence helps show that the imperial household extended beyond Börte’s principal line, while her precise household rank is left cautious.',householdContext:{role:'CONSORT',associatedPeopleOrPolityIds:['person-temujin-chinggis-khan','person-yisui','polity-tatar'],summary:'The narrative places her household relationship within a conquest and incorporation context rather than an equivalent principal-wife status.',sourceIds:['source-secret-history-mongols','source-derachewiltz-secret-history-2006']},portrait:noReliablePortrait,summary:'Yisügen is represented as a source-attested consort whose exact household status should not be flattened into a modern category.',relatedEntityIds:['person-temujin-chinggis-khan','person-yisui','polity-tatar'],sourceRefs:['source-secret-history-mongols','source-derachewiltz-secret-history-2006'] },
@@ -411,3 +625,8 @@ export const people = [
   {id:'person-khurelsukh',slug:'ukhnaagiin-khurelsukh',title:'Ukhnaagiin Khürelsükh',alternativeNames:['U. Khürelsükh'],profileType:'biography',role:'Prime minister and president',historicalRole:'MPP leader and head of state in twenty-first-century Mongolia',period:'born 1968',eraId:'modern',eraIds:['modern'],status:'researched',shortBio:'Khürelsükh served as prime minister and became president during a period of constitutional, party, and parliamentary change.',majorActions:['Served as prime minister','Elected president in 2021'],portrait:noReliablePortrait,summary:'A current political figure included only for documented institutional significance.',relatedEntityIds:['event-constitutional-amendments-2019','event-parliamentary-election-2024','organization-mpp-mprp'],relatedOrganizations:['organization-mpp-mprp'],sourceRefs:['source-gec-election-history','source-mongolia-constitution-1992'],evidenceCaution:'Living person: no character judgment, motive speculation, or unadjudicated allegation is included.'},
   {id:'person-oyun-erdene',slug:'luvsannamsrain-oyun-erdene',title:'Luvsannamsrain Oyun-Erdene',alternativeNames:['L. Oyun-Erdene'],profileType:'biography',role:'Prime minister, 2021–2025',historicalRole:'Head of government during pandemic-era recovery, mining negotiations, and parliamentary reform',period:'born 1980',eraId:'modern',eraIds:['modern'],status:'researched',shortBio:'Oyun-Erdene served as prime minister from 2021 to 2025, including during the 2022 Oyu Tolgoi reset, underground-production milestone, and implementation of the expanded parliamentary system.',majorActions:['Led the government during the 2022 Oyu Tolgoi agreement','Served during implementation of the 2023 parliamentary amendment'],portrait:noReliablePortrait,summary:'A contemporary political figure included for documented institutional and mining-policy milestones.',relatedEntityIds:['event-oyu-tolgoi-reset-2022','event-oyu-tolgoi-underground-2023','event-parliamentary-election-2024','organization-mpp-mprp'],relatedOrganizations:['organization-mpp-mprp'],sourceRefs:['source-rio-tinto-oyu-tolgoi-2024','source-parliament-constitutional-amendment-2023','source-montsame-government-transfer-2025'],evidenceCaution:'Living person: company and government accounts are attributed; no claim of motive, character, or settled policy success is made.'},
 ]
+
+applyPeopleBiographyOverlays(people, peopleBiographyOverlaysEraI_II)
+applyPeopleBiographyOverlays(people, peopleBiographyOverlaysEraIII_IV)
+applyPeopleBiographyOverlays(people, peopleBiographyOverlaysEraV_VI)
+applyPeopleBiographyOverlays(people, peopleBiographyOverlaysEraVII_VIII)

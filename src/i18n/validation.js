@@ -491,6 +491,12 @@ export function validateLocalization({ bundles, supportedLocales, cultureTopicId
       if (person[field] && !record?.[field]?.trim()) errors.push(`Missing MN public person ${field}: ${person.id}`)
     })
     forbiddenPersonLocaleKeys.forEach((field) => { if (field in (record ?? {})) errors.push(`Forbidden canonical field in MN person locale: ${person.id}.${field}`) })
+    ;(person.biographySections ?? []).forEach((section) => {
+      const translated = record?.biographySections?.[section.id]
+      if (!translated?.title?.trim()) errors.push(`Missing MN biography section: ${person.id}.${section.id}`)
+      if ((translated?.paragraphs?.length ?? 0) !== (section.paragraphs?.length ?? 0)) errors.push(`MN biography paragraph count mismatch: ${person.id}.${section.id}`)
+      if (section.callout && (!translated?.callout?.label?.trim() || !translated?.callout?.text?.trim())) errors.push(`Missing MN biography callout: ${person.id}.${section.id}`)
+    })
   })
   const canonicalTargets = people.filter((person) => dossierPersonIds.has(person.id) && ['ancient-steppe','before-chinggis'].includes(person.eraId))
   if (canonicalTargets.length !== 10 || canonicalTargets.some((person) => !eraI_IIDossierPersonIds.includes(person.id)) || eraI_IIDossierPersonIds.some((id) => !canonicalTargets.some((person) => person.id === id))) errors.push('Era I/II dossier localization target set does not match the canonical dossier allow-list.')
@@ -527,6 +533,11 @@ export function validateLocalization({ bundles, supportedLocales, cultureTopicId
     if (!record?.role?.trim()) errors.push(`Missing MN Era III/IV dossier role: ${person.id}`)
     if (!(record?.summary ?? record?.shortBio)?.trim()) errors.push(`Missing MN Era III/IV dossier summary: ${person.id}`)
     if (!(record?.periodDisplay ?? record?.period)?.trim()) errors.push(`Missing MN Era III/IV dossier period: ${person.id}`)
+    ;(person.biographySections ?? []).forEach((section) => {
+      const translated = record?.biographySections?.[section.id]
+      if (!translated?.title?.trim()) errors.push(`Missing MN Era III/IV dossier section: ${person.id}.${section.id}`)
+      if ((translated?.paragraphs?.length ?? 0) !== (section.paragraphs?.length ?? 0)) errors.push(`MN Era III/IV dossier paragraph count mismatch: ${person.id}.${section.id}`)
+    })
     const canonicalSectionIds = (person.biographySections ?? []).map((section) => section.id)
     Object.keys(record?.biographySections ?? {}).forEach((sectionId) => { if (!canonicalSectionIds.includes(sectionId)) errors.push(`Unknown MN Era III/IV dossier section: ${person.id}.${sectionId}`) })
     if (person.characterAndReputation) {

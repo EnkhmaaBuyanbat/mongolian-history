@@ -4258,9 +4258,14 @@ a.timeline-record:focus-visible {
 
 .person-dossier-page .cinematic-page-header.has-designed-fallback { min-height: min(72svh, 720px); }
 .person-dossier-section .entity-copy + .entity-copy { margin-top: 1rem; }
-.person-dossier-narrative { display: grid; gap: 1.2rem; margin-top: 2rem; }
-.person-dossier-narrative > article { padding: 1.2rem; border-left: 1px solid var(--bronze); background: rgba(20,15,12,.5); }
+.person-dossier-narrative { display: grid; gap: 1.6rem; margin-top: 2rem; }
+.person-dossier-narrative > article { padding: 1.2rem; border-left: 1px solid var(--bronze); background: rgba(20,15,12,.5); scroll-margin-top: 5.5rem; }
+.person-dossier-narrative .section-label { margin: 0 0 .35rem; }
 .person-dossier-narrative h3 { margin: 0 0 .7rem; color: var(--parchment); font-family: var(--serif); font-size: 1.25rem; font-weight: 400; }.person-dossier-narrative p { color: var(--muted); line-height: 1.75; }.person-dossier-narrative aside { margin-top: 1rem; padding: .9rem; border: 1px solid var(--line); }
+.person-dossier-contents { padding: 1rem 1.1rem; border: 1px solid var(--line); background: rgba(10,9,8,.45); }
+.person-dossier-contents ol { display: flex; flex-wrap: wrap; gap: .35rem .85rem; margin: .55rem 0 0; padding: 0; list-style: none; }
+.person-dossier-contents a { color: var(--gold); font-size: .95rem; line-height: 1.45; text-decoration: none; }
+.person-dossier-contents a:hover, .person-dossier-contents a:focus-visible { text-decoration: underline; outline: none; }
 .person-dossier-links { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .75rem; }
 .person-dossier-links a { display: grid; gap: .4rem; min-height: 7rem; padding: 1rem; border: 1px solid var(--line); color: var(--parchment); text-decoration: none; }.person-dossier-links a:hover,.person-dossier-links a:focus-visible { border-color: var(--gold); outline: none; }.person-dossier-links span { color: var(--bronze); font-size: .58rem; letter-spacing: .13em; text-transform: uppercase; }.person-dossier-links strong { font-family: var(--serif); font-weight: 400; }
 .person-relationship-visual { padding: 1.2rem; border: 1px solid var(--line); background: radial-gradient(circle at 50% 0,rgba(183,138,58,.1),transparent 42%),rgba(10,9,8,.62); }
@@ -4514,6 +4519,7 @@ a.timeline-record:focus-visible {
     margin-bottom: 0.7rem;
   }
   .person-dossier-links { grid-template-columns: 1fr; }
+  .person-dossier-contents ol { display: grid; gap: .45rem; }
   .person-relationship-visual { padding: .8rem; }
   .person-relationship-nodes { grid-template-columns: 1fr; border-top: 0; }
   .person-relationship-nodes a { min-height: 0; border-left-color: var(--bronze); }
