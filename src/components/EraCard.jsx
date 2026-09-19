@@ -20,7 +20,7 @@ function EraCard({ era, actionLabel, variant = 'catalog' }) {
       <h3>{presentation.title}</h3>
       <p>{context}</p>
       <a
-        href={`/eras/${era.id}`}
+        href={`/eras/${era.slug ?? era.id}`}
         className="era-explore"
         aria-label={`${exploreLabel} ${presentation.title}`}
       >

@@ -1,9 +1,24 @@
 export const SUPPORTED_LOCALES = Object.freeze(['en', 'mn'])
 export const DEFAULT_LOCALE = 'en'
 export const LOCALE_STORAGE_KEY = 'mongolian-history-locale'
+export const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365
 
 export function isSupportedLocale(value) {
   return SUPPORTED_LOCALES.includes(value)
+}
+
+export function resolveLocale(value) {
+  return isSupportedLocale(value) ? value : DEFAULT_LOCALE
+}
+
+export function persistLocalePreference(nextLocale) {
+  if (typeof window === 'undefined' || !isSupportedLocale(nextLocale)) return
+  try {
+    window.localStorage.setItem(LOCALE_STORAGE_KEY, nextLocale)
+  } catch {
+    /* Preference remains active for this session. */
+  }
+  document.cookie = `${LOCALE_STORAGE_KEY}=${nextLocale}; Path=/; Max-Age=${LOCALE_COOKIE_MAX_AGE}; SameSite=Lax`
 }
 
 const isObject = (value) => value && typeof value === 'object' && !Array.isArray(value)

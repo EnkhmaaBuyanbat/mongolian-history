@@ -1,4 +1,7 @@
+'use client'
+
 import { useMemo, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { people } from '../data/people'
 import { eras } from '../data/eras'
 import { dossierPersonIds, getPersonPresentation, getRoleCategory } from '../data/personPresentation'
@@ -12,8 +15,10 @@ function PeopleIndexPage() {
   const { localeSection, localizedRecord } = useLocale()
   const peopleLocale = localeSection('people')
   const ui = peopleLocale.ui
+  const searchParams = useSearchParams()
+  const eraFromQuery = searchParams.get('era')
   const [query, setQuery] = useState('')
-  const [eraId, setEraId] = useState('all')
+  const [eraId, setEraId] = useState(() => (eras.some((era) => era.id === eraFromQuery) ? eraFromQuery : 'all'))
   const [branch, setBranch] = useState('all')
   const [roleCategory, setRoleCategory] = useState('all')
   const [polityId, setPolityId] = useState('all')

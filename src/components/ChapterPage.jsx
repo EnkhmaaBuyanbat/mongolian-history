@@ -1,4 +1,6 @@
-import { useMemo, useState } from 'react'
+'use client'
+
+import { useEffect, useMemo, useState } from 'react'
 import { events } from '../data/events'
 import { people } from '../data/people'
 import { places } from '../data/places'
@@ -18,7 +20,7 @@ import ChapterNav from './ChapterNav'
 import ChapterSection from './ChapterSection'
 import HistoricalMedia from './HistoricalMedia'
 import { MeanderLine } from './Ornament'
-import { getChapterHref, getEntityHref } from '../data/entityRoutes'
+import { getChapterHref, getEntityHref, getTimelineHref } from '../data/entityRoutes'
 import { getChapterHeaderFallback, getChapterHeaderVisual } from '../data/pageVisualResolvers'
 import CinematicPageHeader from './CinematicPageHeader'
 import { getEraWorld } from '../data/eraWorlds'
@@ -30,7 +32,7 @@ import { mergeLocaleValues } from '../i18n/locale'
 import { getLocalizedEntity } from '../data/entityLocalization'
 import { getLocalizedPerson } from '../data/personLocalization'
 import { getLocalizedEducationalVisual } from '../data/educationalVisualLocalization'
-import { getLocalizedCampaign, getLocalizedOrganization, getLocalizedCompany, getLocalizedClaim, mergePresentationList } from '../data/supportingLocalization'
+import { getLocalizedCampaign, getLocalizedOrganization, getLocalizedCompany, getLocalizedClaim, getLocalizedSource, mergePresentationList } from '../data/supportingLocalization'
 
 const sectionLabels = {
   'origins-and-context': 'Origins and Context',
@@ -76,6 +78,7 @@ function ChapterPage({ chapter }) {
   const peopleLocale = localeSection('people')
   const supportingLocale = localeSection('supporting')
   const presentation = localizedRecord('chapters', chapter.id, chapter)
+  const [activeSectionId, setActiveSectionId] = useState(chapter.sections?.[0]?.id ?? chapter.sectionIds?.[0] ?? null)
   const [selectedSiteId, setSelectedSiteId] = useState(
     chapter.sections?.find((section) => section.mapSlot?.siteIds?.length)?.mapSlot.siteIds[0],
   )
@@ -91,6 +94,22 @@ function ChapterPage({ chapter }) {
           evidenceCases: section.evidenceCases
             ? mergePresentationList(section.evidenceCases, sectionPresentation?.evidenceCases)
             : section.evidenceCases,
+          questions: section.questions
+            ? mergePresentationList(section.questions, sectionPresentation?.questions)
+            : section.questions,
+          callouts: section.callouts
+            ? mergePresentationList(section.callouts, sectionPresentation?.callouts)
+            : section.callouts,
+          continuation: section.continuation
+            ? {
+                ...section.continuation,
+                ...sectionPresentation?.continuation,
+                href: section.continuation.href,
+                status: section.continuation.status,
+                title: sectionPresentation?.continuation?.title ?? section.continuation.title,
+                text: sectionPresentation?.continuation?.text ?? section.continuation.text,
+              }
+            : section.continuation,
           relationsVisual: section.relationsVisual
             ? {
                 ...mergeLocaleValues(section.relationsVisual, { ...sectionPresentation?.relationsVisual, nodes: undefined }),
@@ -110,7 +129,44 @@ function ChapterPage({ chapter }) {
         period: '',
         paragraphs: [],
       }))
-  const chapterSources = sources.filter((source) => chapter.sourceIds?.includes(source.id))
+  const sectionIds = chapterSections.map((section) => section.id).join('|')
+  useEffect(() => {
+    const ids = sectionIds.split('|').filter(Boolean)
+    const syncFromHash = () => {
+      const hashId = window.location.hash.replace('#', '')
+      if (ids.includes(hashId)) setActiveSectionId(hashId)
+    }
+    syncFromHash()
+    const updateActiveFromScroll = () => {
+      const nodes = ids.map((id) => document.getElementById(id)).filter(Boolean)
+      if (!nodes.length) return
+      const bandTop = window.innerHeight * 0.22
+      let current = nodes[0]
+      nodes.forEach((node) => {
+        if (node.getBoundingClientRect().top <= bandTop) current = node
+      })
+      if (current?.id) setActiveSectionId(current.id)
+    }
+    const observer = new IntersectionObserver(updateActiveFromScroll, {
+      rootMargin: '-10% 0px -55% 0px',
+      threshold: [0, 0.15, 0.4, 0.7, 1],
+    })
+    ids.forEach((id) => {
+      const node = document.getElementById(id)
+      if (node) observer.observe(node)
+    })
+    window.addEventListener('hashchange', syncFromHash)
+    window.addEventListener('scroll', updateActiveFromScroll, { passive: true })
+    updateActiveFromScroll()
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('hashchange', syncFromHash)
+      window.removeEventListener('scroll', updateActiveFromScroll)
+    }
+  }, [chapter.id, sectionIds])
+  const chapterSources = sources
+    .filter((source) => chapter.sourceIds?.includes(source.id))
+    .map((source) => getLocalizedSource(source, supportingLocale))
   const chapterCampaigns = campaigns
     .filter((campaign) => chapter.campaignIds?.includes(campaign.id))
     .map((campaign) => getLocalizedCampaign(campaign, supportingLocale))
@@ -152,23 +208,31 @@ function ChapterPage({ chapter }) {
         subtitle={presentation.subtitle}
         period={presentation.period}
         summary={presentation.summary}
+        actions={[
+          { label: ui.viewTimeline, href: getTimelineHref({ eraId: chapter.eraId, eventId: chapter.relatedEventIds?.[0] }) },
+          { label: ui.viewPeople, href: `/people?era=${chapter.eraId}` },
+        ]}
         dataAttributes={{ 'data-era-id': chapter.eraId, 'data-chapter-id': chapter.id }}
       >
           <MeanderLine className="entity-meander" />
       </CinematicPageHeader>
 
       <div className="chapter-main">
-        <div className="section-inner chapter-layout">
-          <div className="chapter-content">
+        <div className={`section-inner chapter-layout${primaryVisual ? ' has-visual' : ''}`}>
             <section className="chapter-introduction">
               <p className="section-label">{ui.introduction}</p>
               <h2>{presentation.introTitle ?? polityPresentation?.title ?? presentation.title}</h2>
               <p>{presentation.intro || presentation.summary || polityPresentation?.summary || ui.narrativeInResearch}</p>
             </section>
 
-            <ChapterEducationalVisual assignment={primaryVisual} />
+            {primaryVisual ? (
+              <aside className="chapter-visual-column">
+                <ChapterEducationalVisual assignment={primaryVisual} />
+              </aside>
+            ) : null}
 
-            <ChapterNav sections={chapterSections} />
+            <div className="chapter-content">
+            <ChapterNav sections={chapterSections} activeSectionId={activeSectionId} />
 
             {chapterCampaigns.length ? (
               <section className="chapter-related">
@@ -225,10 +289,13 @@ function ChapterPage({ chapter }) {
                                     ? getLocalizedClaim(canonicalRecord, supportingLocale)
                                   : canonicalRecord
                         const href = getEntityHref(record)
+                        const meta = record.dateDisplay ?? record.periodDisplay ?? record.period ?? record.type ?? record.companyType
+                        const blurb = record.summary ?? record.shortBio ?? record.role
                         const card = (
                           <article className="chapter-record-card">
                           <strong>{record.title}</strong>
-                          {(record.type ?? record.companyType) ? <small>{record.type ?? record.companyType}</small> : null}
+                          {meta ? <small>{meta}</small> : null}
+                          {blurb ? <p>{blurb}</p> : null}
                           {!href ? <small>{ui.referenceOnly}</small> : null}
                           </article>
                         )
@@ -249,8 +316,8 @@ function ChapterPage({ chapter }) {
               <ul className="chapter-source-list">
                 {chapterSources.map((source) => (
                   <li key={source.id}>
-                    <strong>{source.title}</strong>
-                    <span>{source.institution}</span>
+                    {source.url ? <a href={source.url} target="_blank" rel="noopener noreferrer"><strong>{source.title}</strong></a> : <strong>{source.title}</strong>}
+                    <span>{[source.institution, source.year].filter(Boolean).join(' · ')}</span>
                   </li>
                 ))}
               </ul>

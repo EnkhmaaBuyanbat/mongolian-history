@@ -7,9 +7,9 @@ import '@/index.css'
 import '@/App.css'
 import '@/homepage.css'
 
-export default function Providers({ children }) {
+export default function Providers({ children, initialLocale }) {
   return (
-    <LocaleProvider>
+    <LocaleProvider initialLocale={initialLocale}>
       <ClientNav>
         <SiteShell>{children}</SiteShell>
       </ClientNav>

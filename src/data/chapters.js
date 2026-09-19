@@ -1,3 +1,5 @@
+import { applyChapterLearnOverlays } from './chapterLearnOverlays.js'
+
 export const chapters = [
   {
     id: 'chapter-bronze-age-steppe',
@@ -1867,3 +1869,5 @@ for (const chapter of chapters) {
     chapter.sections = eraViiiSections
   }
 }
+
+applyChapterLearnOverlays(chapters)

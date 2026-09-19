@@ -1,5 +1,7 @@
+import { cookies } from 'next/headers'
 import '../src/search/assertSearchIndex'
 import Providers from './providers'
+import { LOCALE_STORAGE_KEY, resolveLocale } from '../src/i18n/locale'
 
 export const metadata = {
   title: 'Mongolian History · From the Ancient Steppe to the Modern Nation',
@@ -7,9 +9,12 @@ export const metadata = {
   icons: { icon: '/favicon.svg' },
 }
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const cookieStore = await cookies()
+  const locale = resolveLocale(cookieStore.get(LOCALE_STORAGE_KEY)?.value)
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -19,7 +24,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
-        <Providers>{children}</Providers>
+        <Providers initialLocale={locale}>{children}</Providers>
       </body>
     </html>
   )

@@ -82,7 +82,7 @@ export const media = [
     attribution: 'Jonashtand / Wikimedia Commons, CC BY-SA 4.0',
     accessDate: '8 September 2026',
     relatedEraIds: ['ancient-steppe'],
-    relatedChapterIds: [],
+    relatedChapterIds: ['chapter-uyghur-khaganate'],
     relatedPlaceIds: ['place-orkhon-valley'],
     sourceRefs: ['source-unesco-orkhon-valley'],
     historicalContext: 'The landscape connects monuments, settlements, pastoral use, and successive political worlds rather than illustrating one isolated event.',

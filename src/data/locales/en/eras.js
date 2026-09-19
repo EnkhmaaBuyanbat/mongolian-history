@@ -4,6 +4,7 @@ export const erasEn = {
     exploreChapter: 'Explore Chapter', comingSoon: 'Coming Soon', eraTimeline: 'Era Timeline', majorRecords: 'Major dated records', noMajorRecords: 'No major dated records are currently linked to this era.',
     previousEra: 'Previous Era', nextEra: 'Next Era', explore: 'Explore', allEras: 'All Eras', eraNavigation: 'Era navigation',
     politicalWorlds: 'Political Worlds', people: 'People', events: 'Events', places: 'Places', archaeologySites: 'Archaeology & Sites', monumentsObjects: 'Monuments & Objects',
+    howToRead: 'How to read this era', eraPhases: 'Political phases', readingCaution: 'Reading caution', historicalCautions: 'What this era is not',
   },
   records: {
     'ancient-steppe': {
@@ -37,7 +38,8 @@ export const erasEn = {
     },
     'revolution-socialist': {
       title: 'Revolution & Socialist Mongolia', period: '1911 – 1990',
-      description: 'Independence, revolution, and the socialist state of the twentieth century.',
+      subtitle: 'Independence, contested sovereignty, revolution, and the socialist state.',
+      description: 'How did the 1911 rupture, the Bogd Khanate, the 1921 transformation, and the Mongolian People’s Republic reshape government, society, religion, and Mongolia’s place among larger powers—without treating any single year as the whole story?',
     },
     modern: {
       title: 'Democratic & Modern Mongolia', period: '1990 – Present',

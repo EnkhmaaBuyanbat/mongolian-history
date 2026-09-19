@@ -2,15 +2,20 @@
 
 import { useCallback, useEffect, useMemo, useSyncExternalStore } from 'react'
 import { usePathname } from 'next/navigation'
-import { DEFAULT_LOCALE, isSupportedLocale, LOCALE_STORAGE_KEY, mergeLocaleValues } from './locale'
+import { DEFAULT_LOCALE, isSupportedLocale, LOCALE_STORAGE_KEY, mergeLocaleValues, persistLocalePreference, resolveLocale } from './locale'
 import { LocaleContext } from './localeContext'
 import { translations } from './translations'
 
 const LOCALE_CHANGE_EVENT = 'mongolian-history-locale-change'
 
+function readCookieLocale() {
+  const match = document.cookie.match(new RegExp(`(?:^|; )${LOCALE_STORAGE_KEY}=([^;]*)`))
+  return match ? decodeURIComponent(match[1]) : null
+}
+
 function readStoredLocale() {
   try {
-    const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY)
+    const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY) || readCookieLocale()
     return isSupportedLocale(stored) ? stored : DEFAULT_LOCALE
   } catch {
     return DEFAULT_LOCALE
@@ -30,22 +35,16 @@ function subscribeLocale(onStoreChange) {
   }
 }
 
-function getServerLocale() {
-  return DEFAULT_LOCALE
-}
-
 function persistLocale(nextLocale) {
-  try {
-    window.localStorage.setItem(LOCALE_STORAGE_KEY, nextLocale)
-  } catch {
-    /* Preference remains active for this session. */
-  }
+  persistLocalePreference(nextLocale)
   window.dispatchEvent(new Event(LOCALE_CHANGE_EVENT))
 }
 
-function LocaleProvider({ children }) {
+function LocaleProvider({ children, initialLocale = DEFAULT_LOCALE }) {
   const pathname = usePathname()
-  const locale = useSyncExternalStore(subscribeLocale, readStoredLocale, getServerLocale)
+  const serverLocale = resolveLocale(initialLocale)
+  const getServerSnapshot = useCallback(() => serverLocale, [serverLocale])
+  const locale = useSyncExternalStore(subscribeLocale, readStoredLocale, getServerSnapshot)
   const bundle = useMemo(() => mergeLocaleValues(translations.en, translations[locale]), [locale])
   const setLocale = useCallback((nextLocale) => {
     if (!isSupportedLocale(nextLocale) || nextLocale === locale) return

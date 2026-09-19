@@ -148,11 +148,11 @@ export default function SearchOverlay({ onClose }) {
             aria-label={copy.ariaLabel}
           />
           <div className="lang-switch search-locale-switch" role="group" aria-label={t('common.accessibility.languageControl')}>
-            <button type="button" aria-label={t('common.languages.english')} aria-pressed={locale === 'en'} lang="en" onClick={() => setLocale('en')}>
+            <button type="button" aria-label={t('common.languages.english')} aria-pressed={locale === 'en'} data-locale="en" onClick={() => setLocale('en')}>
               EN
             </button>
             <span className="lang-rule" aria-hidden="true">|</span>
-            <button type="button" aria-label={t('common.languages.mongolian')} aria-pressed={locale === 'mn'} lang="mn" onClick={() => setLocale('mn')}>
+            <button type="button" aria-label={t('common.languages.mongolian')} aria-pressed={locale === 'mn'} data-locale="mn" onClick={() => setLocale('mn')}>
               МН
             </button>
           </div>

@@ -1,33 +1,18 @@
+'use client'
+
 import ConfidenceBadge from './ConfidenceBadge'
 import ArchaeologyMap from './ArchaeologyMap'
 import EvidenceExplorer from './EvidenceExplorer'
 import PoliticalRelations from './PoliticalRelations'
 import EducationalVisual from './EducationalVisual'
 import EvidenceNote from './EvidenceNote'
+import { useLocale } from '../i18n/useLocale'
 
 function ChapterSection({ section, selectedSiteId, onSiteSelect }) {
-  if (section.questions?.length) {
-    return (
-      <section id={section.id} className="chapter-narrative-section chapter-questions-section">
-        <div className="chapter-readable-column">
-          <p className="chapter-section-number">{section.number}</p>
-          <h2>{section.title}</h2>
-          <div className="chapter-question-list">
-            {section.questions.map((item) => (
-              <article key={item.question} className="chapter-question-card">
-                <p className="chapter-question">{item.question}</p>
-                <p className="chapter-answer">{item.answer}</p>
-                <ConfidenceBadge label={item.confidence} />
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-    )
-  }
-
+  const { localeSection } = useLocale()
+  const { ui } = localeSection('chapters')
   return (
-    <section id={section.id} className="chapter-narrative-section">
+    <section id={section.id} className={`chapter-narrative-section${section.questions?.length ? ' chapter-questions-section' : ''}`}>
       <div className="chapter-readable-column">
         <p className="chapter-section-number">{section.number}</p>
         <h2>{section.title}</h2>
@@ -37,6 +22,20 @@ function ChapterSection({ section, selectedSiteId, onSiteSelect }) {
           {section.paragraphs?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
           {section.link ? <p><a href={section.link.href}>{section.link.label}</a></p> : null}
         </div>
+        {section.questions?.length ? (
+          <details className="chapter-check">
+            <summary>{ui.takeaway}</summary>
+            <div className="chapter-question-list">
+              {section.questions.map((item) => (
+                <article key={item.question} className="chapter-question-card">
+                  <p className="chapter-question">{item.question}</p>
+                  <p className="chapter-answer">{item.answer}</p>
+                  <ConfidenceBadge label={item.confidence} />
+                </article>
+              ))}
+            </div>
+          </details>
+        ) : null}
         {section.evidenceComparison?.length ? (
           <div className="chapter-evidence-comparison">
             {section.evidenceComparison.map((item) => (
@@ -80,8 +79,17 @@ function ChapterSection({ section, selectedSiteId, onSiteSelect }) {
         {section.continuation ? (
           <aside className="chapter-continuation">
             <p className="chapter-callout-label">{section.continuation.title}</p>
-            <strong>{section.continuation.text}</strong>
-            <span>{section.continuation.status}</span>
+            {section.continuation.href ? (
+              <a href={section.continuation.href}>
+                <strong>{section.continuation.text}</strong>
+                <span>{section.continuation.status}</span>
+              </a>
+            ) : (
+              <>
+                <strong>{section.continuation.text}</strong>
+                <span>{section.continuation.status}</span>
+              </>
+            )}
           </aside>
         ) : null}
       </div>

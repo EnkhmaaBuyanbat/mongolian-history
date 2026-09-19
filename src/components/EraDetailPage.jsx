@@ -83,9 +83,9 @@ function EraDetailPage({ era }) {
   const eraReconstruction = getReconstructionById(eraWorld?.reconstructionId)
   const firstChapter = eraChapters[0]
   const headerActions = [
-    firstChapter ? { label: ui.startEra, href: `/eras/${era.slug ?? era.id}/chapters/${firstChapter.slug ?? firstChapter.id.replace('chapter-', '')}` } : null,
+    firstChapter ?     { label: ui.startEra, href: `/eras/${era.slug ?? era.id}/chapters/${firstChapter.slug ?? firstChapter.id.replace('chapter-', '')}` } : null,
     { label: ui.viewTimeline, href: getTimelineHref({ eraId: era.id }) },
-    { label: ui.viewPeople, href: '/people' },
+    { label: ui.viewPeople, href: `/people?era=${era.id}` },
   ].filter(Boolean)
 
   return (
@@ -106,6 +106,42 @@ function EraDetailPage({ era }) {
       >
         <MeanderLine className="entity-meander" />
       </CinematicPageHeader>
+
+      {presentation.cautions?.length || presentation.analyticalPhases?.length ? (
+        <section className="era-detail-section era-how-to-read">
+          <div className="section-inner">
+            {presentation.analyticalPhases?.length ? (
+              <div className="era-phase-list">
+                <div className="entity-section-heading">
+                  <p className="section-label">{ui.howToRead}</p>
+                  <h2>{ui.eraPhases}</h2>
+                </div>
+                <ol>
+                  {presentation.analyticalPhases.map((phase) => (
+                    <li key={`${phase.period}-${phase.label}`}>
+                      <time>{phase.period}</time>
+                      <span>{phase.label}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            ) : null}
+            {presentation.cautions?.length ? (
+              <div className="era-caution-list">
+                <div className="entity-section-heading">
+                  <p className="section-label">{ui.readingCaution}</p>
+                  <h2>{ui.historicalCautions}</h2>
+                </div>
+                <ul>
+                  {presentation.cautions.map((caution) => (
+                    <li key={caution}>{caution}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </div>
+        </section>
+      ) : null}
 
       {eraReconstruction ? (
         <div className="section-inner">

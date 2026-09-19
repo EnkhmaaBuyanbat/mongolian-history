@@ -18,7 +18,7 @@ function inspectValues(value, path, errors) {
 function compatibleShape(base, translated, path, errors) {
   if (!isObject(translated)) return
   Object.entries(translated).forEach(([key, value]) => {
-    if ((path === 'mn.chapters' || path === 'mn.people') && key === 'records') return
+    if ((path === 'mn.chapters' || path === 'mn.people' || path === 'mn.eras') && key === 'records') return
     if (path === 'mn.events' && ['records','types'].includes(key)) return
     if (path === 'mn.entities' && ['records','types'].includes(key)) return
     if (path.startsWith('mn.supporting.') && ['records','types','routeConfidence','treatments','roles'].includes(key)) return
@@ -362,8 +362,8 @@ export function validateLocalization({ bundles, supportedLocales, cultureTopicId
       canonical[field].forEach((item, index) => validateVisualPresentation(item, presentation[field][index], `${path}.${field}[${index}]`))
     })
   }
-  if (chapterVisualAssignments.length !== 14) errors.push(`Expected 14 assigned chapter visuals; found ${chapterVisualAssignments.length}.`)
-  if (educationalDiagrams.length !== 11) errors.push(`Expected 11 educational diagrams; found ${educationalDiagrams.length}.`)
+  if (chapterVisualAssignments.length !== 30) errors.push(`Expected 30 assigned chapter visuals; found ${chapterVisualAssignments.length}.`)
+  if (educationalDiagrams.length !== 23) errors.push(`Expected 23 educational diagrams; found ${educationalDiagrams.length}.`)
   chapterVisualAssignments.forEach((assignment) => {
     const chapterPresentation = localizedChaptersForVisuals[assignment.chapterId]
     const presentation = chapterPresentation?.primaryVisualPresentation
@@ -459,6 +459,7 @@ export function validateLocalization({ bundles, supportedLocales, cultureTopicId
       const localizedSection = record.sectionPresentation?.[sectionId]
       if (!localizedSection?.title?.trim()) errors.push(`Missing MN Chapter section title: ${id}.${sectionId}`)
       if (canonicalSection?.paragraphs && (!Array.isArray(localizedSection?.paragraphs) || !localizedSection.paragraphs.length)) errors.push(`Invalid MN Chapter section paragraphs: ${id}.${sectionId}`)
+      if ((canonicalSection?.paragraphs?.length ?? 0) !== (localizedSection?.paragraphs?.length ?? 0) && canonicalSection?.paragraphs?.length) errors.push(`MN chapter paragraph count mismatch: ${id}.${sectionId}`)
       if (canonicalSection?.evidenceNote?.sourceBasis) {
         const mnSourceBasis = localizedSection?.evidenceNote?.sourceBasis
         if (!mnSourceBasis?.trim()) errors.push(`Missing MN evidenceNote.sourceBasis: ${id}.${sectionId}`)
