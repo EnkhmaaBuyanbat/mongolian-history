@@ -1,4 +1,11 @@
 import { resolveHomeVisual } from './homeVisualManifest'
+import { chapters } from './chapters'
+import { cultureTopics } from './cultureTopics'
+import { objects } from './objects'
+import { people } from './people'
+import { places } from './places'
+import { sites } from './sites'
+import { getChapterHref, getEntityHref } from './entityRoutes'
 
 export const homepageFeaturedStories = [
   {
@@ -27,4 +34,26 @@ export const homepageEvidencePresentation = {
 
 export function resolveHomepageVisual(spec) {
   return resolveHomeVisual(spec)
+}
+
+function firstRelatedHref(ids = [], records) {
+  for (const id of ids) {
+    const href = getEntityHref(records.find((item) => item.id === id))
+    if (href) return href
+  }
+  return null
+}
+
+export function getHomepageEvidenceHref(media) {
+  if (!media) return '/culture'
+  const chapter = chapters.find((item) => media.relatedChapterIds?.includes(item.id))
+  const topic = cultureTopics.find((item) => item.mediaIds?.includes(media.id))
+  return (
+    firstRelatedHref(media.relatedObjectIds, objects)
+    || firstRelatedHref(media.relatedSiteIds, sites)
+    || (chapter ? getChapterHref(chapter) : null)
+    || firstRelatedHref(media.relatedPersonIds, people)
+    || firstRelatedHref(media.relatedPlaceIds, places)
+    || (topic ? `/culture/${topic.slug}` : '/culture')
+  )
 }

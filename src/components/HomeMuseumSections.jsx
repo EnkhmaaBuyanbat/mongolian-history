@@ -3,7 +3,7 @@ import { useHeroParallax } from '../hooks/useHeroParallax'
 import { getApprovedMedia, getMediaById } from '../data/mediaResolvers'
 import { people } from '../data/people'
 import { eras } from '../data/eras'
-import { homepageEvidencePresentation, homepagePeopleRoles } from '../data/homepageFeatured'
+import { getHomepageEvidenceHref, homepageEvidencePresentation, homepagePeopleRoles } from '../data/homepageFeatured'
 import { resolveHomeVisual } from '../data/homeVisualManifest'
 import { getLocalizedReconstruction } from '../data/visualLocalization'
 import { getLocalizedMedia } from '../data/mediaLocalization'
@@ -122,45 +122,38 @@ export function PeopleAndDynasties() {
 }
 
 function HomeEvidenceCard({ media, copy }) {
-  const { t, localeSection } = useLocale()
+  const { localeSection } = useLocale()
   const display = getLocalizedMedia(media, localeSection('media'))
   const presentation = homepageEvidencePresentation[media.id] ?? { classKey: 'object', fit: 'object' }
   const classLabel = copy.classes?.[presentation.classKey] ?? presentation.classKey
-  const evidenceLabel = media.evidenceType
-    ? (t(`evidence.${toEvidenceCode(media.evidenceType)}`) || media.evidenceType)
-    : null
-  const src = media.asset?.mediumPath ?? media.asset?.largePath ?? media.asset?.originalPath
-  const href = media.sourceUrl
-  const context = display.caption ?? display.historicalContext
-
-  const card = (
-    <>
-      <div className={`home-evidence-stage is-${presentation.fit}`}>
-        <img
-          src={src}
-          alt={display.alt ?? ''}
-          width={media.asset?.width}
-          height={media.asset?.height}
-          loading="lazy"
-        />
-      </div>
-      <figcaption>
-        <span className="home-evidence-class">{classLabel}</span>
-        <strong>{display.title}</strong>
-        {context ? <small>{context}</small> : null}
-        {evidenceLabel ? <span className="home-evidence-type">{evidenceLabel}</span> : null}
-      </figcaption>
-    </>
-  )
+  const asset = media.asset
+  const src = asset?.mediumPath ?? asset?.largePath ?? asset?.originalPath
+  const srcSet = [
+    asset?.mediumPath ? `${asset.mediumPath} 900w` : null,
+    asset?.largePath ? `${asset.largePath} 1600w` : null,
+  ].filter(Boolean).join(', ')
+  const href = getHomepageEvidenceHref(media)
 
   return (
     <figure className={`home-evidence-card is-${presentation.fit}`}>
-      {href ? (
-        <a href={href} target="_blank" rel="noopener noreferrer">
-          {card}
+      <a href={href}>
+        <div className={`home-evidence-stage is-${presentation.fit}`}>
+          <img
+            src={src}
+            srcSet={srcSet || undefined}
+            sizes="(max-width: 1000px) 70vw, 18vw"
+            alt={display.alt ?? ''}
+            width={asset?.width}
+            height={asset?.height}
+            loading="lazy"
+          />
+        </div>
+        <figcaption>
+          <span className="home-evidence-class">{classLabel}</span>
+          <strong>{display.title}</strong>
           <span className="home-evidence-view">{copy.explore}</span>
-        </a>
-      ) : card}
+        </figcaption>
+      </a>
     </figure>
   )
 }
@@ -216,7 +209,7 @@ export function ExperienceHistory() {
       <div className="experience-depth-mid" aria-hidden="true" />
       <div className="experience-dust" aria-hidden="true" />
       <div className="experience-copy" style={layerStyle(0.04, 20)}>
-        <p className="experience-status">{copy.comingSoon}</p>
+        <p className="experience-status">{copy.openNow}</p>
         <h2>{copy.lead}</h2>
         <p className="cinematic-copy">{copy.text}</p>
         <div className="experience-primary">
@@ -225,10 +218,20 @@ export function ExperienceHistory() {
           <small>{copy.primaryKind ?? copy.primaryType}</small>
           <a className="btn-primary" href="/experience">{copy.enterScene}</a>
         </div>
+        {copy.items?.length ? (
+          <ul className="experience-later" aria-label={copy.plannedLabel}>
+            {copy.items.map((world) => (
+              <li key={world.title}>
+                <strong>{world.title}</strong>
+                <span>{copy.comingSoon}</span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
         {evidenceLabel ? (
           <p className="experience-disclosure">
             <span>{evidenceLabel}</span>
-              {reconstruction?.historicalCaution ? <small>{reconstruction.historicalCaution}</small> : null}
+            {reconstruction?.historicalCaution ? <small>{reconstruction.historicalCaution}</small> : null}
           </p>
         ) : null}
       </div>
