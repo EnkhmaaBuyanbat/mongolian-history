@@ -12,6 +12,11 @@ function Footer() {
           <p className="footer-mark">{copy.title}</p>
           <p className="footer-sub">{copy.subtitle}</p>
           <p className="footer-note">{copy.note}</p>
+          <p className="footer-credit">
+            {copy.creditPrefix}
+            <a href="https://github.com/EnkhmaaBuyanbat" rel="noopener noreferrer">{copy.creditName}</a>
+          </p>
+          <p className="footer-credit-line">{copy.creditLine}</p>
         </div>
 
         <nav className="footer-nav" aria-label={copy.explore}>

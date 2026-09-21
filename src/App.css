@@ -4903,6 +4903,40 @@ a.era-event-record:focus-visible {
   max-width: 28rem;
 }
 
+.footer-credit,
+.footer-credit-line {
+  max-width: 28rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+}
+
+.footer-credit {
+  margin-top: 0.85rem;
+}
+
+.footer-credit-line {
+  margin-top: 0.18rem;
+}
+
+.footer-credit a {
+  color: rgba(228, 212, 183, 0.78);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(183, 138, 58, 0.32);
+}
+
+.footer-credit a:hover,
+.footer-credit a:focus-visible {
+  color: var(--parchment);
+  border-bottom-color: var(--gold);
+}
+
+.footer-credit a:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
 .footer-nav {
   display: flex;
   flex-wrap: wrap;
@@ -5293,7 +5327,9 @@ a.era-event-record:focus-visible {
 :lang(mn) .era-journey-copy small,
 :lang(mn) .footer-nav,
 :lang(mn) .footer-mark,
-:lang(mn) .footer-sub { letter-spacing: .04em; text-transform: none; }
+:lang(mn) .footer-sub,
+:lang(mn) .footer-credit,
+:lang(mn) .footer-credit-line { letter-spacing: .04em; text-transform: none; }
 :lang(mn) .era-card h3 { max-width: none; font-size: 1.42rem; letter-spacing: .01em; overflow-wrap: anywhere; text-wrap: balance; }
 :lang(mn) .era-card p { overflow-wrap: break-word; }
 :lang(mn) .era-years { letter-spacing: .02em; }
