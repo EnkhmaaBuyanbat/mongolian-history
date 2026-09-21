@@ -16,6 +16,7 @@ function Footer() {
 
         <nav className="footer-nav" aria-label={copy.explore}>
           <a href="/eras">{navigation.eras}</a>
+          <a href="/timeline">{navigation.timeline}</a>
           <a href="/people">{navigation.people}</a>
           <a href="/family-tree">{navigation.familyTree}</a>
           <a href="/culture">{navigation.culture}</a>

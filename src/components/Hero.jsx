@@ -46,6 +46,8 @@ function Hero() {
               height={asset.height ?? undefined}
               alt=""
               loading="eager"
+              fetchPriority="high"
+              decoding="async"
               style={{ '--hero-object-position': visual.focalPoint }}
             />
           ) : null}

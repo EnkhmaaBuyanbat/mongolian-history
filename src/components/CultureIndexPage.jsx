@@ -1,3 +1,5 @@
+'use client'
+
 import { useState } from 'react'
 import { cultureTopics } from '../data/cultureTopics'
 import { eras } from '../data/eras'

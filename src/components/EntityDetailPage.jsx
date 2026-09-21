@@ -1,3 +1,5 @@
+'use client'
+
 import { useMemo } from 'react'
 import { places } from '../data/places'
 import { sites } from '../data/sites'

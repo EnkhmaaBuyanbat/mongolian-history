@@ -1,3 +1,5 @@
+'use client'
+
 import { useMemo } from 'react'
 import { events } from '../data/events'
 import { people } from '../data/people'

@@ -1,4 +1,33 @@
 /* Shared */
+.skip-link {
+  position: absolute;
+  left: 0.8rem;
+  top: 0.8rem;
+  z-index: 200;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  background: #100c0a;
+  color: var(--parchment);
+  text-decoration: none;
+  transform: translateY(-160%);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+.not-found-page {
+  padding-block: 6rem;
+}
+
+.nav-drawer:not([open]) nav {
+  display: none;
+}
+
+#main-content {
+  scroll-margin-top: 5rem;
+}
+
 .section-inner {
   width: min(1180px, calc(100% - 2.5rem));
   margin-inline: auto;

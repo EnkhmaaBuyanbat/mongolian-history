@@ -2,7 +2,7 @@
 
 ## From the Ancient Steppe to the Modern Nation
 
-An interactive educational platform exploring Mongolian history from the ancient steppe to the modern nation, built with React and Vite.
+An interactive educational platform exploring Mongolian history from the ancient steppe to the modern nation, built with React and Next.js.
 
 The project brings together structured historical narratives, chronological eras and chapters, historical figures, family relationships, timeline navigation, evidence-aware educational visuals, source-backed content, and a museum-inspired interface. It is an active educational project rather than a finished academic reference work.
 
@@ -94,8 +94,8 @@ This approach allows the interface to remain visually expressive without manufac
 
 ## Technology
 
+- Next.js (App Router)
 - React
-- Vite
 - JavaScript
 - CSS
 - Git
@@ -106,9 +106,11 @@ The repository also contains a lightweight mapping dependency used by an existin
 ## Project structure
 
 ```text
+app/             Next.js routes, metadata, sitemap, and robots
 src/
   components/    React pages, shared interface components, and educational visuals
   data/          Canonical historical records, relationships, evidence, and resolvers
+  seo/           Canonical URLs, page metadata, and public sitemap catalog
 
 public/
   media/         Approved media assets, derivatives, and labeled reconstructions
@@ -132,7 +134,7 @@ This project is under active development.
 Substantially implemented:
 
 - eight-era historical architecture;
-- chapter system;
+- bilingual LEARN chapters;
 - cross-era timeline;
 - searchable People index and person profiles;
 - interactive Chinggisid Family Tree;
@@ -142,8 +144,7 @@ Substantially implemented:
 
 In progress or planned:
 
-- wider rollout of the new People presentation system;
-- Mongolian-language content;
+- public-launch SEO and deployment hardening;
 - deeper source-to-claim citation mapping;
 - selected immersive 3D historical experiences;
 - further accessibility and responsive-quality assurance; and
@@ -160,7 +161,15 @@ npm install
 npm run dev
 ```
 
-Vite will print the local development URL in the terminal.
+Next.js will print the local development URL in the terminal, usually `http://localhost:3000`.
+
+### Public URL
+
+Set `NEXT_PUBLIC_SITE_URL` to the production origin (no trailing slash) before building. Canonical tags, Open Graph URLs, `sitemap.xml`, and `robots.txt` all use that value. A Vercel production deployment can also fall back to `VERCEL_PROJECT_PRODUCTION_URL`.
+
+```bash
+NEXT_PUBLIC_SITE_URL=https://www.example.com npm run build
+```
 
 ### Validation commands
 
@@ -169,7 +178,7 @@ npm run build
 npm run lint
 ```
 
-The production build is written to `dist/`.
+The production build is written to `.next/`. After `npm run build`, `npm run start` serves that output.
 
 ## Editorial collaboration
 

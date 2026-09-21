@@ -1,12 +1,10 @@
-'use client'
+import MapRouteClient from '@/components/MapRouteClient'
+import { staticPageMetadata } from '@/seo/metadata'
 
-import dynamic from 'next/dynamic'
-
-const HistoricalMapPage = dynamic(() => import('@/components/HistoricalMapPage'), {
-  ssr: false,
-  loading: () => <div className="section-inner map-loading">Loading historical map…</div>,
-})
+export async function generateMetadata() {
+  return staticPageMetadata('map')
+}
 
 export default function MapPage() {
-  return <HistoricalMapPage />
+  return <MapRouteClient />
 }

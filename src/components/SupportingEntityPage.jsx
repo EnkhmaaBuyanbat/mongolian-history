@@ -1,3 +1,5 @@
+'use client'
+
 import { chapters } from '../data/chapters'
 import { claims } from '../data/claims'
 import { companies } from '../data/companies'

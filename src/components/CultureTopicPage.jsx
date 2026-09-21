@@ -1,3 +1,5 @@
+'use client'
+
 import { chapters } from '../data/chapters'
 import { getChapterHref, getEntityHref } from '../data/entityRoutes'
 import { people } from '../data/people'

@@ -46,8 +46,8 @@
   --depth-content: 2;
   --depth-overlay: 3;
   --depth-ui: 4;
-  --serif: 'Cormorant Garamond', 'Palatino Linotype', Palatino, Georgia, serif;
-  --sans: 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
+  --serif: var(--font-serif), 'Cormorant Garamond', 'Palatino Linotype', Palatino, Georgia, serif;
+  --sans: var(--font-sans), 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
 }
 
 *,

@@ -1,23 +1,24 @@
-'use client'
-
-import { useParams } from 'next/navigation'
-import PeopleStoryPage from '@/components/PeopleStoryPage'
-import PersonDetailPage from '@/components/PersonDetailPage'
-import PersonDossierPage from '@/components/PersonDossierPage'
-import { dossierPersonIds } from '@/data/personPresentation'
+import { notFound } from 'next/navigation'
+import PersonRoutePage from '@/components/PersonRoutePage'
+import { getPersonSlug } from '@/data/entityRoutes'
 import { people } from '@/data/people'
+import { recordPageMetadata } from '@/seo/metadata'
+import { firstParam } from '@/seo/site'
 
-export default function PersonPage() {
-  const { slug } = useParams()
-  const person = people.find((item) => (item.slug ?? item.id.replace('person-', '')) === slug) ?? null
+export async function generateMetadata({ params }) {
+  const slug = firstParam((await params).slug)
+  const person = people.find((item) => getPersonSlug(item) === slug) ?? null
+  return recordPageMetadata({
+    path: `/people/${slug}`,
+    record: person,
+    collection: 'people',
+    fallbackTitle: slug,
+  })
+}
 
-  if (person && dossierPersonIds.has(person.id)) {
-    return <PersonDossierPage person={person} />
-  }
-
-  if (person?.storyId) {
-    return <PeopleStoryPage person={person} />
-  }
-
-  return <PersonDetailPage person={person} />
+export default async function PersonPage({ params }) {
+  const slug = firstParam((await params).slug)
+  const person = people.find((item) => getPersonSlug(item) === slug) ?? null
+  if (!person) notFound()
+  return <PersonRoutePage person={person} />
 }

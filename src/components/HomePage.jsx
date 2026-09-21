@@ -1,3 +1,5 @@
+'use client'
+
 import Hero from './Hero'
 import Introduction from './Introduction'
 import EraPreview from './EraPreview'

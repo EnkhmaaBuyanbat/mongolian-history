@@ -1,12 +1,10 @@
-'use client'
+import ExperienceRouteClient from '@/components/ExperienceRouteClient'
+import { staticPageMetadata } from '@/seo/metadata'
 
-import dynamic from 'next/dynamic'
-
-const ExperiencePage = dynamic(() => import('@/components/ExperiencePage'), {
-  ssr: false,
-  loading: () => <div className="section-inner map-loading" aria-busy="true" />,
-})
+export async function generateMetadata() {
+  return staticPageMetadata('experience')
+}
 
 export default function ExperienceRoute() {
-  return <ExperiencePage />
+  return <ExperienceRouteClient />
 }

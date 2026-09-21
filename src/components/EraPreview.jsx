@@ -1,3 +1,5 @@
+'use client'
+
 import { eras } from '../data/eras'
 import EraCard from './EraCard'
 import HomeEraJourney from './HomeEraJourney'

@@ -1,12 +1,28 @@
 import { cookies } from 'next/headers'
+import { Cormorant_Garamond, Source_Sans_3 } from 'next/font/google'
 import '../src/search/assertSearchIndex'
 import Providers from './providers'
 import { LOCALE_STORAGE_KEY, resolveLocale } from '../src/i18n/locale'
+import { buildMetadata } from '../src/seo/metadata'
 
-export const metadata = {
-  title: 'Mongolian History · From the Ancient Steppe to the Modern Nation',
-  description: 'Mongolian History — from the ancient steppe to the modern nation. An educational platform for the peoples, empires, and transformations of Mongolia.',
-  icons: { icon: '/favicon.svg' },
+const serif = Cormorant_Garamond({
+  subsets: ['latin', 'cyrillic'],
+  weight: ['500', '600', '700'],
+  style: ['normal', 'italic'],
+  variable: '--font-serif',
+  display: 'swap',
+})
+
+const sans = Source_Sans_3({
+  subsets: ['latin', 'cyrillic'],
+  weight: ['400', '500', '600'],
+  style: ['normal', 'italic'],
+  variable: '--font-sans',
+  display: 'swap',
+})
+
+export async function generateMetadata() {
+  return buildMetadata({ path: '/' })
 }
 
 export default async function RootLayout({ children }) {
@@ -14,15 +30,7 @@ export default async function RootLayout({ children }) {
   const locale = resolveLocale(cookieStore.get(LOCALE_STORAGE_KEY)?.value)
 
   return (
-    <html lang={locale}>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;1,400&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang={locale} data-locale={locale} className={`${serif.variable} ${sans.variable}`}>
       <body>
         <Providers initialLocale={locale}>{children}</Providers>
       </body>

@@ -53,7 +53,17 @@ function LocaleProvider({ children, initialLocale = DEFAULT_LOCALE }) {
 
   useEffect(() => {
     document.documentElement.lang = locale
-    document.title = bundle.common.metadata.title
+    document.documentElement.dataset.locale = locale
+    if (pathname === '/') {
+      document.title = bundle.common.metadata.title
+      return
+    }
+    const heading = document.querySelector('#main-content h1')
+    const headingText = heading?.textContent?.replace(/\s+/g, ' ').trim()
+    const brand = locale === 'mn' ? 'Монголын түүх' : 'Mongolian History'
+    document.title = headingText
+      ? (headingText.includes(brand) ? headingText : `${headingText} · ${brand}`)
+      : bundle.common.metadata.title
   }, [bundle, locale, pathname])
 
   const value = useMemo(() => ({
