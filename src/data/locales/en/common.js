@@ -1,5 +1,5 @@
 export const commonEn = {
-  navigation: { home: 'Home', eras: 'Eras', timeline: 'Timeline', people: 'People', familyTree: 'Family Tree', culture: 'Culture', experience: 'Experience', about: 'About', menu: 'Menu' },
+  navigation: { home: 'Home', eras: 'Eras', timeline: 'Timeline', people: 'People', familyTree: 'Family Tree', culture: 'Culture', experience: 'Experience', about: 'About', contact: 'Feedback & Contact', menu: 'Menu' },
   languages: { label: 'Language', english: 'English', mongolian: 'Mongolian' },
   actions: { beginJourney: 'Begin the Journey', exploreTimeline: 'Explore Timeline', continueExploring: 'Continue Exploring', explore: 'Explore', readChapter: 'Read chapter', viewRecord: 'View record' },
   sections: { sources: 'Sources', overview: 'Overview', whyMatters: 'Why This Matters', throughTime: 'Through Time', evidence: 'Objects & Evidence', peoplePractice: 'People & Practice', placesSites: 'Places & Sites', questions: 'Historical Questions', relatedChapters: 'Related Chapters' },
@@ -19,6 +19,7 @@ export const commonEn = {
       culture: { title: 'Culture', description: 'Collections of material life, writing, religion, exchange, and pastoral practice across eras.' },
       experience: { title: 'Experience', description: 'An atmospheric reconstruction of a 1206 assembly world — a teaching space, not a photograph.' },
       about: { title: 'About', description: 'Why this educational history project exists and how it separates evidence from reconstruction.' },
+      contact: { title: 'Feedback & Contact', description: 'Send a historical correction, source suggestion, or a note to the creator of this educational project.' },
       search: { title: 'Search', description: 'Search people, places, eras, events, and years across the published site.' },
       map: { title: 'Map', description: 'Geographic context for selected historical and archaeological records.' },
       notFound: { title: 'Page not found', description: 'This path is not part of the published Mongolian History site.' },

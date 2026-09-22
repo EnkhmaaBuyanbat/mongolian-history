@@ -33,6 +33,7 @@ export function publicSitemapPaths() {
     PAGE_PATHS.culture,
     PAGE_PATHS.experience,
     PAGE_PATHS.about,
+    PAGE_PATHS.contact,
     PAGE_PATHS.map,
     ...eras.map((era) => `/eras/${era.slug ?? era.id}`),
     ...chapters.map((chapter) => getChapterHref(chapter)),

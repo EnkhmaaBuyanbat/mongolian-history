@@ -13,6 +13,7 @@ import { getLocalizedEntity, getLocalizedPolity } from '../data/entityLocalizati
 import { getLocalizedEvent } from '../data/eventLocalization'
 import { getLocalizedPerson } from '../data/personLocalization'
 import { useLocale } from '../i18n/useLocale'
+import RecordFeedbackLink from './RecordFeedbackLink'
 
 const placeholderCards = [
   'Timeline',
@@ -319,6 +320,10 @@ function HistoricalEntityPage({ entity }) {
           )}
         </div>
       </section>
+
+      <div className="section-inner">
+        <RecordFeedbackLink />
+      </div>
     </article>
   )
 }

@@ -22,6 +22,7 @@ import { useLocale } from '../i18n/useLocale'
 import { getLocalizedEntity } from '../data/entityLocalization'
 import { getLocalizedEvent } from '../data/eventLocalization'
 import { getLocalizedCampaign } from '../data/supportingLocalization'
+import RecordFeedbackLink from './RecordFeedbackLink'
 
 function uniqueRecords(records) {
   return [...new Map(records.map((record) => [record.id, record])).values()]
@@ -290,6 +291,10 @@ function PersonDetailPage({ person }) {
           </div>
         </section>
       ) : null}
+
+      <div className="section-inner person-profile-inner">
+        <RecordFeedbackLink />
+      </div>
     </article>
   )
 }

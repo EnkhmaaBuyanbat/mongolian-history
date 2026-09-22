@@ -23,6 +23,7 @@ import { getLocalizedPerson } from '../data/personLocalization'
 import { getLocalizedCampaign, getLocalizedClaim, getLocalizedCompany, getLocalizedOrganization, mergePresentationList } from '../data/supportingLocalization'
 import { useLocale } from '../i18n/useLocale'
 import { mergeLocaleValues } from '../i18n/locale'
+import RecordFeedbackLink from './RecordFeedbackLink'
 
 const entityCollections = [
   { label: 'People', records: people },
@@ -300,6 +301,10 @@ function EntityExplorerPage({ entity }) {
           </div>
         </section>
       ) : null}
+
+      <div className="section-inner explorer-inner">
+        <RecordFeedbackLink />
+      </div>
     </article>
   )
 }

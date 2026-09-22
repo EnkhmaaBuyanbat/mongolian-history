@@ -1,5 +1,5 @@
 export const commonMn = {
-  navigation: { home: 'Нүүр', eras: 'Үеүд', timeline: 'Он цагийн хэлхээс', people: 'Хүмүүс', familyTree: 'Угийн мод', culture: 'Соёл', experience: 'Мэдрэх', about: 'Тухай', menu: 'Цэс' },
+  navigation: { home: 'Нүүр', eras: 'Үеүд', timeline: 'Он цагийн хэлхээс', people: 'Хүмүүс', familyTree: 'Угийн мод', culture: 'Соёл', experience: 'Мэдрэх', about: 'Тухай', contact: 'Санал хүсэлт, холбоо барих', menu: 'Цэс' },
   languages: { label: 'Хэл сонгох', english: 'Англи', mongolian: 'Монгол' },
   actions: { beginJourney: 'Аяллаа эхлэх', exploreTimeline: 'Он цагийн хэлхээсийг үзэх', continueExploring: 'Үргэлжлүүлэн судлах', explore: 'Судлах', readChapter: 'Бүлгийг унших', viewRecord: 'Бүртгэлийг үзэх' },
   sections: { sources: 'Эх сурвалж', overview: 'Тойм', whyMatters: 'Яагаад чухал вэ', throughTime: 'Цаг хугацааны явцад', evidence: 'Олдвор ба баримт', peoplePractice: 'Хүмүүс ба дадал', placesSites: 'Газар ба дурсгалт газар', questions: 'Түүхийн асуултууд', relatedChapters: 'Холбогдох бүлгүүд' },
@@ -19,6 +19,7 @@ export const commonMn = {
       culture: { title: 'Соёл', description: 'Материал амьдрал, бичиг, шашин, солилцоо, нүүдлийн аж ахуйг үеүдээр холбосон цуглуулгууд.' },
       experience: { title: 'Мэдрэх', description: '1206 оны хуралдайн ертөнцийн нөхцөлт сэргээн дүрслэл — гэрэл зураг биш, сургалтын орон зай.' },
       about: { title: 'Тухай', description: 'Энэхүү боловсролын түүхийн төсөл яагаад байгаа, баримтыг сэргээн дүрслэлээс хэрхэн ялгаж байгаа тухай.' },
+      contact: { title: 'Санал хүсэлт, холбоо барих', description: 'Түүхийн засвар, эх сурвалж, эсвэл төслийн бүтээгчид зориулсан тэмдэглэл илгээх.' },
       search: { title: 'Хайх', description: 'Нийтлэгдсэн сайтаас хүмүүс, газар, үе, үйл явдал, оныг хайх.' },
       map: { title: 'Газрын зураг', description: 'Сонгосон түүх, археологийн бүртгэлийн газар зүйн нөхцөл.' },
       notFound: { title: 'Хуудас олдсонгүй', description: 'Энэ зам нийтлэгдсэн Монголын түүхийн сайтад байхгүй.' },

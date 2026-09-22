@@ -10,6 +10,7 @@ import { getPersonContextHeaderVisual } from '../data/pageVisualResolvers'
 import { moduChanyuStory } from '../data/personStories/moduChanyu'
 import { sortChronologically } from '../data/chronology'
 import CinematicPageHeader from './CinematicPageHeader'
+import RecordFeedbackLink from './RecordFeedbackLink'
 import ConfidenceBadge from './ConfidenceBadge'
 import PersonEvidencePanel from './PersonEvidencePanel'
 import PersonRelationshipVisual from './PersonRelationshipVisual'
@@ -90,6 +91,9 @@ function PersonDossierPage({ person }) {
       {relatedPeople.length ? <Section number="09" label={ui.relatedPeople} title={ui.furtherConnections}><div className="person-dossier-links">{relatedPeople.map((candidate) => { const localized=getLocalizedPerson(candidate,peopleLocale); return <a key={candidate.id} href={getPersonHref(candidate)}><span>{ui.person}</span><strong>{localized.title}</strong></a> })}</div></Section> : null}
 
       <Section number="10" label={ui.continueExploring} title={ui.continueCollection} alt><div className="person-dossier-links"><a href="/people"><span>{ui.people}</span><strong>{ui.allHistoricalFigures}</strong></a>{personEvents.length ? <a href={getTimelineHref({ eraId: person.eraId, eventId: personEvents[0]?.id })}><span>{ui.timeline}</span><strong>{ui.widerChronology}</strong></a> : null}{presentation.eras.map((era) => { const localized=localizedRecord('eras',era.id,era); return <a key={era.id} href={`/eras/${era.slug ?? era.id}`}><span>{ui.era} {era.numeral}</span><strong>{localized.title}</strong></a> })}{presentation.familyTreeEligible ? <a href={`/family-tree?person=${getPersonSlug(person)}`}><span>{ui.interactiveExhibit}</span><strong>{ui.viewTree}</strong></a> : null}{personChapters.slice(0, 2).map((chapter) => { const localized=localizedRecord('chapters',chapter.id,chapter); return <a key={chapter.id} href={getChapterHref(chapter)}><span>{ui.chapter}</span><strong>{localized.title}</strong></a> })}</div>{personSources.length ? <details className="person-dossier-sources"><summary>{ui.viewSources}</summary><ul>{personSources.map((source) => <li key={source.id}>{source.title}</li>)}</ul></details> : null}</Section>
+      <div className="section-inner person-profile-inner">
+        <RecordFeedbackLink />
+      </div>
     </article>
   )
 }

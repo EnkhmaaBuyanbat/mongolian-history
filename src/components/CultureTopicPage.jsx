@@ -12,6 +12,7 @@ import { MeanderLine } from './Ornament'
 import { useLocale } from '../i18n/useLocale'
 import { getLocalizedPerson } from '../data/personLocalization'
 import { getLocalizedEntity } from '../data/entityLocalization'
+import RecordFeedbackLink from './RecordFeedbackLink'
 
 function RelatedRecords({ records, label, viewLabel }) {
   if (!records.length) return null
@@ -46,6 +47,9 @@ function CultureTopicPage({ topic }) {
       <section className="culture-section culture-section-alt"><div className="section-inner"><div className="culture-heading"><p className="section-label">08 · {ui.chapters}</p><h2>{ui.chapters}</h2></div><div className="culture-record-grid">{relatedChapters.map((chapter) => { const displayChapter = localizedRecord('chapters', chapter.id, chapter); return <a key={chapter.id} href={getChapterHref(chapter)}><span>{ui.chapter} {chapter.number}</span><strong>{displayChapter.title}</strong><small>{ui.viewChapter} →</small></a> })}</div></div></section>
       <section className="culture-section"><div className="section-inner culture-narrow"><p className="section-label">09 · {ui.evidenceBase}</p><h2>{ui.sources}</h2><details className="culture-sources"><summary>{ui.viewSources} ({relatedSources.length})</summary><ul>{relatedSources.map((source) => <li key={source.id}><strong>{source.title}</strong>{source.author ? <span>{source.author}</span> : null}</li>)}</ul></details></div></section>
       <section className="culture-section culture-section-alt"><div className="section-inner"><div className="culture-heading"><p className="section-label">10 · {ui.continue}</p><h2>{ui.continue}</h2></div><nav className="culture-continue" aria-label={ui.continue}><a href="/culture">{ui.allCollections} <span aria-hidden="true">→</span></a><a href="/eras">{ui.allErasLink} <span aria-hidden="true">→</span></a><a href="/timeline">{ui.timelineLink} <span aria-hidden="true">→</span></a></nav></div></section>
+      <div className="section-inner culture-narrow">
+        <RecordFeedbackLink />
+      </div>
     </article>
   )
 }

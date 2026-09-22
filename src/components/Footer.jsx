@@ -27,6 +27,7 @@ function Footer() {
           <a href="/culture">{navigation.culture}</a>
           <a href="/experience">{navigation.experience}</a>
           <a href="/about">{navigation.about}</a>
+          <a href="/contact">{navigation.contact}</a>
         </nav>
       </div>
     </footer>

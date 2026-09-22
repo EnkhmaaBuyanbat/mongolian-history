@@ -11,6 +11,7 @@ import { chapters } from '../data/chapters'
 import { eras } from '../data/eras'
 import { sortChronologically } from '../data/chronology'
 import { MeanderLine } from './Ornament'
+import RecordFeedbackLink from './RecordFeedbackLink'
 import { getEntityHref, getEventHref, getTimelineHref } from '../data/entityRoutes'
 import { getEraHeaderVisual } from '../data/pageVisualResolvers'
 import CinematicPageHeader from './CinematicPageHeader'
@@ -258,6 +259,10 @@ function EraDetailPage({ era }) {
           })}
         </div>
       </section>
+
+      <div className="section-inner">
+        <RecordFeedbackLink />
+      </div>
 
       <nav className="contextual-page-nav section-inner" aria-label={ui.eraNavigation}>
         {previousEra ? <a href={eraHref(previousEra)}><span>{ui.previousEra}</span><strong>← {ui.era} {previousEra.numeral}</strong></a> : <span />}

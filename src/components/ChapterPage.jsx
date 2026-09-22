@@ -23,6 +23,7 @@ import { MeanderLine } from './Ornament'
 import { getChapterHref, getEntityHref, getTimelineHref } from '../data/entityRoutes'
 import { getChapterHeaderFallback, getChapterHeaderVisual } from '../data/pageVisualResolvers'
 import CinematicPageHeader from './CinematicPageHeader'
+import RecordFeedbackLink from './RecordFeedbackLink'
 import { getEraWorld } from '../data/eraWorlds'
 import { getChapterPrimaryVisual } from '../data/chapterVisuals'
 import ChapterEducationalVisual from './ChapterEducationalVisual'
@@ -324,6 +325,9 @@ function ChapterPage({ chapter }) {
             </section>
           </div>
         </div>
+      </div>
+      <div className="section-inner">
+        <RecordFeedbackLink />
       </div>
       <nav className="contextual-page-nav section-inner" aria-label={ui.chapterNavigation}>
         {previousChapter ? <a href={getChapterHref(previousChapter)}><span>{ui.previousChapter}</span><strong>← {previousPresentation.title}</strong></a> : <span />}

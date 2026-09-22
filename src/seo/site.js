@@ -9,6 +9,7 @@ export const PAGE_PATHS = {
   culture: '/culture',
   experience: '/experience',
   about: '/about',
+  contact: '/contact',
   search: '/search',
   map: '/map',
   notFound: '/404',

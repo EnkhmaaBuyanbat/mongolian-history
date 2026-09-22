@@ -16,6 +16,7 @@ import { getLocalizedClaim, getLocalizedCompany, getLocalizedOrganization, getLo
 import { useLocale } from '../i18n/useLocale'
 import { MeanderLine } from './Ornament'
 import CompareSources from './CompareSources'
+import RecordFeedbackLink from './RecordFeedbackLink'
 
 function uniqueById(records) {
   return [...new Map(records.filter(Boolean).map((record) => [record.id, record])).values()]
@@ -256,6 +257,10 @@ function SupportingEntityPage({ kind, record }) {
           </div>
         </section>
       ) : null}
+
+      <div className="section-inner explorer-inner">
+        <RecordFeedbackLink />
+      </div>
     </article>
   )
 }

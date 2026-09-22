@@ -8,6 +8,7 @@ import { eras } from '../data/eras'
 import { moduChanyuStory } from '../data/personStories/moduChanyu'
 import { personRelationships } from '../data/personRelationships'
 import HistoricalRelationships from './HistoricalRelationships'
+import RecordFeedbackLink from './RecordFeedbackLink'
 import PersonStorySection from './PersonStorySection'
 import PersonTimeline from './PersonTimeline'
 import { MeanderLine } from './Ornament'
@@ -141,6 +142,9 @@ function PersonStoryPage({ person }) {
             </ul>
           </section>
         </main>
+      </div>
+      <div className="section-inner">
+        <RecordFeedbackLink />
       </div>
     </article>
   )
