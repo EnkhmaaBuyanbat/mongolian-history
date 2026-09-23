@@ -2526,6 +2526,9 @@ a.timeline-record:focus-visible {
 }
 
 .era-card .era-explore {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-top: auto;
 }
 
@@ -5616,7 +5619,7 @@ a.era-event-record:focus-visible {
 
   .era-card .era-explore,
   .era-explore {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     align-self: stretch;
