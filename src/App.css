@@ -3284,18 +3284,33 @@ a.timeline-record:focus-visible {
   }
 
   .hero {
-    min-height: calc(100svh - 3.5rem);
-    padding-block: 3.5rem 9rem;
+    min-height: 100dvh;
+    height: auto;
+    padding-block: 3.5rem 8.5rem;
   }
 
   .hero h1 { font-size: clamp(2.75rem, 16vw, 4.4rem); }
   :lang(mn) .hero h1 { font-size: clamp(2.2rem, 11.5vw, 3.4rem); line-height: 1.12; letter-spacing: 0.02em; }
   .hero-media-image { object-position: var(--hero-object-position-mobile, var(--hero-object-position, center center)); }
   .hero-vignette { background: var(--scene-vignette), linear-gradient(180deg,rgba(5,4,3,.32),transparent 26%,transparent 62%,rgba(5,4,3,.6)); }
-  .hero-scene-record { right: 1.25rem; left: 1.25rem; bottom: 4.9rem; max-width: none; }
-  .hero-scene-controls { right: 1.25rem; bottom: 1.1rem; }
-  .hero-scroll-cue { left: 1.25rem; bottom: 1.2rem; justify-items: start; transform: none; }
-  .era-card { min-height: 0; }
+  .hero-scene-record {
+    left: max(0.85rem, env(safe-area-inset-left, 0px));
+    right: max(0.85rem, env(safe-area-inset-right, 0px));
+    bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+    max-width: none;
+    padding: 0.48rem 0.7rem 0.52rem;
+    gap: 0.06rem;
+  }
+  .hero-scene-record strong { font-size: 0.92rem; line-height: 1.2; }
+  .hero-scene-record small { font-size: 0.64rem; line-height: 1.35; }
+  .hero-scene-controls {
+    right: max(0.85rem, env(safe-area-inset-right, 0px));
+    bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+  }
+  .hero-scroll-cue {
+    display: none;
+  }
+  .era-card { min-height: 0; height: auto; }
   .evidence-gallery {
     scroll-snap-type: x mandatory;
   }
@@ -4996,8 +5011,8 @@ a.era-event-record:focus-visible {
   }
 
   .hero {
-    padding: 5rem 1rem 5.5rem;
-    min-height: calc(100svh - 3.5rem);
+    padding: 5.2rem 1rem 8.2rem;
+    min-height: 100dvh;
   }
 
   .hero h1 {
@@ -5010,12 +5025,21 @@ a.era-event-record:focus-visible {
     line-height: 1.12;
   }
 
-  .footer-inner {
-    flex-direction: column;
+  .hero-kicker {
+    margin-top: 0.95rem;
   }
 
-  .site-header {
-    padding-inline: 1rem;
+  .hero-lead {
+    margin-top: 0.9rem;
+  }
+
+  .hero-actions {
+    margin-top: 1.35rem;
+    gap: 0.7rem;
+  }
+
+  .footer-inner {
+    flex-direction: column;
   }
 
   .entity-header {
@@ -5098,6 +5122,10 @@ a.era-event-record:focus-visible {
 .people-index-page:lang(mn) h1,
 .family-tree-page:lang(mn) h1,
 .family-tree-page:lang(mn) strong { overflow-wrap: anywhere; }
+:lang(mn) .family-tree-scroll-hint {
+  letter-spacing: 0.03em;
+  text-transform: none;
+}
 .family-tree-gap span { margin-top: .35rem; color: var(--parchment); font-family: var(--serif); font-size: .82rem; letter-spacing: .07em; }
 .family-tree-gap p { margin: .45rem 0 0; color: var(--muted); font-size: .7rem; line-height: 1.5; }
 .family-tree-canvas { position: relative; width: 1740px; height: 1280px; background-image: linear-gradient(rgba(183,138,58,.035) 1px, transparent 1px); background-size: 100% 250px; }
@@ -5133,17 +5161,72 @@ a.era-event-record:focus-visible {
 .family-tree-sources { margin-top: 1.35rem; padding-top: 1rem; border-top: 1px solid var(--line); color: var(--muted); }.family-tree-sources summary { color: var(--bronze); font-size: .62rem; letter-spacing: .16em; text-transform: uppercase; cursor: pointer; }.family-tree-sources summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }.family-tree-sources ul { margin-bottom: 0; padding-left: 1.15rem; }.family-tree-sources li { color: var(--muted); font-size: .75rem; line-height: 1.5; }
 .people-family-tree-link { width: min(460px,100%); margin-top: 1.5rem; padding: 1rem 1.15rem; }.people-family-tree-link span,.people-family-tree-link strong { display: block; }.people-family-tree-link span { margin-bottom: .3rem; color: var(--bronze); font-size: .62rem; letter-spacing: .18em; text-transform: uppercase; }.people-family-tree-link strong { font-family: var(--serif); font-size: 1.1rem; }
 
+.family-tree-scroll-hint {
+  display: none;
+}
+
 @media (max-width: 980px) {
   .family-tree-exhibit { grid-template-columns: 1fr; }
   .family-tree-details { position: static; max-height: none; }
   .family-tree-intro { grid-template-columns: 1fr; gap: 1rem; }
   .timeline-era-navigator > div { grid-template-columns: repeat(2,minmax(0,1fr)); }
+
+  .family-tree-viewport {
+    position: relative;
+  }
+
+  .family-tree-scroll-hint {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.7rem;
+    margin: 0 0 0.55rem;
+    color: var(--gold);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .family-tree-scroll-hint::after {
+    content: '↔';
+    flex: 0 0 auto;
+    font-size: 1.05rem;
+    letter-spacing: 0;
+    line-height: 1;
+  }
+
+  .family-tree-scroll {
+    max-height: min(70dvh, 38rem);
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-x pan-y;
+    border-radius: 1rem;
+    scrollbar-width: thin;
+  }
+
+  .family-tree-era-scope button,
+  .family-tree-household summary,
+  .family-tree-branch-controls button,
+  .family-tree-branch-members button,
+  .family-tree-later-groups button,
+  .family-tree-biography-link {
+    min-height: 2.75rem;
+  }
+
+  .family-tree-biography-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
 }
+
 @media (max-width: 640px) {
   .family-tree-header { padding: 3.5rem 0 2.5rem; }
   .family-tree-section-inner { width: calc(100% - 1.5rem); }
-  .family-tree-scroll { scroll-snap-type: x proximity; }
-  .family-tree-node { scroll-snap-align: center; }
+  .family-tree-scroll { scroll-snap-type: none; }
   .family-tree-legend { gap: .6rem; }
   .timeline-era-navigator > div { grid-template-columns: 1fr; }
   .contextual-page-nav { grid-template-columns: 1fr; }.contextual-page-nav > span { display: none; }.contextual-page-nav-overview,.contextual-page-nav-next { text-align: left; }
@@ -5210,12 +5293,17 @@ a.era-event-record:focus-visible {
   .cinematic-page-header-era { min-height: clamp(28rem,60vh,38rem); }
   .cinematic-page-header-chapter,.cinematic-page-header-person { min-height: clamp(26rem,54vh,36rem); }
   .cinematic-page-header-inner { width: min(100% - 1.5rem,1180px); padding-block: 6.5rem 8.5rem; }
-  .cinematic-page-header-context { top: 4.25rem; }
+  .cinematic-page-header-context { top: 5.4rem; }
   .cinematic-page-header h1 { font-size: clamp(2.35rem,12vw,4.2rem); }
   .cinematic-page-header-summary { font-size: .92rem; line-height: 1.5; }
   .cinematic-page-header-image { object-position: var(--page-header-mobile-position,var(--page-header-position,center)); }
   .cinematic-page-header-atmosphere { background: linear-gradient(90deg,rgba(7,6,5,.84) 0%,rgba(7,6,5,.62) 44%,rgba(7,6,5,.18) 85%,rgba(7,6,5,.1) 100%),linear-gradient(180deg,rgba(7,6,5,.1),transparent 48%,rgba(7,6,5,.45)); }
-  .cinematic-page-header-visual-record { right: .75rem; bottom: .75rem; left: .75rem; max-width: none; }
+  .cinematic-page-header-visual-record {
+    right: max(0.75rem, env(safe-area-inset-right, 0px));
+    left: max(0.75rem, env(safe-area-inset-left, 0px));
+    bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+    max-width: none;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .cinematic-page-header-image,.cinematic-page-header-copy { animation: none; transform: none; }
@@ -5456,4 +5544,135 @@ a.era-event-record:focus-visible {
   border-radius: 999px;
   border-color: var(--liquid-border);
   background: rgba(255, 244, 220, 0.06);
+}
+
+@media (max-width: 720px) {
+  .site-header {
+    top: max(0.4rem, env(safe-area-inset-top, 0px));
+    left: max(0.4rem, env(safe-area-inset-left, 0px));
+    right: max(0.4rem, env(safe-area-inset-right, 0px));
+    gap: 0.55rem;
+    min-width: 0;
+    padding: 0.4rem 0.7rem;
+  }
+
+  .wordmark {
+    min-width: 0;
+    flex: 1 1 auto;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .header-tools {
+    gap: 0.28rem;
+  }
+
+  .nav-drawer summary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    padding: 0 0.55rem;
+    letter-spacing: 0.12em;
+  }
+
+  .lang-switch {
+    gap: 0.2rem;
+    padding: 0.1rem 0.28rem;
+  }
+
+  .lang-switch button {
+    min-width: 2.2rem;
+    min-height: 2.75rem;
+  }
+
+  .hero-copy {
+    padding-bottom: 0;
+  }
+
+  .era-card {
+    padding: 1.2rem 1.15rem 1.15rem;
+  }
+
+  .era-card-head {
+    margin-bottom: 0.7rem;
+    align-items: flex-start;
+  }
+
+  .era-card h3 {
+    max-width: none;
+    line-height: 1.22;
+  }
+
+  .era-card p {
+    margin-top: 0.55rem;
+    margin-bottom: 1rem;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+  }
+
+  .era-card .era-explore,
+  .era-explore {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch;
+    width: 100%;
+    min-height: 2.75rem;
+    margin-top: 1rem;
+    padding: 0.7rem 1.1rem;
+    text-align: center;
+  }
+
+  .era-card .era-explore {
+    margin-top: auto;
+    padding-top: 0.7rem;
+  }
+
+  .site-footer {
+    padding-bottom: max(1.1rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  .cinematic-page-header-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    text-align: center;
+  }
+
+  .culture-topic-card a,
+  .culture-continue a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    padding: 0.55rem 0.85rem;
+    text-align: center;
+  }
+
+  .culture-topic-card {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+  }
+
+  .culture-topic-card a {
+    margin-top: auto;
+    align-self: stretch;
+  }
+}
+
+@media (max-width: 360px) {
+  .wordmark {
+    max-width: min(40vw, 8.25rem);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+  }
 }

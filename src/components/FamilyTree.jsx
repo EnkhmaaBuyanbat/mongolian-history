@@ -196,7 +196,9 @@ function FamilyTree({ initialPerson = '' }) {
             {expandedBranch ? <div className="family-tree-branch-members" aria-live="polite">{branchGroups[expandedBranch].map((id) => treePeople.find((person) => person.id===id)).filter((person) => person && belongsToScope(person)).map((person) => <button key={person.id} type="button" aria-pressed={person.id===selectedId} onClick={() => selectPerson(person.id)}><strong>{person.title}</strong><span>{person.role}</span></button>)}</div> : null}
           </div>
         </div>
-        <div className="family-tree-scroll" ref={canvasScrollRef} tabIndex="0" aria-label={ui.scrollLabel}>
+        <div className="family-tree-viewport">
+          <p className="family-tree-scroll-hint">{ui.scrollLabel}</p>
+          <div className="family-tree-scroll" ref={canvasScrollRef} tabIndex="0" aria-label={ui.scrollLabel}>
           <div className="family-tree-canvas">
           <div className="family-tree-generation generation-household">{ui.householdBand}</div>
           <div className="family-tree-generation generation-consorts">{ui.consortBand}</div>
@@ -250,6 +252,7 @@ function FamilyTree({ initialPerson = '' }) {
             />
           ))}
           </div>
+        </div>
         </div>
         {scopedLaterGroups.length ? <section className="family-tree-later" aria-labelledby="later-continuity-title">
           <div><p className="section-label">{ui.crossEra}</p><h3 id="later-continuity-title">{ui.continuity}</h3><p>{ui.supportedOnly}</p></div>

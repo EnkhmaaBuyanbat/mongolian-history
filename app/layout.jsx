@@ -21,6 +21,12 @@ const sans = Source_Sans_3({
   display: 'swap',
 })
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+}
+
 export async function generateMetadata() {
   return buildMetadata({ path: '/' })
 }

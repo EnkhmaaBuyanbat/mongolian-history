@@ -171,6 +171,42 @@
 
 @media (max-width: 720px) {
   .contact-page {
-    padding-top: 5.2rem;
+    padding-top: 0.85rem;
+    padding-bottom: max(2.4rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  .contact-inner {
+    width: min(42rem, calc(100% - 1.5rem));
+  }
+
+  .contact-field input,
+  .contact-field select,
+  .contact-field textarea {
+    min-height: 2.75rem;
+    font-size: 1rem;
+  }
+
+  .contact-field textarea {
+    min-height: 10rem;
+  }
+
+  .contact-check {
+    min-height: 2.75rem;
+    align-items: flex-start;
+  }
+
+  .contact-check input {
+    width: 1.2rem;
+    height: 1.2rem;
+    margin-top: 0.2rem;
+    flex: 0 0 auto;
+  }
+
+  .contact-form .btn-primary {
+    width: 100%;
+    min-height: 2.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 }
