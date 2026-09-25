@@ -49,6 +49,8 @@ import { objects } from '../data/objects'
 import { getLocalizedEntity } from '../data/entityLocalization'
 import { familyTreeEn } from '../data/locales/en/familyTree'
 import { familyTreeMn } from '../data/locales/mn/familyTree'
+import { successionEn } from '../data/locales/en/succession'
+import { successionMn } from '../data/locales/mn/succession'
 import { personRelationshipsEn } from '../data/locales/en/personRelationships'
 import { personRelationshipsMn } from '../data/locales/mn/personRelationships'
 import { people } from '../data/people'
@@ -92,8 +94,8 @@ import { sources } from '../data/sources'
 import { getLocalizedCampaign, getLocalizedOrganization, getLocalizedCompany, getLocalizedClaim, getLocalizedSource } from '../data/supportingLocalization'
 
 export const translations = {
-  en: { common: commonEn, about: aboutEn, contact: contactEn, search: searchEn, home: homeEn, experience: experienceEn, culture: cultureEn, eras: erasEn, chapters: chaptersEn, events:eventsEn, entities:entitiesEn, reconstructions:reconstructionsEn, eraWorlds:eraWorldsEn, heroScenes:heroScenesEn, media:mediaEn, evidence:evidenceEn, people:peopleEn, familyTree:familyTreeEn, personRelationships:personRelationshipsEn, supporting:supportingEn },
-  mn: { common: commonMn, about: aboutMn, contact: contactMn, search: searchMn, home: homeMn, experience: experienceMn, culture: cultureMn, eras: erasMn, chapters: chaptersMn, events:eventsMn, entities:entitiesMn, reconstructions:reconstructionsMn, eraWorlds:eraWorldsMn, heroScenes:heroScenesMn, media:mediaMn, evidence:evidenceMn, people:peopleMn, familyTree:familyTreeMn, personRelationships:personRelationshipsMn, supporting:supportingMn },
+  en: { common: commonEn, about: aboutEn, contact: contactEn, search: searchEn, home: homeEn, experience: experienceEn, culture: cultureEn, eras: erasEn, chapters: chaptersEn, events:eventsEn, entities:entitiesEn, reconstructions:reconstructionsEn, eraWorlds:eraWorldsEn, heroScenes:heroScenesEn, media:mediaEn, evidence:evidenceEn, people:peopleEn, familyTree:familyTreeEn, succession: successionEn, personRelationships:personRelationshipsEn, supporting:supportingEn },
+  mn: { common: commonMn, about: aboutMn, contact: contactMn, search: searchMn, home: homeMn, experience: experienceMn, culture: cultureMn, eras: erasMn, chapters: chaptersMn, events:eventsMn, entities:entitiesMn, reconstructions:reconstructionsMn, eraWorlds:eraWorldsMn, heroScenes:heroScenesMn, media:mediaMn, evidence:evidenceMn, people:peopleMn, familyTree:familyTreeMn, succession: successionMn, personRelationships:personRelationshipsMn, supporting:supportingMn },
 }
 
 const errors = validateLocalization({

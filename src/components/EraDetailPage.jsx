@@ -13,6 +13,8 @@ import { sortChronologically } from '../data/chronology'
 import { MeanderLine } from './Ornament'
 import RecordFeedbackLink from './RecordFeedbackLink'
 import { getEntityHref, getEventHref, getTimelineHref } from '../data/entityRoutes'
+import { getEraSuccession, SUCCESSION_ANCHOR_ID } from '../data/succession'
+import SuccessionChronology from './SuccessionChronology'
 import { getEraHeaderVisual } from '../data/pageVisualResolvers'
 import CinematicPageHeader from './CinematicPageHeader'
 import { getEraWorld } from '../data/eraWorlds'
@@ -44,6 +46,8 @@ function isResearched(record) {
 function EraDetailPage({ era }) {
   const { localeSection, localizedRecord } = useLocale()
   const { ui } = localeSection('eras')
+  const successionUi = localeSection('succession').ui
+  const eraSuccession = era ? getEraSuccession(era.id) : null
   const eventLocale = localeSection('events')
   const entityLocale = localeSection('entities')
   const peopleLocale = localeSection('people')
@@ -87,6 +91,7 @@ function EraDetailPage({ era }) {
   const firstChapter = eraChapters[0]
   const headerActions = [
     firstChapter ?     { label: ui.startEra, href: `/eras/${era.slug ?? era.id}/chapters/${firstChapter.slug ?? firstChapter.id.replace('chapter-', '')}` } : null,
+    eraSuccession ? { label: successionUi.jumpLabel, href: `#${SUCCESSION_ANCHOR_ID}` } : null,
     { label: ui.viewTimeline, href: getTimelineHref({ eraId: era.id }) },
     { label: ui.viewPeople, href: `/people?era=${era.id}` },
   ].filter(Boolean)
@@ -151,6 +156,8 @@ function EraDetailPage({ era }) {
           <ReconstructionInfo reconstruction={eraReconstruction} />
         </div>
       ) : null}
+
+      {eraSuccession ? <SuccessionChronology sequence={eraSuccession} /> : null}
 
       {eraChapters.length ? (
         <section className="era-detail-section era-chapters-section">

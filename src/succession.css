@@ -1,0 +1,280 @@
+.succession-section {
+  padding-top: 3.2rem;
+  scroll-margin-top: 5.8rem;
+}
+
+.succession-intro {
+  max-width: 46rem;
+  margin: 0.85rem 0 1.25rem;
+  color: rgba(228, 212, 183, 0.82);
+  line-height: 1.65;
+}
+
+.succession-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.7rem;
+  margin-bottom: 1.4rem;
+}
+
+.succession-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--gold);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.succession-legend-item::before {
+  content: '';
+  width: 0.85rem;
+  height: 0.55rem;
+  border: 1px solid var(--gold);
+}
+
+.succession-legend-item--great_khan::before {
+  background: rgba(183, 138, 58, 0.72);
+}
+
+.succession-legend-item--regent::before {
+  background: repeating-linear-gradient(
+    -55deg,
+    rgba(183, 138, 58, 0.18),
+    rgba(183, 138, 58, 0.18) 3px,
+    rgba(183, 138, 58, 0.5) 3px,
+    rgba(183, 138, 58, 0.5) 6px
+  );
+}
+
+.succession-legend-item--succession_period::before {
+  background: transparent;
+  border-style: dashed;
+}
+
+.succession-legend-item--disputed_succession::before {
+  background: linear-gradient(90deg, rgba(183, 138, 58, 0.7) 50%, transparent 50%);
+}
+
+.succession-track {
+  display: flex;
+  align-items: stretch;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.succession-track > li {
+  flex: var(--succession-span, 3) 1 7.4rem;
+  min-width: 7.4rem;
+}
+
+.succession-segment {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.9rem 0.75rem 0.85rem;
+  border: 1px solid rgba(183, 138, 58, 0.28);
+  background:
+    linear-gradient(180deg, rgba(228, 212, 183, 0.05), transparent 38%),
+    rgba(16, 12, 9, 0.72);
+}
+
+.succession-segment--great_khan {
+  border-color: rgba(183, 138, 58, 0.55);
+  box-shadow: inset 0 3px 0 var(--gold);
+}
+
+.succession-segment--regent {
+  background-image:
+    repeating-linear-gradient(
+      -55deg,
+      transparent,
+      transparent 7px,
+      rgba(183, 138, 58, 0.06) 7px,
+      rgba(183, 138, 58, 0.06) 8px
+    );
+  box-shadow: inset 0 3px 0 rgba(183, 138, 58, 0.45);
+}
+
+.succession-segment--succession_period {
+  border-style: dashed;
+  box-shadow: inset 0 3px 0 rgba(183, 138, 58, 0.28);
+}
+
+.succession-segment--disputed_succession {
+  border-color: var(--gold);
+  background:
+    linear-gradient(90deg, rgba(183, 138, 58, 0.16), transparent 42%, rgba(183, 138, 58, 0.08)),
+    rgba(16, 12, 9, 0.78);
+  box-shadow: inset 0 3px 0 var(--gold);
+}
+
+.succession-years {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.12rem 0.2rem;
+  margin: 0;
+  color: var(--parchment);
+  font-family: var(--serif);
+  font-size: clamp(1.55rem, 2.4vw, 2.15rem);
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+}
+
+.succession-status {
+  margin: 0.1rem 0 0;
+  color: var(--gold);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.succession-name,
+.succession-names {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.succession-name a,
+.succession-names a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.succession-name a:hover,
+.succession-name a:focus-visible,
+.succession-names a:hover,
+.succession-names a:focus-visible {
+  color: var(--gold);
+  outline: none;
+}
+
+.succession-and {
+  display: block;
+  margin: 0.15rem 0;
+  color: var(--gold);
+  font-family: var(--sans, inherit);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.succession-relation,
+.succession-why,
+.succession-caution,
+.succession-next {
+  margin: 0;
+  color: rgba(228, 212, 183, 0.72);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.succession-why {
+  color: rgba(228, 212, 183, 0.88);
+}
+
+.succession-why span,
+.succession-next span {
+  display: block;
+  margin-bottom: 0.18rem;
+  color: var(--gold);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.succession-caution {
+  color: rgba(228, 212, 183, 0.62);
+  font-size: 0.7rem;
+}
+
+.succession-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.65rem;
+  margin-top: auto;
+  padding-top: 0.55rem;
+}
+
+.succession-links a,
+.succession-continue a {
+  color: var(--gold);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.succession-links a:hover,
+.succession-links a:focus-visible,
+.succession-continue a:hover,
+.succession-continue a:focus-visible {
+  color: var(--parchment);
+  outline: none;
+}
+
+.succession-next {
+  padding-top: 0.2rem;
+}
+
+.succession-continue {
+  margin: 1.1rem 0 0;
+}
+
+:lang(mn) .succession-status,
+:lang(mn) .succession-legend-item,
+:lang(mn) .succession-why span,
+:lang(mn) .succession-next span,
+:lang(mn) .succession-links a,
+:lang(mn) .succession-continue a,
+:lang(mn) .succession-and {
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+@media (max-width: 980px) {
+  .succession-track {
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  .succession-track > li {
+    flex: none;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .succession-segment {
+    padding: 1rem 1rem 0.95rem;
+  }
+
+  .succession-years {
+    font-size: clamp(2rem, 9vw, 2.6rem);
+  }
+
+  .succession-name,
+  .succession-names {
+    font-size: 1.28rem;
+  }
+
+  .succession-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+}
